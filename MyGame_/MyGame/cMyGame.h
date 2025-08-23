@@ -2,8 +2,8 @@
 	This class is your specific game
 */
 
-#ifndef EAE6320_CEXAMPLEGAME_H
-#define EAE6320_CEXAMPLEGAME_H
+#ifndef EAE6320_CMYGAME_H
+#define EAE6320_CMYGAME_H
 
 // Includes
 //=========
@@ -20,7 +20,7 @@
 
 namespace eae6320
 {
-	class cExampleGame final : public Application::iApplication
+	class cMyGame final : public Application::iApplication
 	{
 		// Inherited Implementation
 		//=========================
@@ -36,7 +36,7 @@ namespace eae6320
 		// so that it's easy to tell at a glance what kind of build is running.
 		const char* GetMainWindowName() const final
 		{
-			return "John-Paul's EAE6320 Example Game"
+			return "Raynard-Christian's GAMES6320 My Game"
 				" -- "
 #if defined( EAE6320_PLATFORM_D3D )
 				"Direct3D"
@@ -57,7 +57,7 @@ namespace eae6320
 		// You don't need to worry about this for our class,
 		// but if you ever ship a real project using this code as a base you should set this to something unique
 		// (a generated GUID would be fine since this string is never seen)
-		const char* GetMainWindowClassName() const final { return "John-Paul's EAE6320 Example Main Window Class"; }
+		const char* GetMainWindowClassName() const final { return "Raynard-Christian's GAMES6320 My Main Window Class"; }
 		// The following three icons are provided:
 		//	* IDI_EAEGAMEPAD
 		//	* IDI_EAEALIEN
@@ -102,4 +102,4 @@ namespace eae6320
 	}
 }
 
-#endif	// EAE6320_CEXAMPLEGAME_H
+#endif	// EAE6320_CMYGAME_H
