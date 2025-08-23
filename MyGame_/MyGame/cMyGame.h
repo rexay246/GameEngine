@@ -63,8 +63,8 @@ namespace eae6320
 		//	* IDI_EAEALIEN
 		//	* IDI_VSDEFAULT_LARGE / IDI_VSDEFAULT_SMALL
 		// If you want to try creating your own a convenient website that will help is: http://icoconvert.com/
-		const WORD* GetLargeIconId() const final { static constexpr WORD iconId_large = IDI_VSDEFAULT_LARGE; return &iconId_large; }
-		const WORD* GetSmallIconId() const final { static constexpr WORD iconId_small = IDI_VSDEFAULT_SMALL; return &iconId_small; }
+		const WORD* GetLargeIconId() const final { static constexpr WORD iconId_large = IDI_EAEALIEN; return &iconId_large; }
+		const WORD* GetSmallIconId() const final { static constexpr WORD iconId_small = IDI_EAEGAMEPAD; return &iconId_small; }
 #endif
 
 		// Run
