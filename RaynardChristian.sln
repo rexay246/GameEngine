@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36414.22 d17.14
+VisualStudioVersion = 17.14.36414.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExampleGame", "ExampleGame", "{AC0EBDC3-8723-4A43-9112-DB863C2C3694}"
 EndProject
@@ -72,6 +72,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScopeGuard", "Engine\ScopeGuard\ScopeGuard.vcxproj", "{B7ED3F7D-BFA1-42C9-9089-C6401FFDE3D4}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Graphics", "Engine\Graphics\Graphics.vcxproj", "{E4E3BCD1-9BE1-4D39-9A71-FA5000E56F81}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MyGame", "MyGame", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MyGame", "MyGame_\MyGame\MyGame.vcxproj", "{4C676245-4105-491C-82FB-37CCC2AE3082}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -289,6 +293,14 @@ Global
 		{E4E3BCD1-9BE1-4D39-9A71-FA5000E56F81}.Release|x64.Build.0 = Release|x64
 		{E4E3BCD1-9BE1-4D39-9A71-FA5000E56F81}.Release|x86.ActiveCfg = Release|Win32
 		{E4E3BCD1-9BE1-4D39-9A71-FA5000E56F81}.Release|x86.Build.0 = Release|Win32
+		{4C676245-4105-491C-82FB-37CCC2AE3082}.Debug|x64.ActiveCfg = Debug|x64
+		{4C676245-4105-491C-82FB-37CCC2AE3082}.Debug|x64.Build.0 = Debug|x64
+		{4C676245-4105-491C-82FB-37CCC2AE3082}.Debug|x86.ActiveCfg = Debug|Win32
+		{4C676245-4105-491C-82FB-37CCC2AE3082}.Debug|x86.Build.0 = Debug|Win32
+		{4C676245-4105-491C-82FB-37CCC2AE3082}.Release|x64.ActiveCfg = Release|x64
+		{4C676245-4105-491C-82FB-37CCC2AE3082}.Release|x64.Build.0 = Release|x64
+		{4C676245-4105-491C-82FB-37CCC2AE3082}.Release|x86.ActiveCfg = Release|Win32
+		{4C676245-4105-491C-82FB-37CCC2AE3082}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -321,6 +333,7 @@ Global
 		{6FF846D1-2377-4601-B2F6-83E31748CB16} = {E5C51EF7-81D3-4030-A4CE-0D2D666CEF4F}
 		{B7ED3F7D-BFA1-42C9-9089-C6401FFDE3D4} = {E5C51EF7-81D3-4030-A4CE-0D2D666CEF4F}
 		{E4E3BCD1-9BE1-4D39-9A71-FA5000E56F81} = {E5C51EF7-81D3-4030-A4CE-0D2D666CEF4F}
+		{4C676245-4105-491C-82FB-37CCC2AE3082} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A89F366F-0B7F-464F-90A8-A4828B273298}

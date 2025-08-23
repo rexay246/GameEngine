@@ -450,15 +450,19 @@ namespace
 				return bufferDescription;
 			}();
 
-			const auto initialData = [vertexData]
-			{
-				D3D11_SUBRESOURCE_DATA initialData{};
+			//const auto initialData = [vertexData]
+			//{
+			//	D3D11_SUBRESOURCE_DATA initialData{};
 
-				initialData.pSysMem = vertexData;
-				// (The other data members are ignored for non-texture buffers)
+			//	initialData.pSysMem = vertexData;
+			//	// (The other data members are ignored for non-texture buffers)
 
-				return initialData;
-			}();
+			//	return initialData;
+			//}();
+
+			D3D11_SUBRESOURCE_DATA initialData{};
+			initialData.pSysMem = vertexData;
+
 
 			const auto result_create = direct3dDevice->CreateBuffer( &bufferDescription, &initialData, &s_vertexBuffer );
 			if ( FAILED( result_create ) )
