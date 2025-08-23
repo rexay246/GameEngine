@@ -87,7 +87,7 @@ void main()
 		// Alpha (opacity)
 		1.0 );
 	o_color.r = sqrt(pow(sin(g_elapsedSecondCount_simulationTime), 2));
-	o_color.g = sqrt(pow(cos(g_elapsedSecondCount_simulationTime + 2), 2));
+	o_color.g = sqrt(pow(sin(g_elapsedSecondCount_simulationTime + 2), 2));
 	o_color.b = sqrt(pow(sin(g_elapsedSecondCount_simulationTime + 4), 2));
 }
 
