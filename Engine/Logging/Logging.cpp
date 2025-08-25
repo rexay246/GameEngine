@@ -169,7 +169,7 @@ namespace
 					if ( m_outputStream.is_open() )
 					{
 						s_hasTheLogFileAlreadyBeenWrittenTo = true;
-						eae6320::Logging::OutputMessage( "Opened log file \"%s\"", EAE6320_LOGGING_PATH );
+						eae6320::Logging::OutputMessage( "Opened log file for Ray's MyGame: \"%s\"", EAE6320_LOGGING_PATH );
 						FlushLog();
 						return eae6320::Results::Success;
 					}
@@ -185,7 +185,7 @@ namespace
 					EAE6320_ASSERT( result );
 					if ( result )
 					{
-						eae6320::Logging::OutputMessage( "Re-opened log file" );
+						eae6320::Logging::OutputMessage( "Re-opened Ray's MyGame log file" );
 						FlushLog();
 					}
 					return result;
@@ -231,15 +231,15 @@ namespace
 		if ( s_logger.m_outputStream.is_open() )
 		{
 			{
-				eae6320::Logging::OutputMessage( "Closing log file" );
+				eae6320::Logging::OutputMessage( "Closing Ray's MyGame log file" );
 				s_logger.FlushLog();
 			}
 			s_logger.m_outputStream.close();
 			s_cleanUpResult = !s_logger.m_outputStream.is_open() ? eae6320::Results::Success : eae6320::Results::Failure;
-			EAE6320_ASSERTF( s_cleanUpResult, "Log file wasn't closed" );
+			EAE6320_ASSERTF( s_cleanUpResult, "Ray's MyGame Log file wasn't closed" );
 			if ( !s_cleanUpResult )
 			{
-				eae6320::Logging::OutputError( "Error: Log file did not close" );
+				eae6320::Logging::OutputError( "Error: Ray's MyGame Log file did not close" );
 			}
 			return;
 		}

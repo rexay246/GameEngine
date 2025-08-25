@@ -36,7 +36,7 @@ namespace eae6320
 		// so that it's easy to tell at a glance what kind of build is running.
 		const char* GetMainWindowName() const final
 		{
-			return "Raynard-Christian's GAMES6320 My Game"
+			return "Raynard-Christian's GAMES6320 MyGame"
 				" -- "
 #if defined( EAE6320_PLATFORM_D3D )
 				"Direct3D"
@@ -57,14 +57,14 @@ namespace eae6320
 		// You don't need to worry about this for our class,
 		// but if you ever ship a real project using this code as a base you should set this to something unique
 		// (a generated GUID would be fine since this string is never seen)
-		const char* GetMainWindowClassName() const final { return "Raynard-Christian's GAMES6320 My Main Window Class"; }
+		const char* GetMainWindowClassName() const final { return "Raynard-Christian's GAMES6320 MyGame Main Window Class"; }
 		// The following three icons are provided:
 		//	* IDI_EAEGAMEPAD
 		//	* IDI_EAEALIEN
 		//	* IDI_VSDEFAULT_LARGE / IDI_VSDEFAULT_SMALL
 		// If you want to try creating your own a convenient website that will help is: http://icoconvert.com/
-		const WORD* GetLargeIconId() const final { static constexpr WORD iconId_large = IDI_EAEALIEN; return &iconId_large; }
-		const WORD* GetSmallIconId() const final { static constexpr WORD iconId_small = IDI_EAEGAMEPAD; return &iconId_small; }
+		const WORD* GetLargeIconId() const final { static constexpr WORD iconId_large = IDI_RAYDOG; return &iconId_large; }
+		const WORD* GetSmallIconId() const final { static constexpr WORD iconId_small = IDI_RAYPAW; return &iconId_small; }
 #endif
 
 		// Run
