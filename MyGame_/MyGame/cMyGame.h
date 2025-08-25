@@ -77,7 +77,6 @@ namespace eae6320
 
 		cResult Initialize() final;
 		cResult CleanUp() final;
-
 	};
 }
 

@@ -21,6 +21,14 @@ void eae6320::cMyGame::UpdateBasedOnInput()
 		const auto result = Exit( EXIT_SUCCESS );
 		EAE6320_ASSERT( result );
 	}
+	else if(UserInput::IsKeyPressed(UserInput::KeyCodes::Space)) {
+		// Pauses the application
+		SetSimulationRate(0.0f);
+	}
+	else {
+		// Returns application to normal
+		SetSimulationRate(1.0f);
+	}
 }
 
 // Initialize / Clean Up
