@@ -55,7 +55,7 @@ int eae6320::Application::iApplication::ParseEntryPointParametersAndRun( const s
 		const auto result = Initialize_all( i_entryPointParameters );
 		if ( result )
 		{
-			Logging::OutputMessage( "The application was successfully initialized" );
+			Logging::OutputMessage( "Ray's MyGame application was successfully initialized" );
 		}
 		else
 		{
@@ -98,6 +98,7 @@ eae6320::cResult eae6320::Application::iApplication::Exit( const int i_exitCode 
 eae6320::Application::iApplication::~iApplication()
 {
 	CleanUp_base();
+	Logging::OutputMessage("Ray's MyGame application was successfully cleaned");
 }
 
 // Inheritable Implementation
