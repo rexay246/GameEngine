@@ -47,6 +47,7 @@ int eae6320::Application::iApplication::ParseEntryPointParametersAndRun( const s
 					exitCode = EXIT_FAILURE;
 				}
 			}
+			Logging::OutputMessage("Ray's MyGame application was successfully cleaned");
 		} );
 
 	// Initialize the application
@@ -98,7 +99,6 @@ eae6320::cResult eae6320::Application::iApplication::Exit( const int i_exitCode 
 eae6320::Application::iApplication::~iApplication()
 {
 	CleanUp_base();
-	Logging::OutputMessage("Ray's MyGame application was successfully cleaned");
 }
 
 // Inheritable Implementation
