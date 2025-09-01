@@ -49,6 +49,10 @@
     <ClCompile Include="cGeometry.gl.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="cEffect.cpp" />
+    <ClCompile Include="cEffect.d3d.cpp">
+      <Filter>Direct3D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cConstantBuffer.h" />
@@ -70,9 +74,13 @@
       <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="cGeometry.h" />
+    <ClInclude Include="cEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cRenderState.inl" />
+    <None Include="cEffect.gl.cpp files">
+      <Filter>OpenGL</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

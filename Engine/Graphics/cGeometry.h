@@ -5,15 +5,15 @@
 
 #include "Configuration.h"
 
-#include <cstdint>
-#include <Engine/Results/Results.h>
-
 #ifdef EAE6320_PLATFORM_D3D
 #include "Direct3D/Includes.h"
 #include "cVertexFormat.h"
 #else
 #include "OpenGL/Includes.h"
 #endif
+
+#include <cstdint>
+#include <Engine/Results/Results.h>
 
 // Forward Declarations
 //=====================
