@@ -78,7 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cRenderState.inl" />
-    <None Include="cEffect.gl.cpp files">
+    <None Include="cEffect.gl.cpp">
       <Filter>OpenGL</Filter>
     </None>
   </ItemGroup>
