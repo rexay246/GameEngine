@@ -46,10 +46,6 @@ namespace eae6320 {
 			// A vertex array encapsulates the vertex data as well as the vertex input layout
 			GLuint s_vertexArrayId = 0;
 #endif
-
-		//private:
-		//	cResult Initialize_platformSpecific();
-		//	void DrawGeometry_platformSpecific();
 		};
 	}
 }
