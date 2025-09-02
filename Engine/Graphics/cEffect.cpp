@@ -43,7 +43,7 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize() {
 			return result;
 		}
 	}
-	result = extraInit();
+	result = Initialize_Extra();
 
 	return result;
 }
@@ -51,7 +51,7 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize() {
 eae6320::cResult eae6320::Graphics::cEffect::CleanUp() {
 	auto result = eae6320::Results::Success;
 
-	result = extraCleanUp();
+	result = CleanUp_Extra();
 	if (s_vertexShader)
 	{
 		s_vertexShader->DecrementReferenceCount();
@@ -63,4 +63,10 @@ eae6320::cResult eae6320::Graphics::cEffect::CleanUp() {
 		s_fragmentShader = nullptr;
 	}
 	return result;
+}
+
+eae6320::Graphics::cEffect::~cEffect()
+{
+	const auto result = CleanUp();
+	EAE6320_ASSERT(result);
 }

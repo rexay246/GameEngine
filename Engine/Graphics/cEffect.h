@@ -22,6 +22,8 @@ namespace eae6320 {
 			cResult Initialize();
 			cResult CleanUp();
 
+			~cEffect();
+
 		private:
 			eae6320::Graphics::cShader* s_vertexShader = nullptr;
 			eae6320::Graphics::cShader* s_fragmentShader = nullptr;
@@ -31,8 +33,8 @@ namespace eae6320 {
 			eae6320::Graphics::cRenderState s_renderState;
 
 		private:
-			cResult extraInit();
-			cResult extraCleanUp();
+			cResult Initialize_Extra();
+			cResult CleanUp_Extra();
 			void BindEffect_PlatformSpecific();
 		};
 	}

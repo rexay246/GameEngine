@@ -30,8 +30,6 @@ namespace eae6320 {
 			void DrawGeometry();
 			cResult Initialize();
 			cResult CleanUp();
-
-			cGeometry();
 			~cGeometry();
 
 		private:	

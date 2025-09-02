@@ -26,12 +26,12 @@ void eae6320::Graphics::cEffect::BindEffect_PlatformSpecific() {
 	}
 }
 
-eae6320::cResult eae6320::Graphics::cEffect::extraCleanUp() {
+eae6320::cResult eae6320::Graphics::cEffect::CleanUp_Extra() {
 	auto result = eae6320::Results::Success;
 	return result;
 }
 
-eae6320::cResult eae6320::Graphics::cEffect::extraInit() {
+eae6320::cResult eae6320::Graphics::cEffect::Initialize_Extra() {
 	auto result = eae6320::Results::Success;
 	return result;
 }
