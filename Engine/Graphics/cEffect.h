@@ -18,7 +18,7 @@ namespace eae6320 {
 	namespace Graphics {
 		class cEffect {
 		public:
-			void BindingEffect();
+			void BindEffect();
 			cResult Initialize();
 			cResult CleanUp();
 
@@ -29,6 +29,11 @@ namespace eae6320 {
 			GLuint s_programId = 0;
 #endif
 			eae6320::Graphics::cRenderState s_renderState;
+
+		private:
+			cResult extraInit();
+			cResult extraCleanUp();
+			void BindEffect_PlatformSpecific();
 		};
 	}
 }
