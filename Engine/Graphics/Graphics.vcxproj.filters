@@ -42,11 +42,11 @@
     <ClCompile Include="OpenGL\sContext.gl.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="cGeometry.cpp" />
-    <ClCompile Include="cGeometry.d3d.cpp">
+    <ClCompile Include="cMesh.cpp" />
+    <ClCompile Include="cMesh.d3d.cpp">
       <Filter>Direct3D</Filter>
     </ClCompile>
-    <ClCompile Include="cGeometry.gl.cpp">
+    <ClCompile Include="cMesh.gl.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="cEffect.cpp" />
@@ -76,7 +76,7 @@
     <ClInclude Include="Windows\ExternalLibraries.win.h">
       <Filter>Windows</Filter>
     </ClInclude>
-    <ClInclude Include="cGeometry.h" />
+    <ClInclude Include="cMesh.h" />
     <ClInclude Include="cEffect.h" />
   </ItemGroup>
   <ItemGroup>
