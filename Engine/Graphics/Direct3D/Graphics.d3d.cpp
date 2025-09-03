@@ -11,7 +11,7 @@
 #include "../cVertexFormat.h"
 #include "../sContext.h"
 #include "../VertexFormats.h"
-#include "../cGeometry.h"
+#include "../cMesh.h"
 #include "../cEffect.h"
 
 #include <Engine/Asserts/Asserts.h>
@@ -67,7 +67,7 @@ namespace
 	// Geometry Data
 	//--------------
 
-	eae6320::Graphics::cGeometry* s_geometry = new eae6320::Graphics::cGeometry();
+	eae6320::Graphics::cMesh* s_mesh = new eae6320::Graphics::cMesh();
 
 	// Shading Data
 	//-------------
@@ -179,7 +179,7 @@ void eae6320::Graphics::RenderFrame()
 	}
 	// Draw the geometry
 	{
-		s_geometry->DrawGeometry();
+		s_mesh->DrawMesh();
 	}
 
 	// Everything has been drawn to the "back buffer", which is just an image in memory.
@@ -264,7 +264,7 @@ eae6320::cResult eae6320::Graphics::Initialize( const sInitializationParameters&
 	}
 	// Initialize the geometry
 	{	
-		if ( !( result = s_geometry->Initialize() ) )
+		if ( !( result = s_mesh->Initialize() ) )
 		{
 			EAE6320_ASSERTF( false, "Can't initialize Graphics without the geometry data" );
 			return result;
@@ -289,10 +289,10 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 		s_depthStencilView = nullptr;
 	}
 
-	s_geometry->CleanUp();
-	s_geometry = nullptr;
+	result = s_mesh->CleanUp();
+	s_mesh = nullptr;
 
-	s_effect->CleanUp();
+	result = s_effect->CleanUp();
 	s_effect = nullptr;
 
 	{

@@ -1,10 +1,10 @@
-#include "cGeometry.h"
+#include "cMesh.h"
 #include "VertexFormats.h"
 
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/Logging/Logging.h>
 
-eae6320::cResult eae6320::Graphics::cGeometry::Initialize() {
+eae6320::cResult eae6320::Graphics::cMesh::Initialize() {
 	auto result = eae6320::Results::Success;
 
 	// Create a vertex array object and make it active
@@ -154,7 +154,7 @@ eae6320::cResult eae6320::Graphics::cGeometry::Initialize() {
 	return result;
 }
 
-eae6320::cResult eae6320::Graphics::cGeometry::CleanUp() {
+eae6320::cResult eae6320::Graphics::cMesh::CleanUp() {
 	auto result = Results::Success;
 
 	{
@@ -213,7 +213,7 @@ eae6320::cResult eae6320::Graphics::cGeometry::CleanUp() {
 	return result;
 }
 
-void eae6320::Graphics::cGeometry::DrawGeometry() {
+void eae6320::Graphics::cMesh::DrawMesh() {
 	// Bind a specific vertex buffer to the device as a data source
 	{
 		EAE6320_ASSERT(s_vertexArrayId != 0);

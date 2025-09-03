@@ -10,7 +10,7 @@
 #include "../cShader.h"
 #include "../sContext.h"
 #include "../VertexFormats.h"
-#include "../cGeometry.h"
+#include "../cMesh.h"
 #include "../cEffect.h"
 
 #include <Engine/Asserts/Asserts.h>
@@ -61,7 +61,7 @@ namespace
 	// Geometry Data
 	//--------------
 
-	eae6320::Graphics::cGeometry* s_geometry = new eae6320::Graphics::cGeometry();
+	eae6320::Graphics::cMesh* s_mesh = new eae6320::Graphics::cMesh();
 
 	// Shading Data
 	//-------------
@@ -181,7 +181,7 @@ void eae6320::Graphics::RenderFrame()
 	}
 	// Draw the geometry
 	{
-		s_geometry->DrawGeometry();
+		s_mesh->DrawMesh();
 	}
 
 	// Everything has been drawn to the "back buffer", which is just an image in memory.
@@ -256,7 +256,7 @@ eae6320::cResult eae6320::Graphics::Initialize( const sInitializationParameters&
 	}
 	// Initialize the geometry
 	{	
-		if ( !( result = s_geometry->Initialize() ) )
+		if ( !( result = s_mesh->Initialize() ) )
 		{
 			EAE6320_ASSERTF( false, "Can't initialize Graphics without the geometry data" );
 			return result;
@@ -271,60 +271,10 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 	auto result = Results::Success;
 
 	{
-		s_geometry->CleanUp();
-		//if ( s_vertexArrayId != 0 )
-		//{
-		//	// Make sure that the vertex array isn't bound
-		//	{
-		//		// Unbind the vertex array
-		//		glBindVertexArray( 0 );
-		//		const auto errorCode = glGetError();
-		//		if ( errorCode != GL_NO_ERROR )
-		//		{
-		//			if ( result )
-		//			{
-		//				result = Results::Failure;
-		//			}
-		//			EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-		//			Logging::OutputError( "OpenGL failed to unbind all vertex arrays before cleaning up geometry: %s",
-		//				reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-		//		}
-		//	}
-		//	constexpr GLsizei arrayCount = 1;
-		//	glDeleteVertexArrays( arrayCount, &s_vertexArrayId );
-		//	const auto errorCode = glGetError();
-		//	if ( errorCode != GL_NO_ERROR )
-		//	{
-		//		if ( result )
-		//		{
-		//			result = Results::Failure;
-		//		}
-		//		EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-		//		Logging::OutputError( "OpenGL failed to delete the vertex array: %s",
-		//			reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-		//	}
-		//	s_vertexArrayId = 0;
-		//}
-		//if ( s_vertexBufferId != 0 )
-		//{
-		//	constexpr GLsizei bufferCount = 1;
-		//	glDeleteBuffers( bufferCount, &s_vertexBufferId );
-		//	const auto errorCode = glGetError();
-		//	if ( errorCode != GL_NO_ERROR )
-		//	{
-		//		if ( result )
-		//		{
-		//			result = Results::Failure;
-		//		}
-		//		EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-		//		Logging::OutputError( "OpenGL failed to delete the vertex buffer: %s",
-		//			reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-		//	}
-		//	s_vertexBufferId = 0;
-		//}
+		result = s_mesh->CleanUp();
 	}
 	{
-		s_effect->CleanUp();
+		result = s_effect->CleanUp();
 	}
 
 	{

@@ -1,11 +1,11 @@
-#include "cGeometry.h"
+#include "cMesh.h"
 #include "sContext.h"
 #include "VertexFormats.h"
 
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/Logging/Logging.h>
 
-eae6320::cResult eae6320::Graphics::cGeometry::Initialize(){
+eae6320::cResult eae6320::Graphics::cMesh::Initialize(){
 	auto result = eae6320::Results::Success;
 
 	auto* const direct3dDevice = eae6320::Graphics::sContext::g_context.direct3dDevice;
@@ -87,7 +87,7 @@ eae6320::cResult eae6320::Graphics::cGeometry::Initialize(){
 	return result;
 }
 
-eae6320::cResult eae6320::Graphics::cGeometry::CleanUp() {
+eae6320::cResult eae6320::Graphics::cMesh::CleanUp() {
 	auto result = Results::Success;
 
 	if (s_vertexBuffer)
@@ -103,7 +103,7 @@ eae6320::cResult eae6320::Graphics::cGeometry::CleanUp() {
 	return result;
 }
 
-void eae6320::Graphics::cGeometry::DrawGeometry() {
+void eae6320::Graphics::cMesh::DrawMesh() {
 
 	auto* const direct3dImmediateContext = sContext::g_context.direct3dImmediateContext;
 	EAE6320_ASSERT(direct3dImmediateContext);

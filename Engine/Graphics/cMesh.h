@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef EAE6320_GRAPHICS_CGEOMETRY_H
-#define EAE6320_GRAPHICS_CGEOMETRY_H
+#ifndef EAE6320_GRAPHICS_CMESH_H
+#define EAE6320_GRAPHICS_CMESH_H
 
 #include "Configuration.h"
 
@@ -24,13 +24,13 @@ struct ID3D11Buffer;
 
 namespace eae6320 {
 	namespace Graphics {
-		class cGeometry {
+		class cMesh {
 
 		public:
-			void DrawGeometry();
+			void DrawMesh();
 			cResult Initialize();
 			cResult CleanUp();
-			~cGeometry();
+			~cMesh();
 
 		private:	
 
@@ -48,4 +48,4 @@ namespace eae6320 {
 	}
 }
 
-#endif	// EAE6320_GRAPHICS_CGEOMETRY_H
+#endif	// EAE6320_GRAPHICS_CMESH_H
