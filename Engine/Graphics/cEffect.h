@@ -33,8 +33,8 @@ namespace eae6320 {
 			eae6320::Graphics::cRenderState m_renderState;
 
 		private:
-			cResult Initialize_Extra();
-			cResult CleanUp_Extra();
+			cResult Initialize_platformSpecificExtra();
+			cResult CleanUp_platformSpecificExtra();
 			void BindEffect_PlatformSpecific();
 		};
 	}

@@ -11,7 +11,7 @@ void eae6320::Graphics::cEffect::BindEffect_PlatformSpecific() {
 	}
 }
 
-eae6320::cResult eae6320::Graphics::cEffect::CleanUp_Extra() {
+eae6320::cResult eae6320::Graphics::cEffect::CleanUp_platformSpecificExtra() {
 	auto result = eae6320::Results::Success;
 	if (m_programId != 0)
 	{
@@ -32,7 +32,7 @@ eae6320::cResult eae6320::Graphics::cEffect::CleanUp_Extra() {
 	return result;
 }
 
-eae6320::cResult eae6320::Graphics::cEffect::Initialize_Extra() {
+eae6320::cResult eae6320::Graphics::cEffect::Initialize_platformSpecificExtra() {
 	auto result = eae6320::Results::Success;
 	// Create a program
 	eae6320::cScopeGuard scopeGuard_program([&result, this]

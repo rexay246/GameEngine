@@ -43,7 +43,7 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize() {
 			return result;
 		}
 	}
-	result = Initialize_Extra();
+	result = Initialize_platformSpecificExtra();
 
 	return result;
 }
@@ -51,7 +51,7 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize() {
 eae6320::cResult eae6320::Graphics::cEffect::CleanUp() {
 	auto result = eae6320::Results::Success;
 
-	result = CleanUp_Extra();
+	result = CleanUp_platformSpecificExtra();
 	if (m_vertexShader)
 	{
 		m_vertexShader->DecrementReferenceCount();
