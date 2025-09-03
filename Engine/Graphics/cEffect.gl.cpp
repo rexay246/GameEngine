@@ -5,17 +5,17 @@
 
 void eae6320::Graphics::cEffect::BindEffect_PlatformSpecific() {
 	{
-		EAE6320_ASSERT(s_programId != 0);
-		glUseProgram(s_programId);
+		EAE6320_ASSERT(m_programId != 0);
+		glUseProgram(m_programId);
 		EAE6320_ASSERT(glGetError() == GL_NO_ERROR);
 	}
 }
 
 eae6320::cResult eae6320::Graphics::cEffect::CleanUp_Extra() {
 	auto result = eae6320::Results::Success;
-	if (s_programId != 0)
+	if (m_programId != 0)
 	{
-		glDeleteProgram(s_programId);
+		glDeleteProgram(m_programId);
 		const auto errorCode = glGetError();
 		if (errorCode != GL_NO_ERROR)
 		{
@@ -27,7 +27,7 @@ eae6320::cResult eae6320::Graphics::cEffect::CleanUp_Extra() {
 			eae6320::Logging::OutputError("OpenGL failed to delete the program: %s",
 				reinterpret_cast<const char*>(gluErrorString(errorCode)));
 		}
-		s_programId = 0;
+		m_programId = 0;
 	}
 	return result;
 }
@@ -39,9 +39,9 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize_Extra() {
 		{
 			if (!result)
 			{
-				if (s_programId != 0)
+				if (m_programId != 0)
 				{
-					glDeleteProgram(s_programId);
+					glDeleteProgram(m_programId);
 					const auto errorCode = glGetError();
 					if (errorCode != GL_NO_ERROR)
 					{
@@ -49,13 +49,13 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize_Extra() {
 						eae6320::Logging::OutputError("OpenGL failed to delete the program: %s",
 							reinterpret_cast<const char*>(gluErrorString(errorCode)));
 					}
-					s_programId = 0;
+					m_programId = 0;
 				}
 			}
 		});
 	{
-		EAE6320_ASSERT(s_programId == 0);
-		s_programId = glCreateProgram();
+		EAE6320_ASSERT(m_programId == 0);
+		m_programId = glCreateProgram();
 		const auto errorCode = glGetError();
 		if (errorCode != GL_NO_ERROR)
 		{
@@ -65,7 +65,7 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize_Extra() {
 				reinterpret_cast<const char*>(gluErrorString(errorCode)));
 			return result;
 		}
-		else if (s_programId == 0)
+		else if (m_programId == 0)
 		{
 			result = eae6320::Results::Failure;
 			EAE6320_ASSERT(false);
@@ -77,8 +77,8 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize_Extra() {
 	{
 		// Vertex
 		{
-			EAE6320_ASSERT((s_vertexShader != nullptr) && (s_vertexShader->m_shaderId != 0));
-			glAttachShader(s_programId, s_vertexShader->m_shaderId);
+			EAE6320_ASSERT((m_vertexShader != nullptr) && (m_vertexShader->m_shaderId != 0));
+			glAttachShader(m_programId, m_vertexShader->m_shaderId);
 			const auto errorCode = glGetError();
 			if (errorCode != GL_NO_ERROR)
 			{
@@ -91,8 +91,8 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize_Extra() {
 		}
 		// Fragment
 		{
-			EAE6320_ASSERT((s_fragmentShader != nullptr) && (s_fragmentShader->m_shaderId != 0));
-			glAttachShader(s_programId, s_fragmentShader->m_shaderId);
+			EAE6320_ASSERT((m_fragmentShader != nullptr) && (m_fragmentShader->m_shaderId != 0));
+			glAttachShader(m_programId, m_fragmentShader->m_shaderId);
 			const auto errorCode = glGetError();
 			if (errorCode != GL_NO_ERROR)
 			{
@@ -106,7 +106,7 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize_Extra() {
 	}
 	// Link the program
 	{
-		glLinkProgram(s_programId);
+		glLinkProgram(m_programId);
 		const auto errorCode = glGetError();
 		if (errorCode == GL_NO_ERROR)
 		{
@@ -116,7 +116,7 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize_Extra() {
 			std::string linkInfo;
 			{
 				GLint infoSize;
-				glGetProgramiv(s_programId, GL_INFO_LOG_LENGTH, &infoSize);
+				glGetProgramiv(m_programId, GL_INFO_LOG_LENGTH, &infoSize);
 				const auto errorCode = glGetError();
 				if (errorCode == GL_NO_ERROR)
 				{
@@ -130,7 +130,7 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize_Extra() {
 									delete[] info;
 								});
 							constexpr GLsizei* const dontReturnLength = nullptr;
-							glGetProgramInfoLog(s_programId, static_cast<GLsizei>(infoSize), dontReturnLength, info);
+							glGetProgramInfoLog(m_programId, static_cast<GLsizei>(infoSize), dontReturnLength, info);
 							const auto errorCode = glGetError();
 							if (errorCode == GL_NO_ERROR)
 							{
@@ -166,7 +166,7 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize_Extra() {
 			// Check to see if there were link errors
 			GLint didLinkingSucceed;
 			{
-				glGetProgramiv(s_programId, GL_LINK_STATUS, &didLinkingSucceed);
+				glGetProgramiv(m_programId, GL_LINK_STATUS, &didLinkingSucceed);
 				const auto errorCode = glGetError();
 				if (errorCode == GL_NO_ERROR)
 				{

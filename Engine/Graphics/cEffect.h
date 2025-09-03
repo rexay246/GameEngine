@@ -25,12 +25,12 @@ namespace eae6320 {
 			~cEffect();
 
 		private:
-			eae6320::Graphics::cShader* s_vertexShader = nullptr;
-			eae6320::Graphics::cShader* s_fragmentShader = nullptr;
+			eae6320::Graphics::cShader* m_vertexShader = nullptr;
+			eae6320::Graphics::cShader* m_fragmentShader = nullptr;
 #ifdef EAE6320_PLATFORM_GL
-			GLuint s_programId = 0;
+			GLuint m_programId = 0;
 #endif
-			eae6320::Graphics::cRenderState s_renderState;
+			eae6320::Graphics::cRenderState m_renderState;
 
 		private:
 			cResult Initialize_Extra();

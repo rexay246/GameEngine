@@ -35,14 +35,14 @@ namespace eae6320 {
 		private:	
 
 #ifdef EAE6320_PLATFORM_D3D
-			eae6320::Graphics::cVertexFormat* s_vertexFormat = nullptr;
+			eae6320::Graphics::cVertexFormat* m_vertexFormat = nullptr;
 			// A vertex buffer holds the data for each vertex
-			ID3D11Buffer* s_vertexBuffer = nullptr;
+			ID3D11Buffer* m_vertexBuffer = nullptr;
 #else
 			// A vertex buffer holds the data for each vertex
-			GLuint s_vertexBufferId = 0;
+			GLuint m_vertexBufferId = 0;
 			// A vertex array encapsulates the vertex data as well as the vertex input layout
-			GLuint s_vertexArrayId = 0;
+			GLuint m_vertexArrayId = 0;
 #endif
 		};
 	}

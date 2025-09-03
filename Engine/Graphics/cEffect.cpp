@@ -6,7 +6,7 @@ void eae6320::Graphics::cEffect::BindEffect() {
 	}
 	// Render state
 	{
-		s_renderState.Bind();
+		m_renderState.Bind();
 	}
 }
 
@@ -14,13 +14,13 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize() {
 	auto result = eae6320::Results::Success;
 
 	if (!(result = eae6320::Graphics::cShader::Load("data/Shaders/Vertex/standard.shader",
-		s_vertexShader, eae6320::Graphics::eShaderType::Vertex)))
+		m_vertexShader, eae6320::Graphics::eShaderType::Vertex)))
 	{
 		EAE6320_ASSERTF(false, "Can't initialize shading data without vertex shader");
 		return result;
 	}
 	if (!(result = eae6320::Graphics::cShader::Load("data/Shaders/Fragment/animatedshader.shader",
-		s_fragmentShader, eae6320::Graphics::eShaderType::Fragment)))
+		m_fragmentShader, eae6320::Graphics::eShaderType::Fragment)))
 	{
 		EAE6320_ASSERTF(false, "Can't initialize shading data without fragment shader");
 		return result;
@@ -37,7 +37,7 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize() {
 
 				return renderStateBits;
 			}();
-		if (!(result = s_renderState.Initialize(renderStateBits)))
+		if (!(result = m_renderState.Initialize(renderStateBits)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize shading data without render state");
 			return result;
@@ -52,15 +52,15 @@ eae6320::cResult eae6320::Graphics::cEffect::CleanUp() {
 	auto result = eae6320::Results::Success;
 
 	result = CleanUp_Extra();
-	if (s_vertexShader)
+	if (m_vertexShader)
 	{
-		s_vertexShader->DecrementReferenceCount();
-		s_vertexShader = nullptr;
+		m_vertexShader->DecrementReferenceCount();
+		m_vertexShader = nullptr;
 	}
-	if (s_fragmentShader)
+	if (m_fragmentShader)
 	{
-		s_fragmentShader->DecrementReferenceCount();
-		s_fragmentShader = nullptr;
+		m_fragmentShader->DecrementReferenceCount();
+		m_fragmentShader = nullptr;
 	}
 	return result;
 }

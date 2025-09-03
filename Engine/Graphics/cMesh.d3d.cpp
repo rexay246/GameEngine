@@ -13,7 +13,7 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(){
 
 	// Vertex Format
 	{
-		if (!(result = eae6320::Graphics::cVertexFormat::Load(eae6320::Graphics::eVertexType::Mesh, s_vertexFormat,
+		if (!(result = eae6320::Graphics::cVertexFormat::Load(eae6320::Graphics::eVertexType::Mesh, m_vertexFormat,
 			"data/Shaders/Vertex/vertexInputLayout_mesh.shader")))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize geometry without vertex format");
@@ -74,7 +74,7 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(){
 		D3D11_SUBRESOURCE_DATA initialData{};
 		initialData.pSysMem = vertexData;
 
-		const auto result_create = direct3dDevice->CreateBuffer(&bufferDescription, &initialData, &s_vertexBuffer);
+		const auto result_create = direct3dDevice->CreateBuffer(&bufferDescription, &initialData, &m_vertexBuffer);
 		if (FAILED(result_create))
 		{
 			result = eae6320::Results::Failure;
@@ -90,15 +90,15 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(){
 eae6320::cResult eae6320::Graphics::cMesh::CleanUp() {
 	auto result = Results::Success;
 
-	if (s_vertexBuffer)
+	if (m_vertexBuffer)
 	{
-		s_vertexBuffer->Release();
-		s_vertexBuffer = nullptr;
+		m_vertexBuffer->Release();
+		m_vertexBuffer = nullptr;
 	}
-	if (s_vertexFormat)
+	if (m_vertexFormat)
 	{
-		s_vertexFormat->DecrementReferenceCount();
-		s_vertexFormat = nullptr;
+		m_vertexFormat->DecrementReferenceCount();
+		m_vertexFormat = nullptr;
 	}
 	return result;
 }
@@ -110,21 +110,21 @@ void eae6320::Graphics::cMesh::DrawMesh() {
 
 	// Bind a specific vertex buffer to the device as a data source
 	{
-		EAE6320_ASSERT(s_vertexBuffer != nullptr);
+		EAE6320_ASSERT(m_vertexBuffer != nullptr);
 		constexpr unsigned int startingSlot = 0;
 		constexpr unsigned int vertexBufferCount = 1;
 		// The "stride" defines how large a single vertex is in the stream of data
 		constexpr unsigned int bufferStride = sizeof(VertexFormats::sVertex_mesh);
 		// It's possible to start streaming data in the middle of a vertex buffer
 		constexpr unsigned int bufferOffset = 0;
-		direct3dImmediateContext->IASetVertexBuffers(startingSlot, vertexBufferCount, &s_vertexBuffer, &bufferStride, &bufferOffset);
+		direct3dImmediateContext->IASetVertexBuffers(startingSlot, vertexBufferCount, &m_vertexBuffer, &bufferStride, &bufferOffset);
 	}
 	// Specify what kind of data the vertex buffer holds
 	{
 		// Bind the vertex format (which defines how to interpret a single vertex)
 		{
-			EAE6320_ASSERT(s_vertexFormat != nullptr);
-			s_vertexFormat->Bind();
+			EAE6320_ASSERT(m_vertexFormat != nullptr);
+			m_vertexFormat->Bind();
 		}
 		// Set the topology (which defines how to interpret multiple vertices as a single "primitive";
 		// the vertex buffer was defined as a triangle list
