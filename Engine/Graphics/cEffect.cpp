@@ -10,25 +10,26 @@ void eae6320::Graphics::cEffect::BindEffect() {
 	}
 }
 
-eae6320::cResult eae6320::Graphics::cEffect::Initialize() {
+eae6320::cResult eae6320::Graphics::cEffect::Initialize(std::string vertexShader, std::string fragmentShader, 
+	uint8_t u_renderStateBits) {
 	auto result = eae6320::Results::Success;
 
-	if (!(result = eae6320::Graphics::cShader::Load("data/Shaders/Vertex/standard.shader",
+	if (!(result = eae6320::Graphics::cShader::Load(vertexShader,
 		m_vertexShader, eae6320::Graphics::eShaderType::Vertex)))
 	{
 		EAE6320_ASSERTF(false, "Can't initialize shading data without vertex shader");
 		return result;
 	}
-	if (!(result = eae6320::Graphics::cShader::Load("data/Shaders/Fragment/animatedshader.shader",
+	if (!(result = eae6320::Graphics::cShader::Load(fragmentShader,
 		m_fragmentShader, eae6320::Graphics::eShaderType::Fragment)))
 	{
 		EAE6320_ASSERTF(false, "Can't initialize shading data without fragment shader");
 		return result;
 	}
 	{
-		constexpr auto renderStateBits = []
+		auto renderStateBits = [u_renderStateBits]
 			{
-				uint8_t renderStateBits = 0;
+				uint8_t renderStateBits = u_renderStateBits;
 
 				eae6320::Graphics::RenderStates::DisableAlphaTransparency(renderStateBits);
 				eae6320::Graphics::RenderStates::DisableDepthTesting(renderStateBits);

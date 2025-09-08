@@ -4,6 +4,7 @@
 #define EAE6320_GRAPHICS_CMESH_H
 
 #include "Configuration.h"
+#include "VertexFormats.h"
 
 #ifdef EAE6320_PLATFORM_D3D
 #include "Direct3D/Includes.h"
@@ -28,7 +29,11 @@ namespace eae6320 {
 
 		public:
 			void DrawMesh();
-			cResult Initialize();
+			cResult Initialize(
+				eae6320::Graphics::VertexFormats::sVertex_mesh* vertexData,
+				int vertexCount,
+				uint16_t* indexData, 
+				int indexCount);
 			cResult CleanUp();
 			~cMesh();
 

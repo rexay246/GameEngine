@@ -63,11 +63,13 @@ namespace
 	//--------------
 
 	eae6320::Graphics::cMesh* s_mesh = new eae6320::Graphics::cMesh();
+	eae6320::Graphics::cMesh* s_mesh2 = new eae6320::Graphics::cMesh();
 
 	// Shading Data
 	//-------------
 
 	eae6320::Graphics::cEffect* s_effect = new eae6320::Graphics::cEffect();
+	eae6320::Graphics::cEffect* s_effect2 = new eae6320::Graphics::cEffect();
 }
 
 // Helper Declarations
@@ -155,6 +157,8 @@ void eae6320::Graphics::RenderFrame()
 	{
 		s_mesh->DrawMesh();
 	}
+	s_effect2->BindEffect();
+	s_mesh2->DrawMesh();
 
 	s_view->SwapViewBuffers();
 
@@ -220,18 +224,101 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 	}
 	// Initialize the shading data
 	{
-		if (!(result = s_effect->Initialize()))
+		// Effect 1
 		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
-			return result;
+			if (!(result = s_effect->Initialize(
+				"data/Shaders/Vertex/standard.shader",
+				"data/Shaders/Fragment/animatedshader.shader",
+				0)))
+			{
+				EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
+				return result;
+			}
+		}
+
+		// Effect 2
+		{
+			if (!(result = s_effect2->Initialize(
+				"data/Shaders/Vertex/standard.shader",
+				"data/Shaders/Fragment/standard.shader",
+				0)))
+			{
+				EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
+				return result;
+			}
 		}
 	}
 	// Initialize the geometry
 	{
-		if (!(result = s_mesh->Initialize()))
+		// Mesh 1
 		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
-			return result;
+			constexpr unsigned int triangleCount = 2;
+			constexpr unsigned int indexCountPerTriangle = 3;
+			constexpr auto indexCount = triangleCount * indexCountPerTriangle;
+			constexpr unsigned int vertexCount = 4;
+			eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[vertexCount];
+			{
+				vertexData[0].x = 0.0f;
+				vertexData[0].y = 0.0f;
+				vertexData[0].z = 0.0f;
+
+				vertexData[1].x = 1.0f;
+				vertexData[1].y = 1.0f;
+				vertexData[1].z = 0.0f;
+
+				vertexData[2].x = 1.0f;
+				vertexData[2].y = 0.0f;
+				vertexData[2].z = 0.0f;
+
+				vertexData[3].x = 0.0f;
+				vertexData[3].y = 1.0f;
+				vertexData[3].z = 0.0f;
+			}
+			uint16_t indexData[indexCount]; {
+				indexData[0] = 0;
+				indexData[1] = 1;
+				indexData[2] = 2;
+				indexData[3] = 1;
+				indexData[4] = 0;
+				indexData[5] = 3;
+			}
+			if (!(result = s_mesh->Initialize(vertexData, vertexCount, indexData, indexCount)))
+			{
+				EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
+				return result;
+			}
+		}
+
+		// Mesh 2
+		{
+			constexpr unsigned int triangleCount = 1;
+			constexpr unsigned int indexCountPerTriangle = 3;
+			constexpr auto indexCount = triangleCount * indexCountPerTriangle;
+			constexpr unsigned int vertexCount = 3;
+			eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[vertexCount];
+			{
+				vertexData[0].x = -1.0f;
+				vertexData[0].y = -1.0f;
+				vertexData[0].z = 0.0f;
+
+				vertexData[1].x = -1.0f;
+				vertexData[1].y = 0.0f;
+				vertexData[1].z = 0.0f;
+
+				vertexData[2].x = 0.0f;
+				vertexData[2].y = 0.0f;
+				vertexData[2].z = 0.0f;
+			}
+			uint16_t indexData[indexCount]; {
+				indexData[0] = 0;
+				indexData[1] = 1;
+				indexData[2] = 2;
+			}
+			if (!(result = s_mesh2->Initialize(vertexData, vertexCount, indexData, indexCount)))
+			{
+				EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
+				return result;
+			}
 		}
 	}
 
@@ -248,8 +335,14 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 	result = s_mesh->CleanUp();
 	s_mesh = nullptr;
 
+	result = s_mesh2->CleanUp();
+	s_mesh2 = nullptr;
+
 	result = s_effect->CleanUp();
 	s_effect = nullptr;
+
+	result = s_effect2->CleanUp();
+	s_effect2 = nullptr;
 
 	{
 		const auto result_constantBuffer_frame = s_constantBuffer_frame.CleanUp();

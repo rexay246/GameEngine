@@ -19,7 +19,9 @@ namespace eae6320 {
 		class cEffect {
 		public:
 			void BindEffect();
-			cResult Initialize();
+			cResult Initialize(std::string vertexShader, 
+				std::string fragmentShader, 
+				uint8_t u_renderStateBits);
 			cResult CleanUp();
 
 			~cEffect();
