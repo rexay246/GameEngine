@@ -20,7 +20,7 @@ namespace eae6320 {
 	namespace Graphics {
 		class cView {
 		public:
-			void ClearViewBuffers();
+			void ClearViewBuffers(float cleanColor[3]);
 			void SwapViewBuffers();
 			cResult Initialize(const sInitializationParameters& i_initializationParameters);
 			cResult CleanUp();

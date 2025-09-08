@@ -134,7 +134,8 @@ void eae6320::Graphics::RenderFrame()
 		}
 	}
 
-	s_view->ClearViewBuffers();
+	float backBufferColor[3] = {0.0f, 0.0f, 0.0f};
+	s_view->ClearViewBuffers(backBufferColor);
 
 	EAE6320_ASSERT(s_dataBeingRenderedByRenderThread);
 	auto* const dataRequiredToRenderFrame = s_dataBeingRenderedByRenderThread;

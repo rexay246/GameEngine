@@ -38,11 +38,13 @@ namespace eae6320 {
 			eae6320::Graphics::cVertexFormat* m_vertexFormat = nullptr;
 			// A vertex buffer holds the data for each vertex
 			ID3D11Buffer* m_vertexBuffer = nullptr;
+			ID3D11Buffer* m_indexBuffer = nullptr;
 #else
 			// A vertex buffer holds the data for each vertex
 			GLuint m_vertexBufferId = 0;
 			// A vertex array encapsulates the vertex data as well as the vertex input layout
 			GLuint m_vertexArrayId = 0;
+			GLuint m_indexBufferId = 0;
 #endif
 		};
 	}
