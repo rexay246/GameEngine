@@ -5,11 +5,8 @@
 
 void ConvertLeftToRightWindingOrder(uint16_t* indexData, int indexCount);
 
-eae6320::cResult eae6320::Graphics::cMesh::Initialize(
-	eae6320::Graphics::VertexFormats::sVertex_mesh* vertexData,
-	int vertexCount,
-	uint16_t* indexData,
-	int indexCount) {
+eae6320::cResult eae6320::Graphics::cMesh::Initialize(eae6320::Graphics::VertexFormats::sVertex_mesh* vertexData,
+	int vertexCount, uint16_t* indexData, int indexCount) {
 	auto result = eae6320::Results::Success;
 
 	// Create a vertex array object and make it active
@@ -112,6 +109,7 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(
 	}
 	// Assign the data to the buffer
 	{
+		indexCountToRender = indexCount;
 		ConvertLeftToRightWindingOrder(indexData, indexCount);
 		int bufferSize = sizeof(indexData[0]) * indexCount;
 		EAE6320_ASSERT(bufferSize <= std::numeric_limits<GLsizeiptr>::max());
@@ -167,7 +165,6 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(
 			}
 		}
 	}
-
 	return result;
 }
 
@@ -267,9 +264,6 @@ void eae6320::Graphics::cMesh::DrawMesh() {
 		// a triangle list is defined
 		// (meaning that every primitive is a triangle and will be defined by three vertices)
 		constexpr GLenum mode = GL_TRIANGLES;
-		constexpr unsigned int triangleCount = 2;
-		constexpr unsigned int indexCountPerTriangle = 3;
-		constexpr auto indexCountToRender = triangleCount * indexCountPerTriangle;
 		// It's possible to start rendering primitives in the middle of the stream
 		const GLvoid* const offset = 0;
 		glDrawElements(mode, static_cast<GLsizei>(indexCountToRender), GL_UNSIGNED_SHORT, offset);

@@ -3,10 +3,10 @@
 
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/Logging/Logging.h>
+#include <utility>
 
 eae6320::cResult eae6320::Graphics::cMesh::Initialize(eae6320::Graphics::VertexFormats::sVertex_mesh* vertexData, 
-	int vertexCount,
-	uint16_t* indexData, int indexCount){
+	int vertexCount, uint16_t* indexData, int indexCount){
 	auto result = eae6320::Results::Success;
 
 	auto* const direct3dDevice = eae6320::Graphics::sContext::g_context.direct3dDevice;
@@ -53,6 +53,7 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(eae6320::Graphics::VertexF
 	}
 	// Index Buffer
 	{
+		indexCountToRender = indexCount;
 		auto bufferSize = sizeof(indexData[0]) * indexCount;
 		auto bufferDescription = [bufferSize]
 			{
@@ -79,7 +80,6 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(eae6320::Graphics::VertexF
 			return result;
 		}
 	}
-
 	return result;
 }
 
@@ -142,10 +142,6 @@ void eae6320::Graphics::cMesh::DrawMesh() {
 	// Render triangles from the currently-bound vertex buffer
 	{
 		// It's possible to start rendering primitives in the middle of the stream
-		constexpr unsigned int triangleCount = 2;
-		constexpr unsigned int indexCountPerTriangle = 3;
-		constexpr auto indexCountToRender = triangleCount * indexCountPerTriangle;
-
 		constexpr unsigned int indexOfFirstIndexToUse = 0;
 		constexpr unsigned int offsetToAddToEachIndex = 0;
 		direct3dImmediateContext->DrawIndexed(static_cast<unsigned int>(indexCountToRender), indexOfFirstIndexToUse, offsetToAddToEachIndex);

@@ -6,7 +6,7 @@ void eae6320::Graphics::cEffect::BindEffect() {
 	}
 	// Render state
 	{
-		m_renderState.Bind();
+		m_renderState->Bind();
 	}
 }
 
@@ -38,14 +38,13 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize(std::string vertexShader
 
 				return renderStateBits;
 			}();
-		if (!(result = m_renderState.Initialize(renderStateBits)))
+		if (!(result = m_renderState->Initialize(renderStateBits)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize shading data without render state");
 			return result;
 		}
 	}
 	result = Initialize_platformSpecificExtra();
-
 	return result;
 }
 
@@ -63,6 +62,7 @@ eae6320::cResult eae6320::Graphics::cEffect::CleanUp() {
 		m_fragmentShader->DecrementReferenceCount();
 		m_fragmentShader = nullptr;
 	}
+	m_renderState = nullptr;
 	return result;
 }
 

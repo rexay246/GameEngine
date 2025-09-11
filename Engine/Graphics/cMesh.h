@@ -51,6 +51,7 @@ namespace eae6320 {
 			GLuint m_vertexArrayId = 0;
 			GLuint m_indexBufferId = 0;
 #endif
+			unsigned int indexCountToRender = 0;
 		};
 	}
 }

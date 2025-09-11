@@ -1,14 +1,14 @@
 #include "cView.h"
 #include "sContext.h"
 
-void eae6320::Graphics::cView::ClearViewBuffers(float cleanColor[3]) {
+void eae6320::Graphics::cView::ClearViewBuffers(float cleanColor[4]) {
 	// Every frame an entirely new image will be created.
 	// Before drawing anything, then, the previous image will be erased
 	// by "clearing" the image buffer (filling it with a solid color)
 	{
 		// Black is usually used
 		{
-			glClearColor(cleanColor[0], cleanColor[1], cleanColor[2], 1);
+			glClearColor(cleanColor[0], cleanColor[1], cleanColor[2], cleanColor[3]);
 			EAE6320_ASSERT(glGetError() == GL_NO_ERROR);
 		}
 		{
