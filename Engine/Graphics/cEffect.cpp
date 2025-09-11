@@ -62,7 +62,10 @@ eae6320::cResult eae6320::Graphics::cEffect::CleanUp() {
 		m_fragmentShader->DecrementReferenceCount();
 		m_fragmentShader = nullptr;
 	}
-	m_renderState = nullptr;
+	if (m_renderState) {
+		delete(m_renderState);
+		m_renderState = nullptr;		
+	}
 	return result;
 }
 
