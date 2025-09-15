@@ -10,6 +10,7 @@
 
 #include <Engine/Application/iApplication.h>
 #include <Engine/Results/Results.h>
+#include <Engine/Graphics/Graphics.h>
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include "Resource Files/Resource.h"
@@ -74,6 +75,9 @@ namespace eae6320
 		void UpdateSimulationBasedOnInput() final;
 		void SubmitDataToBeRendered( const float i_elapsedSecondCount_systemTime, 
 			const float i_elapsedSecondCount_sinceLastSimulationUpdate );
+
+		Graphics::cMesh* meshTest[1];
+		Graphics::cEffect* effectTest[1];
 
 		// Initialize / Clean Up
 		//----------------------

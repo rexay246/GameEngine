@@ -9,6 +9,8 @@
 //=========
 
 #include "Configuration.h"
+#include "cMesh.h"
+#include "cEffect.h"
 
 #include <cstdint>
 #include <Engine/Results/Results.h>
@@ -36,6 +38,8 @@ namespace eae6320
 		void SubmitElapsedTime( const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_simulationTime );
 
 		void SetBackgroundColor(float color[4]);
+
+		void CreateGameObject(eae6320::Graphics::cMesh* meshes[100], eae6320::Graphics::cEffect* effect[100], int numPairs);
 
 		// When the application is ready to submit data for a new frame
 		// it should call this before submitting anything

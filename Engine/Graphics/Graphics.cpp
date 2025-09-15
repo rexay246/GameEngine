@@ -9,8 +9,6 @@
 #include "cVertexFormat.h"
 #include "sContext.h"
 #include "VertexFormats.h"
-#include "cMesh.h"
-#include "cEffect.h"
 #include "cView.h"
 
 #include <Engine/Asserts/Asserts.h>
@@ -41,7 +39,9 @@ namespace
 	{
 		eae6320::Graphics::ConstantBufferFormats::sFrame constantData_frame;
 		float background_color[4];
-
+		eae6320::Graphics::cMesh* meshes[100];
+		eae6320::Graphics::cEffect* effects[100];
+		int numOfPairs;
 	};
 	// In our class there will be two copies of the data required to render a frame:
 	//	* One of them will be in the process of being populated by the data currently being submitted by the application loop thread
@@ -64,14 +64,14 @@ namespace
 	// Geometry Data
 	//--------------
 
-	eae6320::Graphics::cMesh* s_mesh = nullptr;
-	eae6320::Graphics::cMesh* s_mesh2 = nullptr;
+	//eae6320::Graphics::cMesh* s_mesh = nullptr;
+	//eae6320::Graphics::cMesh* s_mesh2 = nullptr;
 
 	// Shading Data
 	//-------------
 
-	eae6320::Graphics::cEffect* s_effect = nullptr;
-	eae6320::Graphics::cEffect* s_effect2 = nullptr;
+	//eae6320::Graphics::cEffect* s_effect = nullptr;
+	//eae6320::Graphics::cEffect* s_effect2 = nullptr;
 }
 
 // Helper Declarations
@@ -102,6 +102,20 @@ void eae6320::Graphics::SetBackgroundColor(float color[4]) {
 	for (int i = 0; i < 4; i++) {
 		background_color[i] = color[i];
 	}
+}
+
+void eae6320::Graphics::CreateGameObject(eae6320::Graphics::cMesh* meshes[100], eae6320::Graphics::cEffect* effect[100], int numPairs) {
+	EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread);
+	auto& meshes_render = s_dataBeingSubmittedByApplicationThread->meshes;
+	auto& effects_render = s_dataBeingSubmittedByApplicationThread->effects;
+	auto& num = s_dataBeingSubmittedByApplicationThread->numOfPairs;
+	for (int i = 0; i < numPairs; i++) {
+		meshes_render[i] = meshes[i];
+		meshes_render[i]->IncrementReferenceCount();
+		effects_render[i] = effect[i];
+		effects_render[i]->IncrementReferenceCount();
+	}
+	num = numPairs;
 }
 
 eae6320::cResult eae6320::Graphics::WaitUntilDataForANewFrameCanBeSubmitted(const unsigned int i_timeToWait_inMilliseconds)
@@ -162,22 +176,33 @@ void eae6320::Graphics::RenderFrame()
 		s_view->ClearViewBuffers(background_color);
 	}
 
-	// Bind the first shading data
+	//Bind shading data and draw mesh
 	{
-		s_effect->BindEffect();
+		auto& meshes_render = dataRequiredToRenderFrame->meshes;
+		auto& effects_render = dataRequiredToRenderFrame->effects;
+		auto& num = dataRequiredToRenderFrame->numOfPairs;
+		for (int i = 0; i < num; i++) {
+			effects_render[i]->BindEffect();
+			meshes_render[i]->DrawMesh();
+		}
 	}
-	// Draw the first geometry
-	{
-		s_mesh->DrawMesh();
-	}
-	// Bind the second shading data
-	{
-		s_effect2->BindEffect();
-	}
-	// Draw the second geometry
-	{
-		s_mesh2->DrawMesh();
-	}
+
+	//// Bind the first shading data
+	//{
+	//	s_effect->BindEffect();
+	//}
+	//// Draw the first geometry
+	//{
+	//	s_mesh->DrawMesh();
+	//}
+	//// Bind the second shading data
+	//{
+	//	s_effect2->BindEffect();
+	//}
+	//// Draw the second geometry
+	//{
+	//	s_mesh2->DrawMesh();
+	//}
 
 	s_view->SwapViewBuffers();
 
@@ -186,7 +211,16 @@ void eae6320::Graphics::RenderFrame()
 	// so that the struct can be re-used (i.e. so that data for a new frame can be submitted to it)
 	{
 		// (At this point in the class there isn't anything that needs to be cleaned up)
-		//dataRequiredToRenderFrame	// TODO
+		auto& meshes_render = dataRequiredToRenderFrame->meshes;
+		auto& effects_render = dataRequiredToRenderFrame->effects;
+		auto& num = dataRequiredToRenderFrame->numOfPairs;
+		for (int i = 0; i < num; i++) {
+			effects_render[i]->DecrementReferenceCount();
+			effects_render[i] = nullptr;
+			meshes_render[i]->DecrementReferenceCount();
+			meshes_render[i] = nullptr;
+		}
+		num = 0;
 	}
 }
 
@@ -241,81 +275,81 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 			return result;
 		}
 	}
-	// Initialize the shading data
-	{
-		// Effect 1
-		{
-			if (!(result = s_effect->CreateEffect(s_effect,
-				"data/Shaders/Vertex/standard.shader",
-				"data/Shaders/Fragment/animatedshader.shader")))
-			{
-				EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
-				return result;
-			}
-		}
+	//// Initialize the shading data
+	//{
+	//	// Effect 1
+	//	{
+	//		if (!(result = s_effect->CreateEffect(s_effect,
+	//			"data/Shaders/Vertex/standard.shader",
+	//			"data/Shaders/Fragment/animatedshader.shader")))
+	//		{
+	//			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
+	//			return result;
+	//		}
+	//	}
 
-		// Effect 2
-		{
-			if (!(result = s_effect2->CreateEffect(s_effect2,
-				"data/Shaders/Vertex/standard.shader",
-				"data/Shaders/Fragment/standard.shader")))
-			{
-				EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
-				return result;
-			}
-		}
-	}
-	// Initialize the geometry
-	{
-		// Mesh 1
-		{
-			eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[] =
-			{
-				{ 0.0f, 0.0f, 0.0f },
-				{ 1.0f, 1.0f, 0.0f },
-				{ 1.0f, 0.0f, 0.0f },
-				{ 0.0f, 1.0f, 0.0f }
-			};
-			uint16_t indexData[] =
-			{
-				0,
-				1,
-				2,
-				1,
-				0,
-				3
-			};
-			int vertexCount = std::size(vertexData);
-			int indexCount = std::size(indexData);
-			if (!(result = s_mesh->CreateMesh(s_mesh, vertexData, vertexCount, indexData, indexCount)))
-			{
-				EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
-				return result;
-			}
-		}
+	//	// Effect 2
+	//	{
+	//		if (!(result = s_effect2->CreateEffect(s_effect2,
+	//			"data/Shaders/Vertex/standard.shader",
+	//			"data/Shaders/Fragment/standard.shader")))
+	//		{
+	//			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
+	//			return result;
+	//		}
+	//	}
+	//}
+	//// Initialize the geometry
+	//{
+	//	// Mesh 1
+	//	{
+	//		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[] =
+	//		{
+	//			{ 0.0f, 0.0f, 0.0f },
+	//			{ 1.0f, 1.0f, 0.0f },
+	//			{ 1.0f, 0.0f, 0.0f },
+	//			{ 0.0f, 1.0f, 0.0f }
+	//		};
+	//		uint16_t indexData[] =
+	//		{
+	//			0,
+	//			1,
+	//			2,
+	//			1,
+	//			0,
+	//			3
+	//		};
+	//		int vertexCount = std::size(vertexData);
+	//		int indexCount = std::size(indexData);
+	//		if (!(result = s_mesh->CreateMesh(s_mesh, vertexData, vertexCount, indexData, indexCount)))
+	//		{
+	//			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
+	//			return result;
+	//		}
+	//	}
 
-		// Mesh 2
-		{
-			eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[] =
-			{
-				{ -1.0f, -1.0f, 0.0f },
-				{ -1.0f, 0.0f, 0.0f },
-				{ 0.0f, 0.0f, 0.0f }
-			};
-			uint16_t indexData[] = {
-				0,
-				1,
-				2,
-			};
-			int vertexCount = std::size(vertexData);
-			int indexCount = std::size(indexData);
-			if (!(result = s_mesh2->CreateMesh(s_mesh2, vertexData, vertexCount, indexData, indexCount)))
-			{
-				EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
-				return result;
-			}
-		}
-	}
+	//	// Mesh 2
+	//	{
+	//		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[] =
+	//		{
+	//			{ -1.0f, -1.0f, 0.0f },
+	//			{ -1.0f, 0.0f, 0.0f },
+	//			{ 0.0f, 0.0f, 0.0f }
+	//		};
+	//		uint16_t indexData[] = {
+	//			0,
+	//			1,
+	//			2,
+	//		};
+	//		int vertexCount = std::size(vertexData);
+	//		int indexCount = std::size(indexData);
+	//		if (!(result = s_mesh2->CreateMesh(s_mesh2, vertexData, vertexCount, indexData, indexCount)))
+	//		{
+	//			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
+	//			return result;
+	//		}
+	//	}
+	//}
 
 	return result;
 }
@@ -327,17 +361,45 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 	result = s_view->CleanUp();
 	s_view = nullptr;
 
-	s_mesh->DecrementReferenceCount();
-	s_mesh = nullptr;
+	//s_mesh->DecrementReferenceCount();
+	//s_mesh = nullptr;
 
-	s_mesh2->DecrementReferenceCount();
-	s_mesh2 = nullptr;
+	//s_mesh2->DecrementReferenceCount();
+	//s_mesh2 = nullptr;
 
-	s_effect->DecrementReferenceCount();
-	s_effect = nullptr;
+	//s_effect->DecrementReferenceCount();
+	//s_effect = nullptr;
 
-	s_effect2->DecrementReferenceCount();
-	s_effect2 = nullptr;
+	//s_effect2->DecrementReferenceCount();
+	//s_effect2 = nullptr;
+
+	{
+		// (At this point in the class there isn't anything that needs to be cleaned up)
+		auto& meshes_render = s_dataBeingSubmittedByApplicationThread->meshes;
+		auto& effects_render = s_dataBeingSubmittedByApplicationThread->effects;
+		auto& num = s_dataBeingSubmittedByApplicationThread->numOfPairs;
+		for (int i = 0; i < num; i++) {
+			effects_render[i]->DecrementReferenceCount();
+			effects_render[i] = nullptr;
+			meshes_render[i]->DecrementReferenceCount();
+			meshes_render[i] = nullptr;
+		}
+		num = 0;
+	}
+
+	{
+		// (At this point in the class there isn't anything that needs to be cleaned up)
+		auto& meshes_render = s_dataBeingRenderedByRenderThread->meshes;
+		auto& effects_render = s_dataBeingRenderedByRenderThread->effects;
+		auto& num = s_dataBeingRenderedByRenderThread->numOfPairs;
+		for (int i = 0; i < num; i++) {
+			effects_render[i]->DecrementReferenceCount();
+			effects_render[i] = nullptr;
+			meshes_render[i]->DecrementReferenceCount();
+			meshes_render[i] = nullptr;
+		}
+		num = 0;
+	}
 
 	{
 		const auto result_constantBuffer_frame = s_constantBuffer_frame.CleanUp();

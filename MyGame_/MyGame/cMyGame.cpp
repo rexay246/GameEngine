@@ -5,7 +5,6 @@
 
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/UserInput/UserInput.h>
-#include <Engine/Graphics/Graphics.h>
 
 // Inherited Implementation
 //=========================
@@ -39,6 +38,7 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 	const float i_elapsedSecondCount_sinceLastSimulationUpdate) {
 	float color[4] = { 0.0, 0.5, 0.0, 1 };
 	Graphics::SetBackgroundColor(color);
+	Graphics::CreateGameObject(meshTest, effectTest, 1);
 }
 
 // Initialize / Clean Up
@@ -46,10 +46,37 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 
 eae6320::cResult eae6320::cMyGame::Initialize()
 {
+	effectTest[0]->CreateEffect(effectTest[0],
+		"data/Shaders/Vertex/standard.shader",
+		"data/Shaders/Fragment/animatedshader.shader");
+
+	eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[] =
+	{
+		{ 0.0f, 0.0f, 0.0f },
+		{ 1.0f, 1.0f, 0.0f },
+		{ 1.0f, 0.0f, 0.0f },
+		{ 0.0f, 1.0f, 0.0f }
+	};
+	uint16_t indexData[] =
+	{
+		0,
+		1,
+		2,
+		1,
+		0,
+		3
+	};
+	int vertexCount = std::size(vertexData);
+	int indexCount = std::size(indexData);
+	meshTest[0]->CreateMesh(meshTest[0], vertexData, vertexCount, indexData, indexCount);
 	return Results::Success;
 }
 
 eae6320::cResult eae6320::cMyGame::CleanUp()
 {
+	meshTest[0]->DecrementReferenceCount();
+	meshTest[0] = nullptr;
+	effectTest[0]->DecrementReferenceCount();
+	effectTest[0] = nullptr;
 	return Results::Success;
 }
