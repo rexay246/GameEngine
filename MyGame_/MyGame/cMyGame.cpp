@@ -37,7 +37,7 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput() {
 
 void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime,
 	const float i_elapsedSecondCount_sinceLastSimulationUpdate) {
-	float color[4] = { 0.0, 0.0, 0.0, 1 };
+	float color[4] = { 0.0, 0.5, 0.0, 1 };
 	Graphics::SetBackgroundColor(color);
 }
 

@@ -63,14 +63,14 @@ namespace
 	// Geometry Data
 	//--------------
 
-	eae6320::Graphics::cMesh* s_mesh = new eae6320::Graphics::cMesh();
-	eae6320::Graphics::cMesh* s_mesh2 = new eae6320::Graphics::cMesh();
+	eae6320::Graphics::cMesh* s_mesh = nullptr;
+	eae6320::Graphics::cMesh* s_mesh2 = nullptr;
 
 	// Shading Data
 	//-------------
 
-	eae6320::Graphics::cEffect* s_effect = new eae6320::Graphics::cEffect();
-	eae6320::Graphics::cEffect* s_effect2 = new eae6320::Graphics::cEffect();
+	eae6320::Graphics::cEffect* s_effect = nullptr;
+	eae6320::Graphics::cEffect* s_effect2 = nullptr;
 }
 
 // Helper Declarations
@@ -244,7 +244,7 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 	{
 		// Effect 1
 		{
-			if (!(result = s_effect->Initialize(
+			if (!(result = s_effect->CreateEffect(s_effect,
 				"data/Shaders/Vertex/standard.shader",
 				"data/Shaders/Fragment/animatedshader.shader")))
 			{
@@ -255,7 +255,7 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 
 		// Effect 2
 		{
-			if (!(result = s_effect2->Initialize(
+			if (!(result = s_effect2->CreateEffect(s_effect2,
 				"data/Shaders/Vertex/standard.shader",
 				"data/Shaders/Fragment/standard.shader")))
 			{
@@ -286,7 +286,7 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 			};
 			int vertexCount = std::size(vertexData);
 			int indexCount = std::size(indexData);
-			if (!(result = s_mesh->Initialize(vertexData, vertexCount, indexData, indexCount)))
+			if (!(result = s_mesh->CreateMesh(s_mesh, vertexData, vertexCount, indexData, indexCount)))
 			{
 				EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 				return result;
@@ -308,7 +308,7 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 			};
 			int vertexCount = std::size(vertexData);
 			int indexCount = std::size(indexData);
-			if (!(result = s_mesh2->Initialize(vertexData, vertexCount, indexData, indexCount)))
+			if (!(result = s_mesh2->CreateMesh(s_mesh2, vertexData, vertexCount, indexData, indexCount)))
 			{
 				EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 				return result;
@@ -326,16 +326,16 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 	result = s_view->CleanUp();
 	s_view = nullptr;
 
-	result = s_mesh->CleanUp();
+	s_mesh->DecrementReferenceCount();
 	s_mesh = nullptr;
 
-	result = s_mesh2->CleanUp();
+	s_mesh2->DecrementReferenceCount();
 	s_mesh2 = nullptr;
 
-	result = s_effect->CleanUp();
+	s_effect->DecrementReferenceCount();
 	s_effect = nullptr;
 
-	result = s_effect2->CleanUp();
+	s_effect2->DecrementReferenceCount();
 	s_effect2 = nullptr;
 
 	{

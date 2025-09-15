@@ -13,18 +13,22 @@
 
 #include <cstdint>
 #include <Engine/Results/Results.h>
+#include <Engine/Assets/ReferenceCountedAssets.h>
 
 namespace eae6320 {
 	namespace Graphics {
 		class cEffect {
 		public:
-			void BindEffect();
-			cResult Initialize(std::string vertexShader, 
-				std::string fragmentShader, 
+			static cResult CreateEffect(cEffect*& o_effect, 
+				std::string vertexShader,
+				std::string fragmentShader,
 				uint8_t u_renderStateBits = 0);
-			cResult CleanUp();
 
-			~cEffect();
+			void BindEffect();
+
+			EAE6320_ASSETS_DECLAREREFERENCECOUNTINGFUNCTIONS();
+			EAE6320_ASSETS_DECLAREDELETEDREFERENCECOUNTEDFUNCTIONS(cEffect);
+			EAE6320_ASSETS_DECLAREREFERENCECOUNT();
 
 		private:
 			eae6320::Graphics::cShader* m_vertexShader = nullptr;
@@ -39,6 +43,13 @@ namespace eae6320 {
 			cResult Initialize_platformSpecificExtra();
 			cResult CleanUp_platformSpecificExtra();
 			void BindEffect_PlatformSpecific();
+
+			cResult Initialize(std::string vertexShader,
+				std::string fragmentShader,
+				uint8_t u_renderStateBits = 0);
+			cResult CleanUp();
+			cEffect() = default;
+			~cEffect();
 		};
 	}
 }

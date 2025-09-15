@@ -15,6 +15,7 @@
 
 #include <cstdint>
 #include <Engine/Results/Results.h>
+#include <Engine/Assets/ReferenceCountedAssets.h>
 
 // Forward Declarations
 //=====================
@@ -28,14 +29,16 @@ namespace eae6320 {
 		class cMesh {
 
 		public:
-			void DrawMesh();
-			cResult Initialize(
+			static cResult CreateMesh(cMesh*& o_mesh,
 				eae6320::Graphics::VertexFormats::sVertex_mesh* vertexData,
 				int vertexCount,
-				uint16_t* indexData, 
+				uint16_t* indexData,
 				int indexCount);
-			cResult CleanUp();
-			~cMesh();
+			void DrawMesh();
+
+			EAE6320_ASSETS_DECLAREREFERENCECOUNTINGFUNCTIONS();
+			EAE6320_ASSETS_DECLAREDELETEDREFERENCECOUNTEDFUNCTIONS(cMesh);
+			EAE6320_ASSETS_DECLAREREFERENCECOUNT();
 
 		private:	
 
@@ -52,6 +55,16 @@ namespace eae6320 {
 			GLuint m_indexBufferId = 0;
 #endif
 			unsigned int indexCountToRender = 0;
+
+		private:
+			cResult Initialize(
+				eae6320::Graphics::VertexFormats::sVertex_mesh* vertexData,
+				int vertexCount,
+				uint16_t* indexData,
+				int indexCount);
+			cResult CleanUp();
+			cMesh() = default;
+			~cMesh();
 		};
 	}
 }
