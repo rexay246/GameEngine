@@ -39,8 +39,8 @@ namespace
 	{
 		eae6320::Graphics::ConstantBufferFormats::sFrame constantData_frame;
 		float background_color[4];
-		eae6320::Graphics::cMesh* meshes[100];
-		eae6320::Graphics::cEffect* effects[100];
+		eae6320::Graphics::cMesh* meshes[MAX_MEMORY_SIZE];
+		eae6320::Graphics::cEffect* effects[MAX_MEMORY_SIZE];
 		int numOfPairs;
 	};
 	// In our class there will be two copies of the data required to render a frame:
@@ -79,7 +79,7 @@ namespace
 
 namespace
 {
-
+	void CleanUpMeshAndEffect(sDataRequiredToRenderAFrame* dataRequiredToRenderAFrame);
 }
 
 // Interface
@@ -104,7 +104,8 @@ void eae6320::Graphics::SetBackgroundColor(float color[4]) {
 	}
 }
 
-void eae6320::Graphics::CreateGameObject(eae6320::Graphics::cMesh* meshes[100], eae6320::Graphics::cEffect* effect[100], int numPairs) {
+void eae6320::Graphics::CreateGameObject(eae6320::Graphics::cMesh* meshes[MAX_MEMORY_SIZE],
+	eae6320::Graphics::cEffect* effect[MAX_MEMORY_SIZE], int numPairs) {
 	EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread);
 	auto& meshes_render = s_dataBeingSubmittedByApplicationThread->meshes;
 	auto& effects_render = s_dataBeingSubmittedByApplicationThread->effects;
@@ -210,17 +211,7 @@ void eae6320::Graphics::RenderFrame()
 	// you must make sure that it is all cleaned up and cleared out
 	// so that the struct can be re-used (i.e. so that data for a new frame can be submitted to it)
 	{
-		// (At this point in the class there isn't anything that needs to be cleaned up)
-		auto& meshes_render = dataRequiredToRenderFrame->meshes;
-		auto& effects_render = dataRequiredToRenderFrame->effects;
-		auto& num = dataRequiredToRenderFrame->numOfPairs;
-		for (int i = 0; i < num; i++) {
-			effects_render[i]->DecrementReferenceCount();
-			effects_render[i] = nullptr;
-			meshes_render[i]->DecrementReferenceCount();
-			meshes_render[i] = nullptr;
-		}
-		num = 0;
+		CleanUpMeshAndEffect(dataRequiredToRenderFrame);
 	}
 }
 
@@ -275,81 +266,6 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 			return result;
 		}
 	}
-	//// Initialize the shading data
-	//{
-	//	// Effect 1
-	//	{
-	//		if (!(result = s_effect->CreateEffect(s_effect,
-	//			"data/Shaders/Vertex/standard.shader",
-	//			"data/Shaders/Fragment/animatedshader.shader")))
-	//		{
-	//			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
-	//			return result;
-	//		}
-	//	}
-
-	//	// Effect 2
-	//	{
-	//		if (!(result = s_effect2->CreateEffect(s_effect2,
-	//			"data/Shaders/Vertex/standard.shader",
-	//			"data/Shaders/Fragment/standard.shader")))
-	//		{
-	//			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
-	//			return result;
-	//		}
-	//	}
-	//}
-	//// Initialize the geometry
-	//{
-	//	// Mesh 1
-	//	{
-	//		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[] =
-	//		{
-	//			{ 0.0f, 0.0f, 0.0f },
-	//			{ 1.0f, 1.0f, 0.0f },
-	//			{ 1.0f, 0.0f, 0.0f },
-	//			{ 0.0f, 1.0f, 0.0f }
-	//		};
-	//		uint16_t indexData[] =
-	//		{
-	//			0,
-	//			1,
-	//			2,
-	//			1,
-	//			0,
-	//			3
-	//		};
-	//		int vertexCount = std::size(vertexData);
-	//		int indexCount = std::size(indexData);
-	//		if (!(result = s_mesh->CreateMesh(s_mesh, vertexData, vertexCount, indexData, indexCount)))
-	//		{
-	//			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
-	//			return result;
-	//		}
-	//	}
-
-	//	// Mesh 2
-	//	{
-	//		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[] =
-	//		{
-	//			{ -1.0f, -1.0f, 0.0f },
-	//			{ -1.0f, 0.0f, 0.0f },
-	//			{ 0.0f, 0.0f, 0.0f }
-	//		};
-	//		uint16_t indexData[] = {
-	//			0,
-	//			1,
-	//			2,
-	//		};
-	//		int vertexCount = std::size(vertexData);
-	//		int indexCount = std::size(indexData);
-	//		if (!(result = s_mesh2->CreateMesh(s_mesh2, vertexData, vertexCount, indexData, indexCount)))
-	//		{
-	//			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
-	//			return result;
-	//		}
-	//	}
-	//}
 
 	return result;
 }
@@ -361,44 +277,12 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 	result = s_view->CleanUp();
 	s_view = nullptr;
 
-	//s_mesh->DecrementReferenceCount();
-	//s_mesh = nullptr;
-
-	//s_mesh2->DecrementReferenceCount();
-	//s_mesh2 = nullptr;
-
-	//s_effect->DecrementReferenceCount();
-	//s_effect = nullptr;
-
-	//s_effect2->DecrementReferenceCount();
-	//s_effect2 = nullptr;
-
 	{
-		// (At this point in the class there isn't anything that needs to be cleaned up)
-		auto& meshes_render = s_dataBeingSubmittedByApplicationThread->meshes;
-		auto& effects_render = s_dataBeingSubmittedByApplicationThread->effects;
-		auto& num = s_dataBeingSubmittedByApplicationThread->numOfPairs;
-		for (int i = 0; i < num; i++) {
-			effects_render[i]->DecrementReferenceCount();
-			effects_render[i] = nullptr;
-			meshes_render[i]->DecrementReferenceCount();
-			meshes_render[i] = nullptr;
-		}
-		num = 0;
+		CleanUpMeshAndEffect(s_dataBeingSubmittedByApplicationThread);
 	}
 
 	{
-		// (At this point in the class there isn't anything that needs to be cleaned up)
-		auto& meshes_render = s_dataBeingRenderedByRenderThread->meshes;
-		auto& effects_render = s_dataBeingRenderedByRenderThread->effects;
-		auto& num = s_dataBeingRenderedByRenderThread->numOfPairs;
-		for (int i = 0; i < num; i++) {
-			effects_render[i]->DecrementReferenceCount();
-			effects_render[i] = nullptr;
-			meshes_render[i]->DecrementReferenceCount();
-			meshes_render[i] = nullptr;
-		}
-		num = 0;
+		CleanUpMeshAndEffect(s_dataBeingRenderedByRenderThread);
 	}
 
 	{
@@ -433,5 +317,16 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 
 namespace
 {
-
+	void CleanUpMeshAndEffect(sDataRequiredToRenderAFrame* dataRequiredToRenderAFrame) {
+		auto& meshes_render = dataRequiredToRenderAFrame->meshes;
+		auto& effects_render = dataRequiredToRenderAFrame->effects;
+		auto& num = dataRequiredToRenderAFrame->numOfPairs;
+		for (int i = 0; i < num; i++) {
+			effects_render[i]->DecrementReferenceCount();
+			effects_render[i] = nullptr;
+			meshes_render[i]->DecrementReferenceCount();
+			meshes_render[i] = nullptr;
+		}
+		num = 0;
+	}
 }

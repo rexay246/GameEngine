@@ -19,6 +19,8 @@
 	#include <Engine/Windows/Includes.h>
 #endif
 
+#define MAX_MEMORY_SIZE 100
+
 // Interface
 //==========
 
@@ -39,7 +41,9 @@ namespace eae6320
 
 		void SetBackgroundColor(float color[4]);
 
-		void CreateGameObject(eae6320::Graphics::cMesh* meshes[100], eae6320::Graphics::cEffect* effect[100], int numPairs);
+		void CreateGameObject(eae6320::Graphics::cMesh* meshes[MAX_MEMORY_SIZE], 
+			eae6320::Graphics::cEffect* effect[MAX_MEMORY_SIZE], 
+			int numPairs);
 
 		// When the application is ready to submit data for a new frame
 		// it should call this before submitting anything

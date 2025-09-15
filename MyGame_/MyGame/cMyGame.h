@@ -76,8 +76,9 @@ namespace eae6320
 		void SubmitDataToBeRendered( const float i_elapsedSecondCount_systemTime, 
 			const float i_elapsedSecondCount_sinceLastSimulationUpdate );
 
-		Graphics::cMesh* meshTest[1];
-		Graphics::cEffect* effectTest[1];
+		int numOfPairs = 2;
+		Graphics::cMesh* meshTest[2];
+		Graphics::cEffect* effectTest[2];
 
 		// Initialize / Clean Up
 		//----------------------
