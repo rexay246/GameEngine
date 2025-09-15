@@ -19,7 +19,9 @@ namespace eae6320 {
 		class cEffect {
 		public:
 			void BindEffect();
-			cResult Initialize();
+			cResult Initialize(std::string vertexShader, 
+				std::string fragmentShader, 
+				uint8_t u_renderStateBits = 0);
 			cResult CleanUp();
 
 			~cEffect();
@@ -30,7 +32,8 @@ namespace eae6320 {
 #ifdef EAE6320_PLATFORM_GL
 			GLuint m_programId = 0;
 #endif
-			eae6320::Graphics::cRenderState m_renderState;
+			eae6320::Graphics::cRenderState* m_renderState = 
+				new cRenderState();
 
 		private:
 			cResult Initialize_platformSpecificExtra();
