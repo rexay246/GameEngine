@@ -72,6 +72,8 @@ namespace eae6320
 
 		void UpdateBasedOnInput() final;
 		void UpdateSimulationBasedOnInput() final;
+		void SubmitDataToBeRendered( const float i_elapsedSecondCount_systemTime, 
+			const float i_elapsedSecondCount_sinceLastSimulationUpdate );
 
 		// Initialize / Clean Up
 		//----------------------

@@ -5,6 +5,7 @@
 
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/UserInput/UserInput.h>
+#include <Engine/Graphics/Graphics.h>
 
 // Inherited Implementation
 //=========================
@@ -32,6 +33,12 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput() {
 		// Returns application to normal
 		SetSimulationRate(1.0f);
 	}
+}
+
+void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime,
+	const float i_elapsedSecondCount_sinceLastSimulationUpdate) {
+	float color[4] = { 0.0, 0.0, 0.0, 1 };
+	Graphics::SetBackgroundColor(color);
 }
 
 // Initialize / Clean Up

@@ -40,6 +40,7 @@ namespace
 	struct sDataRequiredToRenderAFrame
 	{
 		eae6320::Graphics::ConstantBufferFormats::sFrame constantData_frame;
+		float background_color[4];
 	};
 	// In our class there will be two copies of the data required to render a frame:
 	//	* One of them will be in the process of being populated by the data currently being submitted by the application loop thread
@@ -94,6 +95,14 @@ void eae6320::Graphics::SubmitElapsedTime(const float i_elapsedSecondCount_syste
 	constantData_frame.g_elapsedSecondCount_simulationTime = i_elapsedSecondCount_simulationTime;
 }
 
+void eae6320::Graphics::SetBackgroundColor(float color[4]) {
+	EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread);
+	auto& background_color = s_dataBeingSubmittedByApplicationThread->background_color;
+	for (int i = 0; i < 4; i++) {
+		background_color[i] = color[i];
+	}
+}
+
 eae6320::cResult eae6320::Graphics::WaitUntilDataForANewFrameCanBeSubmitted(const unsigned int i_timeToWait_inMilliseconds)
 {
 	return Concurrency::WaitForEvent(s_whenDataForANewFrameCanBeSubmittedFromApplicationThread, i_timeToWait_inMilliseconds);
@@ -136,10 +145,6 @@ void eae6320::Graphics::RenderFrame()
 		}
 	}
 
-	//Clear the back buffer with RGBA
-	float backBufferColor[4] = {0.0f, 0.0f, 0.5f, 1.0f};
-	s_view->ClearViewBuffers(backBufferColor);
-
 	EAE6320_ASSERT(s_dataBeingRenderedByRenderThread);
 	auto* const dataRequiredToRenderFrame = s_dataBeingRenderedByRenderThread;
 
@@ -148,6 +153,12 @@ void eae6320::Graphics::RenderFrame()
 		// Copy the data from the system memory that the application owns to GPU memory
 		auto& constantData_frame = dataRequiredToRenderFrame->constantData_frame;
 		s_constantBuffer_frame.Update(&constantData_frame);
+	}
+
+	//Clear the back buffer with RGBA
+	{
+		auto& background_color = dataRequiredToRenderFrame->background_color;
+		s_view->ClearViewBuffers(background_color);
 	}
 
 	// Bind the first shading data
