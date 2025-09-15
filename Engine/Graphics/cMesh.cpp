@@ -29,7 +29,7 @@ eae6320::cResult eae6320::Graphics::cMesh::CreateMesh(cMesh*& o_mesh,
 		});
 	// Allocate a new mesh
 	{
-		newMesh = new (std::nothrow) cMesh();
+		newMesh = new cMesh();
 		if (!newMesh)
 		{
 			result = Results::OutOfMemory;
