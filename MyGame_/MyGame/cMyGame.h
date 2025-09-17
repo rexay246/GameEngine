@@ -16,6 +16,12 @@
 	#include "Resource Files/Resource.h"
 #endif
 
+struct GameObjects {
+	int numOfPairs;
+	eae6320::Graphics::cMesh** meshes;
+	eae6320::Graphics::cEffect** effects;
+};
+
 // Class Declaration
 //==================
 
@@ -76,9 +82,23 @@ namespace eae6320
 		void SubmitDataToBeRendered( const float i_elapsedSecondCount_systemTime, 
 			const float i_elapsedSecondCount_sinceLastSimulationUpdate );
 
-		int numOfPairs = 2;
-		Graphics::cMesh* meshTest[2];
-		Graphics::cEffect* effectTest[2];
+		//int numOfPairs = 2;
+		//Graphics::cMesh* meshTest[2];
+		//Graphics::cEffect* effectTest[2];
+
+		GameObjects meshes_1 = {
+			meshes_1.numOfPairs = 2,
+			meshes_1.meshes = new Graphics::cMesh * [meshes_1.numOfPairs],
+			meshes_1.effects = new Graphics::cEffect * [meshes_1.numOfPairs]
+		};
+
+		GameObjects meshes_2 = {
+			meshes_2.numOfPairs = 2,
+			meshes_2.meshes = new Graphics::cMesh * [meshes_2.numOfPairs],
+			meshes_2.effects = new Graphics::cEffect * [meshes_2.numOfPairs]
+		};
+
+		bool hideObjects = false;
 
 		// Initialize / Clean Up
 		//----------------------
