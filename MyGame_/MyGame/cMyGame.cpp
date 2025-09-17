@@ -32,22 +32,21 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput() {
 	//	// Returns application to normal
 	//	SetSimulationRate(1.0f);
 	//}
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Space)) {
-		hideObjects = true;
-	}
-	else {
-		hideObjects = false;
-	}
+	hideObjects = UserInput::IsKeyPressed(UserInput::KeyCodes::Space);
+	changeEffects = UserInput::IsKeyPressed(UserInput::KeyCodes::Enter);
 }
 
 void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime,
 	const float i_elapsedSecondCount_sinceLastSimulationUpdate) {
 	float color[4] = { 0.0, 0.5, 0.0, 1 };
 	Graphics::SetBackgroundColor(color);
+	Graphics::cEffect** usedEffect = effectTest;
+	int pairsUsed = numOfPairs;
+	if (changeEffects)
+		usedEffect = changedEffect;
 	if (hideObjects)
-		Graphics::CreateGameObject(meshes_1.meshes, meshes_1.effects, meshes_1.numOfPairs);
-	else
-		Graphics::CreateGameObject(meshes_2.meshes, meshes_2.effects, meshes_2.numOfPairs);
+		pairsUsed = 1;
+	Graphics::CreateGameObject(meshTest, usedEffect, pairsUsed);
 }
 
 // Initialize / Clean Up
@@ -59,14 +58,28 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 	{
 		// Effect 1
 		{
-			meshes_1.effects[0]->CreateEffect(meshes_1.effects[0],
+			effectTest[0]->CreateEffect(effectTest[0],
 				"data/Shaders/Vertex/standard.shader",
 				"data/Shaders/Fragment/animatedshader.shader");
 		}
 
 		// Effect 2
 		{
-			meshes_1.effects[1]->CreateEffect(meshes_1.effects[1],
+			effectTest[1]->CreateEffect(effectTest[1],
+				"data/Shaders/Vertex/standard.shader",
+				"data/Shaders/Fragment/standard.shader");
+		}
+
+		// Changed Effect 1
+		{
+			changedEffect[0]->CreateEffect(changedEffect[0],
+				"data/Shaders/Vertex/standard.shader",
+				"data/Shaders/Fragment/standard.shader");
+		}
+
+		// Changed Effect 2
+		{
+			changedEffect[1]->CreateEffect(changedEffect[1],
 				"data/Shaders/Vertex/standard.shader",
 				"data/Shaders/Fragment/standard.shader");
 		}
@@ -91,7 +104,7 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 			};
 			int vertexCount = static_cast<int>(std::size(vertexData));
 			int indexCount = static_cast<int>(std::size(indexData));
-			meshes_1.meshes[0]->CreateMesh(meshes_1.meshes[0], vertexData, vertexCount, indexData, indexCount);
+			meshTest[0]->CreateMesh(meshTest[0], vertexData, vertexCount, indexData, indexCount);
 		}
 
 		// Mesh 2
@@ -109,65 +122,7 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 			};
 			int vertexCount = static_cast<int>(std::size(vertexData));
 			int indexCount = static_cast<int>(std::size(indexData));
-			meshes_1.meshes[1]->CreateMesh(meshes_1.meshes[1], vertexData, vertexCount, indexData, indexCount);
-		}
-	}
-
-	// GameObject 2
-	{
-		// Effect 1
-		{
-			meshes_2.effects[0]->CreateEffect(meshes_2.effects[0],
-				"data/Shaders/Vertex/standard.shader",
-				"data/Shaders/Fragment/animatedshader.shader");
-		}
-
-		// Effect 2
-		{
-			meshes_2.effects[1]->CreateEffect(meshes_2.effects[1],
-				"data/Shaders/Vertex/standard.shader",
-				"data/Shaders/Fragment/standard.shader");
-		}
-
-		// Mesh 1
-		{
-			eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[] =
-			{
-				{ 0.0f, 0.0f, 0.0f },
-				{ 0.0f, 1.0f, 0.0f },
-				{ -1.0f, 0.0f, 0.0f },
-				{ -1.0f, 1.0f, 0.0f }
-			};
-			uint16_t indexData[] =
-			{
-				0,
-				2,
-				1,
-				2,
-				3,
-				1
-			};
-			int vertexCount = static_cast<int>(std::size(vertexData));
-			int indexCount = static_cast<int>(std::size(indexData));
-			meshes_2.meshes[0]->CreateMesh(meshes_2.meshes[0], vertexData, vertexCount, indexData, indexCount);
-		}
-
-		// Mesh 2
-		{
-			eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[] =
-			{
-				{ 1.0f, -1.0f, 0.0f },
-				{ 0.0f, 0.0f, 0.0f },
-				{ 0.0f, -1.0f, 0.0f }
-			};
-			uint16_t indexData[] = {
-				0,
-				2,
-				1,
-			};
-			int vertexCount = static_cast<int>(std::size(vertexData));
-			int indexCount = static_cast<int>(std::size(indexData));
-			meshes_2.meshes[1]->CreateMesh(meshes_2.meshes[1], vertexData, vertexCount, indexData, indexCount);
+			meshTest[1]->CreateMesh(meshTest[1], vertexData, vertexCount, indexData, indexCount);
 		}
 	}
 
@@ -176,17 +131,13 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 
 eae6320::cResult eae6320::cMyGame::CleanUp()
 {
-	for (int i = 0; i < meshes_1.numOfPairs; i++) {
-		meshes_1.meshes[i]->DecrementReferenceCount();
-		meshes_1.meshes[i] = nullptr;
-		meshes_1.effects[i]->DecrementReferenceCount();
-		meshes_1.effects[i] = nullptr;
-	}
-	for (int i = 0; i < meshes_2.numOfPairs; i++) {
-		meshes_2.meshes[i]->DecrementReferenceCount();
-		meshes_2.meshes[i] = nullptr;
-		meshes_2.effects[i]->DecrementReferenceCount();
-		meshes_2.effects[i] = nullptr;
+	for (int i = 0; i < numOfPairs; i++) {
+		meshTest[i]->DecrementReferenceCount();
+		meshTest[i] = nullptr;
+		effectTest[i]->DecrementReferenceCount();
+		effectTest[i] = nullptr;
+		changedEffect[i]->DecrementReferenceCount();
+		changedEffect[i] = nullptr;
 	}
 	return Results::Success;
 }
