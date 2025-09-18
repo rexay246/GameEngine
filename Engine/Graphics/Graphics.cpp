@@ -266,7 +266,6 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 			return result;
 		}
 	}
-
 	return result;
 }
 

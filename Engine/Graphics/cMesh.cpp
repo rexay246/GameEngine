@@ -44,6 +44,7 @@ eae6320::cResult eae6320::Graphics::cMesh::CreateMesh(cMesh*& o_mesh,
 		EAE6320_ASSERTF(false, "Initialization of new mesh failed");
 		return result;
 	}
+
 	return result;
 }
 

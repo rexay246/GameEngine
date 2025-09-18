@@ -38,7 +38,7 @@ namespace eae6320 {
 
 			EAE6320_ASSETS_DECLAREREFERENCECOUNTINGFUNCTIONS();
 			EAE6320_ASSETS_DECLAREDELETEDREFERENCECOUNTEDFUNCTIONS(cMesh);
-			EAE6320_ASSETS_DECLAREREFERENCECOUNT();
+			//EAE6320_ASSETS_DECLAREREFERENCECOUNT();
 
 		private:	
 
@@ -54,7 +54,11 @@ namespace eae6320 {
 			GLuint m_vertexArrayId = 0;
 			GLuint m_indexBufferId = 0;
 #endif
-			unsigned int indexCountToRender = 0;
+			unsigned int m_indexCountToRender = 0;
+
+		public:
+
+			EAE6320_ASSETS_DECLAREREFERENCECOUNT();
 
 		private:
 			cResult Initialize(

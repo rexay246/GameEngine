@@ -38,8 +38,10 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput() {
 
 void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime,
 	const float i_elapsedSecondCount_sinceLastSimulationUpdate) {
+
 	float color[4] = { 0.0, 0.5, 0.0, 1 };
 	Graphics::SetBackgroundColor(color);
+
 	Graphics::cEffect** usedEffect = effectTest;
 	int pairsUsed = numOfPairs;
 	if (changeEffects)
@@ -125,7 +127,6 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 			meshTest[1]->CreateMesh(meshTest[1], vertexData, vertexCount, indexData, indexCount);
 		}
 	}
-
 	return Results::Success;
 }
 

@@ -28,16 +28,18 @@ namespace eae6320 {
 
 			EAE6320_ASSETS_DECLAREREFERENCECOUNTINGFUNCTIONS();
 			EAE6320_ASSETS_DECLAREDELETEDREFERENCECOUNTEDFUNCTIONS(cEffect);
-			EAE6320_ASSETS_DECLAREREFERENCECOUNT();
 
 		private:
 			eae6320::Graphics::cShader* m_vertexShader = nullptr;
 			eae6320::Graphics::cShader* m_fragmentShader = nullptr;
+			eae6320::Graphics::cRenderState* m_renderState = 
+				new cRenderState();
 #ifdef EAE6320_PLATFORM_GL
 			GLuint m_programId = 0;
 #endif
-			eae6320::Graphics::cRenderState* m_renderState = 
-				new cRenderState();
+
+		public:
+			EAE6320_ASSETS_DECLAREREFERENCECOUNT();
 
 		private:
 			cResult Initialize_platformSpecificExtra();

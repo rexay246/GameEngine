@@ -109,7 +109,7 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(eae6320::Graphics::VertexF
 	}
 	// Assign the data to the buffer
 	{
-		indexCountToRender = indexCount;
+		m_indexCountToRender = indexCount;
 		ConvertLeftToRightWindingOrder(indexData, indexCount);
 		int bufferSize = sizeof(indexData[0]) * indexCount;
 		EAE6320_ASSERT(bufferSize <= std::numeric_limits<GLsizeiptr>::max());
@@ -266,7 +266,7 @@ void eae6320::Graphics::cMesh::DrawMesh() {
 		constexpr GLenum mode = GL_TRIANGLES;
 		// It's possible to start rendering primitives in the middle of the stream
 		const GLvoid* const offset = 0;
-		glDrawElements(mode, static_cast<GLsizei>(indexCountToRender), GL_UNSIGNED_SHORT, offset);
+		glDrawElements(mode, static_cast<GLsizei>(m_indexCountToRender), GL_UNSIGNED_SHORT, offset);
 		EAE6320_ASSERT(glGetError() == GL_NO_ERROR);
 	}
 }
