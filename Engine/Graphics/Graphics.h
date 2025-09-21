@@ -9,6 +9,8 @@
 //=========
 
 #include "Configuration.h"
+#include "cMesh.h"
+#include "cEffect.h"
 
 #include <cstdint>
 #include <Engine/Results/Results.h>
@@ -16,6 +18,8 @@
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include <Engine/Windows/Includes.h>
 #endif
+
+#define MAX_MEMORY_SIZE 100
 
 // Interface
 //==========
@@ -34,6 +38,12 @@ namespace eae6320
 		// of how the application submits the total elapsed times
 		// for the frame currently being submitted
 		void SubmitElapsedTime( const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_simulationTime );
+
+		void SetBackgroundColor(float color[4]);
+
+		void CreateGameObject(eae6320::Graphics::cMesh* meshes[MAX_MEMORY_SIZE], 
+			eae6320::Graphics::cEffect* effect[MAX_MEMORY_SIZE], 
+			int numPairs);
 
 		// When the application is ready to submit data for a new frame
 		// it should call this before submitting anything

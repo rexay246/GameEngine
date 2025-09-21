@@ -53,7 +53,7 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(eae6320::Graphics::VertexF
 	}
 	// Index Buffer
 	{
-		indexCountToRender = indexCount;
+		m_indexCountToRender = indexCount;
 		auto bufferSize = sizeof(indexData[0]) * indexCount;
 		auto bufferDescription = [bufferSize]
 			{
@@ -144,6 +144,6 @@ void eae6320::Graphics::cMesh::DrawMesh() {
 		// It's possible to start rendering primitives in the middle of the stream
 		constexpr unsigned int indexOfFirstIndexToUse = 0;
 		constexpr unsigned int offsetToAddToEachIndex = 0;
-		direct3dImmediateContext->DrawIndexed(static_cast<unsigned int>(indexCountToRender), indexOfFirstIndexToUse, offsetToAddToEachIndex);
+		direct3dImmediateContext->DrawIndexed(static_cast<unsigned int>(m_indexCountToRender), indexOfFirstIndexToUse, offsetToAddToEachIndex);
 	}
 }
