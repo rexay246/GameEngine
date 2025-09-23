@@ -12,6 +12,7 @@
 #include <Engine/Results/Results.h>
 #include <Engine/Graphics/Graphics.h>
 #include <Engine/GameObject/cEntity.h>
+#include <Engine/GameObject/cCamera.h>
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include "Resource Files/Resource.h"
@@ -83,6 +84,7 @@ namespace eae6320
 		//Graphics::cEffect* changedEffect[2];
 
 		GameObject::cEntity entity;
+		GameObject::cCamera camera;
 
 		bool hideObjects = false;
 		bool changeEffects = false;

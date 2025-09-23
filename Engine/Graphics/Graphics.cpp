@@ -18,6 +18,7 @@
 #include <Engine/ScopeGuard/cScopeGuard.h>
 #include <Engine/Time/Time.h>
 #include <Engine/UserOutput/UserOutput.h>
+#include <Engine/Math/Functions.h>
 #include <utility>
 
 // Static Data
@@ -113,6 +114,16 @@ void eae6320::Graphics::CreateGameObject(eae6320::Graphics::cMesh* meshes, eae63
 	meshes_render[num] = meshes;
 	effects_render[num] = effect;
 	num++;
+}
+
+void eae6320::Graphics::SubmitCameraSpace(eae6320::GameObject::cCamera camera) {
+	EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread);
+	auto& constantData_frame = s_dataBeingSubmittedByApplicationThread->constantData_frame;
+	constantData_frame.g_transform_worldToCamera = 
+		constantData_frame.g_transform_worldToCamera.CreateWorldToCameraTransform(camera.GetPhysicsState()->orientation, camera.GetPhysicsState()->position);
+	constantData_frame.g_transform_cameraToProjected = 
+		constantData_frame.g_transform_cameraToProjected.CreateCameraToProjectedTransform_perspective(Math::ConvertDegreesToRadians(camera.GetFOV()),
+		1.f, camera.GetNearPlane(), camera.GetFarPlane());
 }
 
 eae6320::cResult eae6320::Graphics::WaitUntilDataForANewFrameCanBeSubmitted(const unsigned int i_timeToWait_inMilliseconds)

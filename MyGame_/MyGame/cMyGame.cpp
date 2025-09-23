@@ -67,6 +67,7 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 	//	Graphics::CreateGameObject(meshTest[i], usedEffect[i]);
 	//}
 	entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	Graphics::SubmitCameraSpace(camera);
 }
 
 // Initialize / Clean Up
@@ -164,6 +165,9 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		"data/Shaders/Vertex/standard.shader",
 		"data/Shaders/Fragment/animatedshader.shader",
 		{0, 0, 0}, 2);
+
+	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f);
+
 	return Results::Success;
 }
 
