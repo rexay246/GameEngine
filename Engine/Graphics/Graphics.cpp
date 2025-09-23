@@ -104,19 +104,15 @@ void eae6320::Graphics::SetBackgroundColor(float color[4]) {
 	}
 }
 
-void eae6320::Graphics::CreateGameObject(eae6320::Graphics::cMesh* meshes[MAX_MEMORY_SIZE],
-	eae6320::Graphics::cEffect* effect[MAX_MEMORY_SIZE], int numPairs) {
+void eae6320::Graphics::CreateGameObject(eae6320::Graphics::cMesh* meshes, eae6320::Graphics::cEffect* effect) {
 	EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread);
 	auto& meshes_render = s_dataBeingSubmittedByApplicationThread->meshes;
 	auto& effects_render = s_dataBeingSubmittedByApplicationThread->effects;
 	auto& num = s_dataBeingSubmittedByApplicationThread->numOfPairs;
-	for (int i = 0; i < numPairs; i++) {
-		meshes_render[i] = meshes[i];
-		meshes_render[i]->IncrementReferenceCount();
-		effects_render[i] = effect[i];
-		effects_render[i]->IncrementReferenceCount();
-	}
-	num = numPairs;
+
+	meshes_render[num] = meshes;
+	effects_render[num] = effect;
+	num++;
 }
 
 eae6320::cResult eae6320::Graphics::WaitUntilDataForANewFrameCanBeSubmitted(const unsigned int i_timeToWait_inMilliseconds)
@@ -186,6 +182,7 @@ void eae6320::Graphics::RenderFrame()
 			effects_render[i]->BindEffect();
 			meshes_render[i]->DrawMesh();
 		}
+		num = 0;
 	}
 
 	//// Bind the first shading data

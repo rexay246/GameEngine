@@ -48,7 +48,9 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 		usedEffect = changedEffect;
 	if (hideObjects)
 		pairsUsed = 1;
-	Graphics::CreateGameObject(meshTest, usedEffect, pairsUsed);
+	for (int i = 0; i < pairsUsed; i++) {
+		Graphics::CreateGameObject(meshTest[i], usedEffect[i]);
+	}
 }
 
 // Initialize / Clean Up
