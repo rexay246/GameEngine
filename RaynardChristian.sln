@@ -84,7 +84,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BuildMyGameAssets", "MyGame
 		{5FE0EAD5-3429-4525-A533-8CF75C85D4F1} = {5FE0EAD5-3429-4525-A533-8CF75C85D4F1}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameObject", "GameObject\GameObject.vcxproj", "{E58EC3F2-243B-4703-83EA-7F2DC70F4B8E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameObject", "Engine\GameObject\GameObject.vcxproj", "{E58EC3F2-243B-4703-83EA-7F2DC70F4B8E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
