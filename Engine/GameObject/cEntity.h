@@ -9,6 +9,7 @@ namespace eae6320 {
 	namespace GameObject {
 		class cEntity : public cGameObject {
 		public:
+			~cEntity();
 			void Initialize(Graphics::VertexFormats::sVertex_mesh* vertexData, 
 				int vertexCount, uint16_t* indexData, int indexCount,
 				std::string vertexShader, std::string fragmentShader,

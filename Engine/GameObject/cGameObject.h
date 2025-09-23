@@ -8,7 +8,9 @@ namespace eae6320 {
 	namespace GameObject {
 		class cGameObject {
 		public:
+			~cGameObject();
 			Physics::sRigidBodyState* GetPhysicsState();
+			void Rendering(const float i_elapsedSecondCount_sinceLastSimulationUpdate);
 			void SetPosition(Math::sVector position);
 			void SetVelocity(Math::sVector velocity);
 		private:

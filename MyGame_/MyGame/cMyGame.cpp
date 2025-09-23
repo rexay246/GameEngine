@@ -37,18 +37,18 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput() {
 
 	Math::sVector input = { 0, 0, 0 };
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Up)) {
-		input.y += entity.GetSpeed();
+		input.y += camera.GetSpeed();
 	}
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Down)) {
-		input.y -= entity.GetSpeed();
+		input.y -= camera.GetSpeed();
 	}
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Left)) {
-		input.x -= entity.GetSpeed();
+		input.x -= camera.GetSpeed();
 	}
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Right)) {
-		input.x += entity.GetSpeed();
+		input.x += camera.GetSpeed();
 	}
-	entity.SetVelocity(input);
+	camera.SetVelocity(input);
 }
 
 void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime,
@@ -67,6 +67,7 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 	//	Graphics::CreateGameObject(meshTest[i], usedEffect[i]);
 	//}
 	entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	camera.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 	Graphics::SubmitCameraSpace(camera);
 }
 
@@ -166,21 +167,13 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		"data/Shaders/Fragment/animatedshader.shader",
 		{0, 0, 0}, 2);
 
-	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f);
+	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f, 1.f);
 
 	return Results::Success;
 }
 
 eae6320::cResult eae6320::cMyGame::CleanUp()
 {
-	//for (int i = 0; i < numOfPairs; i++) {
-	//	meshTest[i]->DecrementReferenceCount();
-	//	meshTest[i] = nullptr;
-	//	effectTest[i]->DecrementReferenceCount();
-	//	effectTest[i] = nullptr;
-	//	changedEffect[i]->DecrementReferenceCount();
-	//	changedEffect[i] = nullptr;
-	//}
 	entity.CleanUp();
 	return Results::Success;
 }

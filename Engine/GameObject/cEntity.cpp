@@ -12,14 +12,21 @@ void eae6320::GameObject::cEntity::Initialize(Graphics::VertexFormats::sVertex_m
 }
 
 void eae6320::GameObject::cEntity::Rendering(const float i_elapsedSecondCount_sinceLastSimulationUpdate) {
-	GetPhysicsState()->Update(i_elapsedSecondCount_sinceLastSimulationUpdate);
-	SetPosition(GetPhysicsState()->PredictFuturePosition(i_elapsedSecondCount_sinceLastSimulationUpdate));
+	cGameObject::Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 	Graphics::CreateGameObject(m_mesh, m_effect);
 }
 
 void eae6320::GameObject::cEntity::CleanUp() {
-	m_mesh->DecrementReferenceCount();
-	m_mesh = nullptr;
-	m_effect->DecrementReferenceCount();
-	m_effect = nullptr;
+	if (m_mesh) {
+		m_mesh->DecrementReferenceCount();
+		m_mesh = nullptr;
+	}
+	if (m_effect) {
+		m_effect->DecrementReferenceCount();
+		m_effect = nullptr;
+	}
+}
+
+eae6320::GameObject::cEntity::~cEntity() {
+	CleanUp();
 }
