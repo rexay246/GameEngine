@@ -59,7 +59,7 @@ void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCo
 void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime,
 	const float i_elapsedSecondCount_sinceLastSimulationUpdate) {
 
-	float color[4] = { 0.0, 0.5, 0.0, 1 };
+	float color[4] = { 1.0, 1.0, 1.0, 1 };
 	Graphics::SetBackgroundColor(color);
 
 	//Graphics::cEffect** usedEffect = effectTest;
@@ -74,7 +74,7 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 	//entity.Update(1.0f / 15.0f);
 	//camera.Update(1.0f / 15.0f);
 	//entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
-	entity.Rendering(GetSimulationUpdatePeriod_inSeconds());
+	entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 	Graphics::SubmitCameraSpace(camera);
 }
 
@@ -172,7 +172,7 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 	entity.Initialize(vertexData, vertexCount, indexData, indexCount,
 		"data/Shaders/Vertex/standard.shader",
 		"data/Shaders/Fragment/animatedshader.shader",
-		{0, 0, 0}, 0.05f);
+		{0, 0, 0}, 5.f);
 
 	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f, 10.f);
 
