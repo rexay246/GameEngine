@@ -24,28 +24,37 @@ void eae6320::cMyGame::UpdateBasedOnInput()
 }
 
 void eae6320::cMyGame::UpdateSimulationBasedOnInput() {
-	//if (UserInput::IsKeyPressed(UserInput::KeyCodes::Enter)) {
-	//	// Slows Down the application
-	//	SetSimulationRate(0.1f);
-	//}
-	//else {
-	//	// Returns application to normal
-	//	SetSimulationRate(1.0f);
-	//}
 	hideObjects = UserInput::IsKeyPressed(UserInput::KeyCodes::Space);
 	changeEffects = UserInput::IsKeyPressed(UserInput::KeyCodes::Enter);
 
+	// Camera
 	Math::sVector input = { 0, 0, 0 };
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Up)) {
-		input.y += entity.GetSpeed();
+		input.y += camera.GetSpeed();
 	}
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Down)) {
-		input.y -= entity.GetSpeed();
+		input.y -= camera.GetSpeed();
 	}
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Left)) {
-		input.x -= entity.GetSpeed();
+		input.x -= camera.GetSpeed();
 	}
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Right)) {
+		input.x += camera.GetSpeed();
+	}
+	camera.SetVelocity(input);
+
+	// Player
+	input = { 0, 0, 0 };
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::W)) {
+		input.y += entity.GetSpeed();
+	}
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::S)) {
+		input.y -= entity.GetSpeed();
+	}
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::A)) {
+		input.x -= entity.GetSpeed();
+	}
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::D)) {
 		input.x += entity.GetSpeed();
 	}
 	entity.SetVelocity(input);
@@ -59,23 +68,12 @@ void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCo
 void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime,
 	const float i_elapsedSecondCount_sinceLastSimulationUpdate) {
 
-	float color[4] = { 1.0, 1.0, 1.0, 1 };
-	Graphics::SetBackgroundColor(color);
+	Graphics::SetBackgroundColor(bgColor);
 
-	//Graphics::cEffect** usedEffect = effectTest;
-	//int pairsUsed = numOfPairs;
-	//if (changeEffects)
-	//	usedEffect = changedEffect;
-	//if (hideObjects)
-	//	pairsUsed = 1;
-	//for (int i = 0; i < pairsUsed; i++) {
-	//	Graphics::CreateGameObject(meshTest[i], usedEffect[i]);
-	//}
-	//entity.Update(1.0f / 15.0f);
-	//camera.Update(1.0f / 15.0f);
-	//entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
-	entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
-	Graphics::SubmitCameraSpace(camera);
+	Graphics::cMesh* renderMesh = hideObjects ? meshes[1] : meshes[0];
+	Graphics::cEffect* renderEffect = changeEffects ? effects[1] : effects[0];
+	entity.Rendering(renderMesh, renderEffect, i_elapsedSecondCount_sinceLastSimulationUpdate);
+	camera.RenderCamera(i_elapsedSecondCount_sinceLastSimulationUpdate);
 }
 
 // Initialize / Clean Up
@@ -83,104 +81,78 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 
 eae6320::cResult eae6320::cMyGame::Initialize()
 {
-	// GameObject 1
-	/* {
-		// Effect 1
-		{
-			effectTest[0]->CreateEffect(effectTest[0],
-				"data/Shaders/Vertex/standard.shader",
-				"data/Shaders/Fragment/animatedshader.shader");
-		}
-
-		// Effect 2
-		{
-			effectTest[1]->CreateEffect(effectTest[1],
-				"data/Shaders/Vertex/standard.shader",
-				"data/Shaders/Fragment/standard.shader");
-		}
-
-		// Changed Effect 1
-		{
-			changedEffect[0]->CreateEffect(changedEffect[0],
-				"data/Shaders/Vertex/standard.shader",
-				"data/Shaders/Fragment/standard.shader");
-		}
-
-		// Changed Effect 2
-		{
-			changedEffect[1]->CreateEffect(changedEffect[1],
-				"data/Shaders/Vertex/standard.shader",
-				"data/Shaders/Fragment/standard.shader");
-		}
-
-		// Mesh 1
-		{
-			eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[] =
-			{
-				{ 0.0f, 0.0f, 0.0f },
-				{ 1.0f, 1.0f, 0.0f },
-				{ 1.0f, 0.0f, 0.0f },
-				{ 0.0f, 1.0f, 0.0f }
-			};
-			uint16_t indexData[] =
-			{
-				0,
-				1,
-				2,
-				1,
-				0,
-				3
-			};
-			int vertexCount = static_cast<int>(std::size(vertexData));
-			int indexCount = static_cast<int>(std::size(indexData));
-			meshTest[0]->CreateMesh(meshTest[0], vertexData, vertexCount, indexData, indexCount);
-		}
-
-		// Mesh 2
-		{
-			eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[] =
-			{
-				{ -1.0f, -1.0f, 0.0f },
-				{ -1.0f, 0.0f, 0.0f },
-				{ 0.0f, 0.0f, 0.0f }
-			};
-			uint16_t indexData[] = {
-				0,
-				1,
-				2,
-			};
-			int vertexCount = static_cast<int>(std::size(vertexData));
-			int indexCount = static_cast<int>(std::size(indexData));
-			meshTest[1]->CreateMesh(meshTest[1], vertexData, vertexCount, indexData, indexCount);
-		}
-	}*/
-
-	eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[] =
+	// Mesh 1
 	{
-		{ 0.5f, 0.5f, 0.0f },
-		{ 0.5f, -0.5f, 0.0f },
-		{ -0.5f, 0.5f, 0.0f },
-		{ -0.5f, -0.5f, 0.0f }
-	};
-	uint16_t indexData[] =
-	{
-		0,1,2,
-		1,3,2
-	};
-	int vertexCount = static_cast<int>(std::size(vertexData));
-	int indexCount = static_cast<int>(std::size(indexData));
-	entity.Initialize(vertexData, vertexCount, indexData, indexCount,
-		"data/Shaders/Vertex/standard.shader",
-		"data/Shaders/Fragment/animatedshader.shader",
-		{0, 0, 0}, 5.f);
+		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[] =
+		{
+			{ 0.5f, 0.5f, 0.0f },
+			{ 0.5f, -0.5f, 0.0f },
+			{ -0.5f, 0.5f, 0.0f },
+			{ -0.5f, -0.5f, 0.0f }
+		};
+		uint16_t indexData[] =
+		{
+			0,1,2,
+			1,3,2
+		};
+		int vertexCount = static_cast<int>(std::size(vertexData));
+		int indexCount = static_cast<int>(std::size(indexData));
+		Graphics::cMesh::CreateMesh(meshes[0], vertexData, vertexCount, indexData, indexCount);
+		meshCount++;
+	}
 
-	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f, 10.f);
+	// Mesh 2
+	{
+		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[] =
+		{
+			{ -0.5f, -0.5f, 0.0f },
+			{ -0.5f, 0.5f, 0.0f },
+			{ 0.5f, 0.5f, 0.0f }
+		};
+		uint16_t indexData[] = {
+			0,
+			1,
+			2,
+		};
+		int vertexCount = static_cast<int>(std::size(vertexData));
+		int indexCount = static_cast<int>(std::size(indexData));
+		Graphics::cMesh::CreateMesh(meshes[1], vertexData, vertexCount, indexData, indexCount);
+		meshCount++;
+	}
+
+	// Effect 1
+	{
+		Graphics::cEffect::CreateEffect(effects[0], "data/Shaders/Vertex/standard.shader",
+			"data/Shaders/Fragment/animatedshader.shader");
+		effectCount++;
+	}
+
+	// Effect 2
+	{
+		Graphics::cEffect::CreateEffect(effects[1],
+			"data/Shaders/Vertex/standard.shader",
+			"data/Shaders/Fragment/standard.shader");
+		effectCount++;
+	}
+
+	entity.Initialize({ 0, 0, 0 }, 5.f);
+	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f, 5.f);
+
+	bgColor[0] = 0.0f;
+	bgColor[1] = 0.5f;
+	bgColor[2] = 0.0f;
+	bgColor[3] = 1.0f;
 
 	return Results::Success;
 }
 
 eae6320::cResult eae6320::cMyGame::CleanUp()
 {
-	entity.CleanUp();
+	for (int i = 0; i < meshCount; i++) {
+		meshes[i]->DecrementReferenceCount();
+	}
+	for (int i = 0; i < effectCount; i++) {
+		effects[i]->DecrementReferenceCount();
+	}
 	return Results::Success;
 }

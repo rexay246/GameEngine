@@ -24,6 +24,7 @@
 	#define TransformVectorWithMatrix(g_transform_cameraToProjected, g_transform_worldToCamera, vertexPosition_world) o_vertexPosition_projected = mul(g_transform_cameraToProjected, mul(g_transform_worldToCamera, vertexPosition_world))
 	#define MainDefineVertexShader main(in const float3 i_vertexPosition_local : POSITION,out float4 o_vertexPosition_projected : SV_POSITION)
 	#define OutputPos
+	#define CalculateVertexPositionWorld(g_transform_localToWorld, vertexPosition_local) vertexPosition_world = mul(g_transform_localToWorld, vertexPosition_local)
 	#define MainDefineFragmentShader main(in const float4 i_fragmentPosition : SV_POSITION, out float4 o_color : SV_TARGET)
 	#define OutputColor
 
@@ -34,8 +35,9 @@
 	#define float2 vec2
 	#define float4 vec4
 	#define TransformVectorWithMatrix(g_transform_cameraToProjected, g_transform_worldToCamera, vertexPosition_world) gl_Position = g_transform_cameraToProjected * (g_transform_worldToCamera * vertexPosition_world)
-	#define MainDefine main()
+	#define MainDefineVertexShader main()
 	#define OutputPos layout( location = 0 ) in vec3 i_vertexPosition_local;
+	#define CalculateVertexPositionWorld(g_transform_localToWorld, vertexPosition_local) vertexPosition_world = g_transform_localToWorld * vertexPosition_local
 	#define MainDefineFragmentShader main()
 	#define OutputColor out vec4 o_color;
 

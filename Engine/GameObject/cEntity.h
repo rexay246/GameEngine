@@ -9,19 +9,14 @@ namespace eae6320 {
 	namespace GameObject {
 		class cEntity : public cGameObject {
 		public:
-			~cEntity();
-			void Initialize(Graphics::VertexFormats::sVertex_mesh* vertexData, 
-				int vertexCount, uint16_t* indexData, int indexCount,
-				std::string vertexShader, std::string fragmentShader,
-				Math::sVector position, float speed);
-			void Rendering(const float i_elapsedSecondCount_sinceLastSimulationUpdate);
-			void CleanUp();
+
+			void Initialize(Math::sVector position, float speed);
+			void Rendering(Graphics::cMesh* mesh, Graphics::cEffect* effect, 
+				const float i_elapsedSecondCount_sinceLastSimulationUpdate);
 
 			float GetSpeed() { return m_speed; }
 
 		private:
-			Graphics::cEffect* m_effect;
-			Graphics::cMesh* m_mesh;
 			float m_speed;
 		};
 	}

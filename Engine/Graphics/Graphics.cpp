@@ -120,14 +120,14 @@ void eae6320::Graphics::CreateGameObject(eae6320::Graphics::cMesh* meshes, eae63
 	num++;
 }
 
-void eae6320::Graphics::SubmitCameraSpace(eae6320::GameObject::cCamera camera) {
+void eae6320::Graphics::SubmitCameraSpace(Math::cQuaternion orientation, Math::sVector position, float fovInDegrees, float nearPlane, float farPlane, float aspectRatio) {
 	EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread);
 	auto& constantData_frame = s_dataBeingSubmittedByApplicationThread->constantData_frame;
 	constantData_frame.g_transform_worldToCamera = 
-		constantData_frame.g_transform_worldToCamera.CreateWorldToCameraTransform(camera.GetPhysicsState()->orientation, camera.GetPhysicsState()->position);
+		constantData_frame.g_transform_worldToCamera.CreateWorldToCameraTransform(orientation, position);
 	constantData_frame.g_transform_cameraToProjected = 
-		constantData_frame.g_transform_cameraToProjected.CreateCameraToProjectedTransform_perspective(Math::ConvertDegreesToRadians(camera.GetFOV()),
-		1.f, camera.GetNearPlane(), camera.GetFarPlane());
+		constantData_frame.g_transform_cameraToProjected.CreateCameraToProjectedTransform_perspective(Math::ConvertDegreesToRadians(fovInDegrees),
+			aspectRatio, nearPlane, farPlane);
 }
 
 eae6320::cResult eae6320::Graphics::WaitUntilDataForANewFrameCanBeSubmitted(const unsigned int i_timeToWait_inMilliseconds)

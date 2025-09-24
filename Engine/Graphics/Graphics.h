@@ -11,10 +11,10 @@
 #include "Configuration.h"
 #include "cMesh.h"
 #include "cEffect.h"
-#include "Engine/GameObject/cCamera.h"
 
 #include <cstdint>
 #include <Engine/Results/Results.h>
+#include <Engine/Physics/sRigidBodyState.h>
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include <Engine/Windows/Includes.h>
@@ -44,7 +44,7 @@ namespace eae6320
 
 		void CreateGameObject(eae6320::Graphics::cMesh* meshes, eae6320::Graphics::cEffect* effect, Math::sVector position);
 
-		void SubmitCameraSpace(eae6320::GameObject::cCamera camera);
+		void SubmitCameraSpace(Math::cQuaternion orientation, Math::sVector position, float fovInDegrees, float nearPlane, float farPlane, float aspectRatio);
 
 		// When the application is ready to submit data for a new frame
 		// it should call this before submitting anything

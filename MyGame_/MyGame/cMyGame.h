@@ -78,13 +78,13 @@ namespace eae6320
 		void SubmitDataToBeRendered( const float i_elapsedSecondCount_systemTime, 
 			const float i_elapsedSecondCount_sinceLastSimulationUpdate );
 		void UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate);
-		float GetSimulationUpdatePeriod_inSeconds() const { return 1.0f / 15.0f; };
 
+		float bgColor[4];
 
-		//int numOfPairs = 2;
-		//Graphics::cMesh* meshTest[2];
-		//Graphics::cEffect* effectTest[2];
-		//Graphics::cEffect* changedEffect[2];
+		Graphics::cMesh* meshes[100];
+		int meshCount = 0;
+		Graphics::cEffect* effects[100];
+		int effectCount = 0;
 
 		GameObject::cEntity entity;
 		GameObject::cCamera camera;
