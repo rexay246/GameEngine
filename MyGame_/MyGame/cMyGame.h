@@ -77,6 +77,9 @@ namespace eae6320
 		void UpdateSimulationBasedOnInput() final;
 		void SubmitDataToBeRendered( const float i_elapsedSecondCount_systemTime, 
 			const float i_elapsedSecondCount_sinceLastSimulationUpdate );
+		void UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate);
+		float GetSimulationUpdatePeriod_inSeconds() const { return 1.0f / 15.0f; };
+
 
 		//int numOfPairs = 2;
 		//Graphics::cMesh* meshTest[2];

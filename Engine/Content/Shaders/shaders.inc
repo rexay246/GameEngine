@@ -53,3 +53,8 @@ DeclareConstantBuffer(g_constantBuffer_frame, 0)
 	float2 g_padding;
 };
 
+DeclareConstantBuffer(g_constantBuffer_drawCall, 2)
+{
+	float4x4 g_transform_localToWorld;
+};
+

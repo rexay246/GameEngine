@@ -10,8 +10,11 @@ namespace eae6320 {
 		public:
 			~cGameObject();
 			Physics::sRigidBodyState* GetPhysicsState();
-			void Rendering(const float i_elapsedSecondCount_sinceLastSimulationUpdate);
+			void Update(const float i_elapsedSecondCount_sinceLastSimulationUpdate);
+
 			void SetPosition(Math::sVector position);
+			Math::sVector GetPosition() { return m_physicsState->position; }
+
 			void SetVelocity(Math::sVector velocity);
 		private:
 			Physics::sRigidBodyState* m_physicsState = new Physics::sRigidBodyState();

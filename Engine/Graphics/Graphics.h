@@ -42,7 +42,7 @@ namespace eae6320
 
 		void SetBackgroundColor(float color[4]);
 
-		void CreateGameObject(eae6320::Graphics::cMesh* meshes, eae6320::Graphics::cEffect* effect);
+		void CreateGameObject(eae6320::Graphics::cMesh* meshes, eae6320::Graphics::cEffect* effect, Math::sVector position);
 
 		void SubmitCameraSpace(eae6320::GameObject::cCamera camera);
 

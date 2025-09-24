@@ -37,18 +37,23 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput() {
 
 	Math::sVector input = { 0, 0, 0 };
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Up)) {
-		input.y += camera.GetSpeed();
+		input.y += entity.GetSpeed();
 	}
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Down)) {
-		input.y -= camera.GetSpeed();
+		input.y -= entity.GetSpeed();
 	}
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Left)) {
-		input.x -= camera.GetSpeed();
+		input.x -= entity.GetSpeed();
 	}
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Right)) {
-		input.x += camera.GetSpeed();
+		input.x += entity.GetSpeed();
 	}
-	camera.SetVelocity(input);
+	entity.SetVelocity(input);
+}
+
+void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) {
+	entity.Update(i_elapsedSecondCount_sinceLastUpdate);
+	camera.Update(i_elapsedSecondCount_sinceLastUpdate);
 }
 
 void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime,
@@ -66,8 +71,10 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 	//for (int i = 0; i < pairsUsed; i++) {
 	//	Graphics::CreateGameObject(meshTest[i], usedEffect[i]);
 	//}
-	entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
-	camera.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	//entity.Update(1.0f / 15.0f);
+	//camera.Update(1.0f / 15.0f);
+	//entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	entity.Rendering(GetSimulationUpdatePeriod_inSeconds());
 	Graphics::SubmitCameraSpace(camera);
 }
 
@@ -165,9 +172,9 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 	entity.Initialize(vertexData, vertexCount, indexData, indexCount,
 		"data/Shaders/Vertex/standard.shader",
 		"data/Shaders/Fragment/animatedshader.shader",
-		{0, 0, 0}, 2);
+		{0, 0, 0}, 0.05f);
 
-	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f, 1.f);
+	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f, 10.f);
 
 	return Results::Success;
 }

@@ -30,6 +30,7 @@ namespace
 
 	// Constant buffer object
 	eae6320::Graphics::cConstantBuffer s_constantBuffer_frame(eae6320::Graphics::ConstantBufferTypes::Frame);
+	eae6320::Graphics::cConstantBuffer s_constantBuffer_drawCall(eae6320::Graphics::ConstantBufferTypes::DrawCall);
 
 	// Submission Data
 	//----------------
@@ -39,6 +40,7 @@ namespace
 	struct sDataRequiredToRenderAFrame
 	{
 		eae6320::Graphics::ConstantBufferFormats::sFrame constantData_frame;
+		eae6320::Graphics::ConstantBufferFormats::sDrawCall constantData_drawCall[MAX_MEMORY_SIZE];
 		float background_color[4];
 		eae6320::Graphics::cMesh* meshes[MAX_MEMORY_SIZE];
 		eae6320::Graphics::cEffect* effects[MAX_MEMORY_SIZE];
@@ -105,14 +107,16 @@ void eae6320::Graphics::SetBackgroundColor(float color[4]) {
 	}
 }
 
-void eae6320::Graphics::CreateGameObject(eae6320::Graphics::cMesh* meshes, eae6320::Graphics::cEffect* effect) {
+void eae6320::Graphics::CreateGameObject(eae6320::Graphics::cMesh* meshes, eae6320::Graphics::cEffect* effect, Math::sVector position) {
 	EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread);
 	auto& meshes_render = s_dataBeingSubmittedByApplicationThread->meshes;
 	auto& effects_render = s_dataBeingSubmittedByApplicationThread->effects;
+	auto& position_render = s_dataBeingSubmittedByApplicationThread->constantData_drawCall;
 	auto& num = s_dataBeingSubmittedByApplicationThread->numOfPairs;
 
 	meshes_render[num] = meshes;
 	effects_render[num] = effect;
+	position_render[num].g_transform_localToWorld = Math::cMatrix_transformation(Math::cQuaternion(), position);
 	num++;
 }
 
@@ -189,8 +193,13 @@ void eae6320::Graphics::RenderFrame()
 		auto& meshes_render = dataRequiredToRenderFrame->meshes;
 		auto& effects_render = dataRequiredToRenderFrame->effects;
 		auto& num = dataRequiredToRenderFrame->numOfPairs;
+		auto& constantData_drawCall = dataRequiredToRenderFrame->constantData_drawCall;
 		for (int i = 0; i < num; i++) {
 			effects_render[i]->BindEffect();
+
+			// Update the draw call constant buffer
+			s_constantBuffer_drawCall.Update(&constantData_drawCall[i]);
+
 			meshes_render[i]->DrawMesh();
 		}
 		num = 0;
@@ -252,6 +261,22 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 			return result;
 		}
 	}
+	// Initialize the platform-independent draw call objects
+	{
+		if (result = s_constantBuffer_drawCall.Initialize())
+		{
+			// There is only a single frame constant buffer that is reused
+			// and so it can be bound at initialization time and never unbound
+			s_constantBuffer_drawCall.Bind(
+				// In our class both vertex and fragment shaders use per-frame constant data
+				static_cast<uint_fast8_t>(eShaderType::Vertex) | static_cast<uint_fast8_t>(eShaderType::Fragment));
+		}
+		else
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without draw call constant buffer");
+			return result;
+		}
+	}
 	// Initialize the events
 	{
 		if (!(result = s_whenAllDataHasBeenSubmittedFromApplicationThread.Initialize(Concurrency::EventType::ResetAutomaticallyAfterBeingSignaled)))
@@ -300,6 +325,18 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 			if (result)
 			{
 				result = result_constantBuffer_frame;
+			}
+		}
+	}
+
+	{
+		const auto result_constantBuffer_drawCall = s_constantBuffer_drawCall.CleanUp();
+		if (!result_constantBuffer_drawCall)
+		{
+			EAE6320_ASSERT(false);
+			if (result)
+			{
+				result = result_constantBuffer_drawCall;
 			}
 		}
 	}

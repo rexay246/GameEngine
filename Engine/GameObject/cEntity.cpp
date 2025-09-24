@@ -12,8 +12,8 @@ void eae6320::GameObject::cEntity::Initialize(Graphics::VertexFormats::sVertex_m
 }
 
 void eae6320::GameObject::cEntity::Rendering(const float i_elapsedSecondCount_sinceLastSimulationUpdate) {
-	cGameObject::Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
-	Graphics::CreateGameObject(m_mesh, m_effect);
+	SetPosition(GetPhysicsState()->PredictFuturePosition(i_elapsedSecondCount_sinceLastSimulationUpdate));
+	Graphics::CreateGameObject(m_mesh, m_effect, GetPosition());
 }
 
 void eae6320::GameObject::cEntity::CleanUp() {
