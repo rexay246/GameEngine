@@ -2,12 +2,30 @@
 
 void eae6320::GameObject::cEntity::Initialize(Math::sVector position, float speed)
 {
-	m_speed = speed;
+	SetSpeed(speed);
 	SetPosition(position);
 }
 
-void eae6320::GameObject::cEntity::Rendering(Graphics::cMesh* mesh, Graphics::cEffect* effect, const float i_elapsedSecondCount_sinceLastSimulationUpdate)
+void eae6320::GameObject::cEntity::setMeshAndEffect(Graphics::cMesh* mesh, Graphics::cEffect* effect)
 {
-	Graphics::CreateGameObject(mesh, effect,
-		GetPhysicsState()->PredictFuturePosition(i_elapsedSecondCount_sinceLastSimulationUpdate));
+	m_mesh = mesh;
+	m_mesh->IncrementReferenceCount();
+	m_effect = effect;
+	m_effect->IncrementReferenceCount();
+}
+
+void eae6320::GameObject::cEntity::Rendering(const float i_elapsedSecondCount_sinceLastSimulationUpdate)
+{
+	if (m_mesh != nullptr && m_effect != nullptr)
+		Graphics::CreateGameObject(m_mesh, m_effect,
+			GetPhysicsState()->PredictFuturePosition(i_elapsedSecondCount_sinceLastSimulationUpdate));
+}
+
+void eae6320::GameObject::cEntity::CleanUp() {
+	if (m_mesh != nullptr && m_effect != nullptr) {
+		m_mesh->DecrementReferenceCount();
+		m_mesh = nullptr;
+		m_effect->DecrementReferenceCount();
+		m_effect = nullptr;
+	}
 }

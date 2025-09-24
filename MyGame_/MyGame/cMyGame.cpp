@@ -72,8 +72,13 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 
 	Graphics::cMesh* renderMesh = hideObjects ? meshes[1] : meshes[0];
 	Graphics::cEffect* renderEffect = changeEffects ? effects[1] : effects[0];
-	entity.Rendering(renderMesh, renderEffect, i_elapsedSecondCount_sinceLastSimulationUpdate);
-	camera.RenderCamera(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	entity.setMeshAndEffect(renderMesh, renderEffect);
+	entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	camera.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	renderMesh->DecrementReferenceCount();
+	renderMesh = nullptr;
+	renderEffect->DecrementReferenceCount();
+	renderEffect = nullptr;
 }
 
 // Initialize / Clean Up
@@ -148,11 +153,14 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 
 eae6320::cResult eae6320::cMyGame::CleanUp()
 {
+	entity.CleanUp();
 	for (int i = 0; i < meshCount; i++) {
 		meshes[i]->DecrementReferenceCount();
+		meshes[i] = nullptr;
 	}
 	for (int i = 0; i < effectCount; i++) {
 		effects[i]->DecrementReferenceCount();
+		effects[i] = nullptr;
 	}
 	return Results::Success;
 }

@@ -11,13 +11,13 @@ namespace eae6320 {
 		public:
 
 			void Initialize(Math::sVector position, float speed);
-			void Rendering(Graphics::cMesh* mesh, Graphics::cEffect* effect, 
-				const float i_elapsedSecondCount_sinceLastSimulationUpdate);
-
-			float GetSpeed() { return m_speed; }
+			void setMeshAndEffect(Graphics::cMesh* mesh, Graphics::cEffect* effect);
+			void Rendering(const float i_elapsedSecondCount_sinceLastSimulationUpdate) final;
+			void CleanUp();
 
 		private:
-			float m_speed;
+			Graphics::cMesh* m_mesh = nullptr;
+			Graphics::cEffect* m_effect = nullptr;
 		};
 	}
 }

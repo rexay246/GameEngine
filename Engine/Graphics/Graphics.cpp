@@ -115,7 +115,9 @@ void eae6320::Graphics::CreateGameObject(eae6320::Graphics::cMesh* meshes, eae63
 	auto& num = s_dataBeingSubmittedByApplicationThread->numOfPairs;
 
 	meshes_render[num] = meshes;
+	meshes_render[num]->IncrementReferenceCount();
 	effects_render[num] = effect;
+	effects_render[num]->IncrementReferenceCount();
 	position_render[num].g_transform_localToWorld = Math::cMatrix_transformation(Math::cQuaternion(), position);
 	num++;
 }
@@ -202,25 +204,7 @@ void eae6320::Graphics::RenderFrame()
 
 			meshes_render[i]->DrawMesh();
 		}
-		num = 0;
 	}
-
-	//// Bind the first shading data
-	//{
-	//	s_effect->BindEffect();
-	//}
-	//// Draw the first geometry
-	//{
-	//	s_mesh->DrawMesh();
-	//}
-	//// Bind the second shading data
-	//{
-	//	s_effect2->BindEffect();
-	//}
-	//// Draw the second geometry
-	//{
-	//	s_mesh2->DrawMesh();
-	//}
 
 	s_view->SwapViewBuffers();
 

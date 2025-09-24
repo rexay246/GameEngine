@@ -6,13 +6,13 @@ void eae6320::GameObject::cCamera::Initialize(Math::sVector position, float fovI
 	m_fov = fovInDegree;
 	m_nearPlane = near_plane;
 	m_farPlane = far_plane;
-	m_speed = speed;
+	SetSpeed(speed);
 	m_aspectRatio = aspectRatio;
 }
 
-void eae6320::GameObject::cCamera::RenderCamera(const float i_elapsedSecondCount_sinceLastUpdate)
+void eae6320::GameObject::cCamera::Rendering(const float i_elapsedSecondCount_sinceLastSimulationUpdate)
 {
 	Graphics::SubmitCameraSpace(GetPhysicsState()->orientation,
-		GetPhysicsState()->PredictFuturePosition(i_elapsedSecondCount_sinceLastUpdate),
+		GetPhysicsState()->PredictFuturePosition(i_elapsedSecondCount_sinceLastSimulationUpdate),
 		m_fov, m_nearPlane, m_farPlane, m_aspectRatio);
 }
