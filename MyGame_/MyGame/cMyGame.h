@@ -11,6 +11,8 @@
 #include <Engine/Application/iApplication.h>
 #include <Engine/Results/Results.h>
 #include <Engine/Graphics/Graphics.h>
+#include <Engine/GameObject/cEntity.h>
+#include <Engine/GameObject/cCamera.h>
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include "Resource Files/Resource.h"
@@ -75,11 +77,17 @@ namespace eae6320
 		void UpdateSimulationBasedOnInput() final;
 		void SubmitDataToBeRendered( const float i_elapsedSecondCount_systemTime, 
 			const float i_elapsedSecondCount_sinceLastSimulationUpdate );
+		void UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate);
 
-		int numOfPairs = 2;
-		Graphics::cMesh* meshTest[2];
-		Graphics::cEffect* effectTest[2];
-		Graphics::cEffect* changedEffect[2];
+		float bgColor[4];
+
+		Graphics::cMesh* meshes[100];
+		int meshCount = 0;
+		Graphics::cEffect* effects[100];
+		int effectCount = 0;
+
+		GameObject::cEntity entity;
+		GameObject::cCamera camera;
 
 		bool hideObjects = false;
 		bool changeEffects = false;
