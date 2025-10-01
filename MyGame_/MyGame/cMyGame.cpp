@@ -88,40 +88,13 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 {
 	// Mesh 1
 	{
-		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[] =
-		{
-			{ 0.5f, 0.5f, 0.0f },
-			{ 0.5f, -0.5f, 0.0f },
-			{ -0.5f, 0.5f, 0.0f },
-			{ -0.5f, -0.5f, 0.0f }
-		};
-		uint16_t indexData[] =
-		{
-			0,1,2,
-			1,3,2
-		};
-		int vertexCount = static_cast<int>(std::size(vertexData));
-		int indexCount = static_cast<int>(std::size(indexData));
-		Graphics::cMesh::CreateMesh(meshes[0], vertexData, vertexCount, indexData, indexCount);
+		Graphics::cMesh::Load(meshes[0], "data/Meshes/mesh.mesh");
 		meshCount++;
 	}
 
 	// Mesh 2
 	{
-		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[] =
-		{
-			{ -0.5f, -0.5f, 0.0f },
-			{ -0.5f, 0.5f, 0.0f },
-			{ 0.5f, 0.5f, 0.0f }
-		};
-		uint16_t indexData[] = {
-			0,
-			1,
-			2,
-		};
-		int vertexCount = static_cast<int>(std::size(vertexData));
-		int indexCount = static_cast<int>(std::size(indexData));
-		Graphics::cMesh::CreateMesh(meshes[1], vertexData, vertexCount, indexData, indexCount);
+		Graphics::cMesh::Load(meshes[1], "data/Meshes/mesh2.mesh");
 		meshCount++;
 	}
 

@@ -15,5 +15,6 @@ return
 	meshes = 
 	{
 		{ path = "Meshes/mesh.mesh" },
+		{ path = "Meshes/mesh2.mesh" },
 	}
 }
