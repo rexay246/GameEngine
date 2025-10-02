@@ -16,6 +16,8 @@
 #include <cstdint>
 #include <Engine/Results/Results.h>
 #include <Engine/Assets/ReferenceCountedAssets.h>
+#include <string>
+#include <External/Lua/Includes.h>
 
 // Forward Declarations
 //=====================
@@ -29,11 +31,7 @@ namespace eae6320 {
 		class cMesh {
 
 		public:
-			static cResult CreateMesh(cMesh*& o_mesh,
-				eae6320::Graphics::VertexFormats::sVertex_mesh* vertexData,
-				int vertexCount,
-				uint16_t* indexData,
-				int indexCount);
+			static cResult Load(cMesh*& o_mesh, const std::string& i_path);
 			void DrawMesh();
 
 			EAE6320_ASSETS_DECLAREREFERENCECOUNTINGFUNCTIONS();
@@ -66,6 +64,27 @@ namespace eae6320 {
 				int vertexCount,
 				uint16_t* indexData,
 				int indexCount);
+			static cResult CreateMesh(cMesh*& o_mesh,
+				eae6320::Graphics::VertexFormats::sVertex_mesh* vertexData,
+				int vertexCount,
+				uint16_t* indexData,
+				int indexCount);
+
+			cResult LoadTableValues(lua_State& io_luaState, cMesh*& o_mesh);
+			cResult LoadTableValues_Vertices(lua_State& io_luaState, 
+				eae6320::Graphics::VertexFormats::sVertex_mesh* vertexData,
+				int& vertexCount);
+			cResult LoadTableValues_Vertices_Paths(lua_State& io_luaState,
+				eae6320::Graphics::VertexFormats::sVertex_mesh* vertexData,
+				int& vertexCount);
+			cResult LoadTableValues_Indices(lua_State& io_luaState, 
+				uint16_t* indexData, int& indexCount);
+			cResult LoadTableValues_Indices_Paths(lua_State& io_luaState, 
+				uint16_t* indexData, int& indexCount);
+			cResult LoadTableValues_Indices_Paths_Vertices(lua_State& io_luaState,
+				uint16_t* indexData, int& indexCount, int startCount, 
+				int indexCountPerMesh);
+
 			cResult CleanUp();
 			cMesh() = default;
 			~cMesh();
