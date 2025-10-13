@@ -70,15 +70,12 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 
 	Graphics::SetBackgroundColor(bgColor);
 
-	Graphics::cMesh* renderMesh = hideObjects ? meshes[1] : meshes[0];
-	Graphics::cEffect* renderEffect = changeEffects ? effects[1] : effects[0];
-	entity.setMeshAndEffect(renderMesh, renderEffect);
+	GameObject::cEntity entity2;
+	entity.setMeshAndEffect(meshes[0], effects[0]);
+	entity2.setMeshAndEffect(meshes[1], effects[1]);
 	entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	entity2.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 	camera.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
-	renderMesh->DecrementReferenceCount();
-	renderMesh = nullptr;
-	renderEffect->DecrementReferenceCount();
-	renderEffect = nullptr;
 }
 
 // Initialize / Clean Up
@@ -88,13 +85,13 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 {
 	// Mesh 1
 	{
-		Graphics::cMesh::Load(meshes[0], "data/Meshes/mesh.mesh");
+		Graphics::cMesh::Load(meshes[0], "data/Meshes/test.mesh");
 		meshCount++;
 	}
 
 	// Mesh 2
 	{
-		Graphics::cMesh::Load(meshes[1], "data/Meshes/mesh2.mesh");
+		Graphics::cMesh::Load(meshes[1], "data/Meshes/test2.mesh");
 		meshCount++;
 	}
 

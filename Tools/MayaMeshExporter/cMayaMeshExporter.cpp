@@ -799,7 +799,9 @@ namespace
 					"{" "\n";
 				for (sVertexInfo vertexInfo : i_vertexArray) {
 
-					fout << "{ x = " << vertexInfo.vertex.x << ", y = " << vertexInfo.vertex.y << ", z = " << vertexInfo.vertex.z << " }, " "\n";
+					fout << "{ x = " << vertexInfo.vertex.x << ", y = " << 
+						vertexInfo.vertex.y << ", z = " << 
+						vertexInfo.vertex.z << " }, " "\n";
 				}
 				fout << "}," "\n";
 

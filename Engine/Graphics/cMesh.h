@@ -72,17 +72,17 @@ namespace eae6320 {
 
 			cResult LoadTableValues(lua_State& io_luaState, cMesh*& o_mesh);
 			cResult LoadTableValues_Vertices(lua_State& io_luaState, 
-				eae6320::Graphics::VertexFormats::sVertex_mesh* vertexData,
+				eae6320::Graphics::VertexFormats::sVertex_mesh*& vertexData,
 				int& vertexCount);
 			cResult LoadTableValues_Vertices_Paths(lua_State& io_luaState,
-				eae6320::Graphics::VertexFormats::sVertex_mesh* vertexData,
+				eae6320::Graphics::VertexFormats::sVertex_mesh*& vertexData,
 				int& vertexCount);
 			cResult LoadTableValues_Indices(lua_State& io_luaState, 
-				uint16_t* indexData, int& indexCount);
+				uint16_t*& indexData, int& indexCount);
 			cResult LoadTableValues_Indices_Paths(lua_State& io_luaState, 
-				uint16_t* indexData, int& indexCount);
+				uint16_t*& indexData, int& indexCount);
 			cResult LoadTableValues_Indices_Paths_Vertices(lua_State& io_luaState,
-				uint16_t* indexData, int& indexCount, int startCount, 
+				uint16_t*& indexData, int& indexCount, int startCount, 
 				int indexCountPerMesh);
 
 			cResult CleanUp();
