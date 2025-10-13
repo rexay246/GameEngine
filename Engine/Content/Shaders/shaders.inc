@@ -27,6 +27,7 @@
 	#define CalculateVertexPositionWorld(g_transform_localToWorld, vertexPosition_local) vertexPosition_world = mul(g_transform_localToWorld, vertexPosition_local)
 	#define MainDefineFragmentShader main(in const float4 i_fragmentPosition : SV_POSITION, out float4 o_color : SV_TARGET)
 	#define OutputColor
+	#define InputColor in const float4 i_color : COLOR;
 
 #elif defined( EAE6320_PLATFORM_GL )
 
@@ -40,7 +41,7 @@
 	#define CalculateVertexPositionWorld(g_transform_localToWorld, vertexPosition_local) vertexPosition_world = g_transform_localToWorld * vertexPosition_local
 	#define MainDefineFragmentShader main()
 	#define OutputColor out vec4 o_color;
-
+	#define InputColor layout( location = 1 ) in vec4 i_color;
 
 #endif
 
