@@ -71,11 +71,24 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 	Graphics::SetBackgroundColor(bgColor);
 
 	GameObject::cEntity entity2;
-	entity.setMeshAndEffect(meshes[0], effects[0]);
-	entity2.setMeshAndEffect(meshes[1], effects[1]);
+	GameObject::cEntity entity3;
+
+	entity2.setMeshAndEffect(meshes[0], effects[0]);
+	entity.setMeshAndEffect(meshes[1], effects[1]);
+	entity3.setMeshAndEffect(meshes[2], effects[2]);
+
 	entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 	entity2.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	entity3.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+
 	camera.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+
+	for (int i = 0; i < meshCount; i++) {
+		meshes[i]->DecrementReferenceCount();
+	}
+	for (int i = 0; i < effectCount; i++) {
+		effects[i]->DecrementReferenceCount();
+	}
 }
 
 // Initialize / Clean Up
@@ -95,6 +108,12 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		meshCount++;
 	}
 
+	// Mesh 3
+	{
+		Graphics::cMesh::Load(meshes[2], "data/Meshes/test3.mesh");
+		meshCount++;
+	}
+
 	// Effect 1
 	{
 		Graphics::cEffect::CreateEffect(effects[0], "data/Shaders/Vertex/standard.shader",
@@ -107,6 +126,13 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		Graphics::cEffect::CreateEffect(effects[1],
 			"data/Shaders/Vertex/standard.shader",
 			"data/Shaders/Fragment/standard.shader");
+		effectCount++;
+	}
+
+	// Effect 3
+	{
+		Graphics::cEffect::CreateEffect(effects[2], "data/Shaders/Vertex/standard.shader",
+			"data/Shaders/Fragment/animatedshader.shader");
 		effectCount++;
 	}
 

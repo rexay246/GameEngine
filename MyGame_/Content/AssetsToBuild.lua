@@ -18,5 +18,6 @@ return
 		{ path = "Meshes/mesh2.mesh" },
 		{ path = "Meshes/test.mesh" },
 		{ path = "Meshes/test2.mesh" },
+		{ path = "Meshes/test3.mesh" },
 	}
 }
