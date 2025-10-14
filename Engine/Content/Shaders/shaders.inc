@@ -25,9 +25,9 @@
 	#define MainDefineVertexShader main(in const float3 i_vertexPosition_local : POSITION,out float4 o_vertexPosition_projected : SV_POSITION)
 	#define OutputPos
 	#define CalculateVertexPositionWorld(g_transform_localToWorld, vertexPosition_local) vertexPosition_world = mul(g_transform_localToWorld, vertexPosition_local)
-	#define MainDefineFragmentShader main(in const float4 i_fragmentPosition : SV_POSITION, out float4 o_color : SV_TARGET)
+	#define MainDefineFragmentShader main(in const float4 i_fragmentPosition : SV_POSITION, in const float4 i_color : COLOR, out float4 o_color : SV_TARGET)
 	#define OutputColor
-	#define InputColor in const float4 i_color : COLOR;
+	#define InputColor
 
 #elif defined( EAE6320_PLATFORM_GL )
 
