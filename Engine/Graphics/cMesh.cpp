@@ -234,7 +234,27 @@ eae6320::cResult eae6320::Graphics::cMesh::LoadTableValues_Vertices_Paths(lua_St
 		eae6320::cScopeGuard scopeGuard_popValueZ([&io_luaState] { lua_pop(&io_luaState, 1); });
 		const auto z = lua_tonumber(&io_luaState, -1);
 
-		vertexData[i - 1] = { (float) x, (float) y, (float) z };
+		lua_pushstring(&io_luaState, "r");
+		lua_gettable(&io_luaState, -5);
+		eae6320::cScopeGuard scopeGuard_popValueR([&io_luaState] { lua_pop(&io_luaState, 1); });
+		const auto r = lua_tonumber(&io_luaState, -1);
+
+		lua_pushstring(&io_luaState, "g");
+		lua_gettable(&io_luaState, -6);
+		eae6320::cScopeGuard scopeGuard_popValueG([&io_luaState] { lua_pop(&io_luaState, 1); });
+		const auto g = lua_tonumber(&io_luaState, -1);
+
+		lua_pushstring(&io_luaState, "b");
+		lua_gettable(&io_luaState, -7);
+		eae6320::cScopeGuard scopeGuard_popValueB([&io_luaState] { lua_pop(&io_luaState, 1); });
+		const auto b = lua_tonumber(&io_luaState, -1);
+
+		lua_pushstring(&io_luaState, "a");
+		lua_gettable(&io_luaState, -8);
+		eae6320::cScopeGuard scopeGuard_popValueA([&io_luaState] { lua_pop(&io_luaState, 1); });
+		const auto a = lua_tonumber(&io_luaState, -1);
+
+		vertexData[i - 1] = { (float) x, (float) y, (float) z , (uint8_t) r, (uint8_t) g , (uint8_t) b , (uint8_t) a };
 	}
 
 	return result;

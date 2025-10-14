@@ -33,7 +33,7 @@ void main(
 	// The shader program is only used to generate a vertex input layout object;
 	// the actual shading code is never used
 	o_position = float4( i_position, 1.0 );
-	o_color = (float4) i_color;
+	o_color = i_color;
 }
 
 #elif defined( EAE6320_PLATFORM_GL )
@@ -64,7 +64,7 @@ void main()
 {
 	// The shader program is only used by Direct3D
 	gl_Position = vec4( i_position, 1.0 );
-	o_color = (vec4) i_color;
+	o_color = i_color;
 }
 
 #endif

@@ -16,5 +16,5 @@ OutputColor
 void MainDefineFragmentShader
 {
 	// Output solid white
-	o_color = (vec4) i_color;
+	o_color = i_color;
 }
