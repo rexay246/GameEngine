@@ -71,15 +71,15 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 	Graphics::SetBackgroundColor(bgColor);
 
 	GameObject::cEntity entity2;
-	GameObject::cEntity entity3;
+	//GameObject::cEntity entity3;
 
 	entity2.setMeshAndEffect(meshes[0], effects[0]);
 	entity.setMeshAndEffect(meshes[1], effects[1]);
-	entity3.setMeshAndEffect(meshes[2], effects[2]);
+	//entity3.setMeshAndEffect(meshes[2], effects[2]);
 
 	entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 	entity2.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
-	entity3.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	//entity3.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 
 	camera.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 
@@ -98,21 +98,21 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 {
 	// Mesh 1
 	{
-		Graphics::cMesh::Load(meshes[0], "data/Meshes/test.mesh");
+		Graphics::cMesh::Load(meshes[0], "data/Meshes/mesh.mesh");
 		meshCount++;
 	}
 
 	// Mesh 2
 	{
-		Graphics::cMesh::Load(meshes[1], "data/Meshes/test2.mesh");
+		Graphics::cMesh::Load(meshes[1], "data/Meshes/mesh2.mesh");
 		meshCount++;
 	}
 
-	// Mesh 3
-	{
-		Graphics::cMesh::Load(meshes[2], "data/Meshes/test3.mesh");
-		meshCount++;
-	}
+	//// Mesh 3
+	//{
+	//	Graphics::cMesh::Load(meshes[2], "data/Meshes/test3.mesh");
+	//	meshCount++;
+	//}
 
 	// Effect 1
 	{
@@ -129,12 +129,12 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		effectCount++;
 	}
 
-	// Effect 3
-	{
-		Graphics::cEffect::CreateEffect(effects[2], "data/Shaders/Vertex/standard.shader",
-			"data/Shaders/Fragment/animatedshader.shader");
-		effectCount++;
-	}
+	//// Effect 3
+	//{
+	//	Graphics::cEffect::CreateEffect(effects[2], "data/Shaders/Vertex/standard.shader",
+	//		"data/Shaders/Fragment/animatedshader.shader");
+	//	effectCount++;
+	//}
 
 	entity.Initialize({ 0, 0, 0 }, 5.f);
 	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f, 5.f);
