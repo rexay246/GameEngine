@@ -15,6 +15,10 @@
 
 OutputPos
 
+layout( location = 1 ) in vec4 i_color;
+
+layout ( location = 1 ) out vec4 o_color;
+
 void MainDefineVertexShader
 {
 	// Transform the local vertex into world space
@@ -29,4 +33,5 @@ void MainDefineVertexShader
 	{
 		TransformVectorWithMatrix(g_transform_cameraToProjected, g_transform_worldToCamera, vertexPosition_world);
 	}
+	o_color = float4(i_color);
 }
