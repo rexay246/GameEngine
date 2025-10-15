@@ -22,12 +22,14 @@
 	#define vec2 float2
 	#define vec4 float4
 	#define TransformVectorWithMatrix(g_transform_cameraToProjected, g_transform_worldToCamera, vertexPosition_world) o_vertexPosition_projected = mul(g_transform_cameraToProjected, mul(g_transform_worldToCamera, vertexPosition_world))
-	#define MainDefineVertexShader main(in const float3 i_vertexPosition_local : POSITION,out float4 o_vertexPosition_projected : SV_POSITION)
+	#define MainDefineVertexShader main(in const float3 i_vertexPosition_local : POSITION, in const float4 i_color : COLOR, out float4 o_vertexPosition_projected : SV_POSITION, out float4 o_color : COLOR)
 	#define OutputPos
 	#define CalculateVertexPositionWorld(g_transform_localToWorld, vertexPosition_local) vertexPosition_world = mul(g_transform_localToWorld, vertexPosition_local)
 	#define MainDefineFragmentShader main(in const float4 i_fragmentPosition : SV_POSITION, in const float4 i_color : COLOR, out float4 o_color : SV_TARGET)
 	#define OutputColor
 	#define InputColor
+	#define InputColorVertex
+	#define OutputColorVertex
 
 #elif defined( EAE6320_PLATFORM_GL )
 
@@ -42,6 +44,8 @@
 	#define MainDefineFragmentShader main()
 	#define OutputColor out vec4 o_color;
 	#define InputColor layout( location = 1 ) in vec4 i_color;
+	#define InputColorVertex layout ( location = 1 ) in vec4 i_color;
+	#define OutputColorVertex layout ( location = 1 ) out vec4 o_color;
 
 #endif
 

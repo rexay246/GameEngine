@@ -15,9 +15,9 @@
 
 OutputPos
 
-layout( location = 1 ) in vec4 i_color;
+InputColorVertex
 
-layout ( location = 1 ) out vec4 o_color;
+OutputColorVertex
 
 void MainDefineVertexShader
 {

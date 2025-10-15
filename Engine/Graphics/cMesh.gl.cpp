@@ -170,9 +170,9 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(eae6320::Graphics::VertexF
 		// Offset = 0
 		{
 			constexpr GLuint vertexElementLocation = 1;
-			constexpr GLint elementCount = 3;
+			constexpr GLint elementCount = 4;
 			constexpr GLboolean notNormalized = GL_TRUE;	// The given floats should be used as-is
-			glVertexAttribPointer(vertexElementLocation, elementCount, GL_UNSIGNED_INT, notNormalized, stride,
+			glVertexAttribPointer(vertexElementLocation, elementCount, GL_UNSIGNED_BYTE, notNormalized, stride,
 				reinterpret_cast<GLvoid*>(offsetof(eae6320::Graphics::VertexFormats::sVertex_mesh, r)));
 			const auto errorCode = glGetError();
 			if (errorCode == GL_NO_ERROR)
