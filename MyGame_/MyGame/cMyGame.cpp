@@ -75,7 +75,7 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 
 	entity.setMeshAndEffect(meshes[0], effects[0]);
 	entity2.setMeshAndEffect(meshes[1], effects[1]);
-	entity3.setMeshAndEffect(meshes[2], effects[2]);
+	entity3.setMeshAndEffect(meshes[2], effects[0]);
 
 	entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 	entity2.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
@@ -83,14 +83,9 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 
 	camera.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 
-	for (int i = 0; i < meshCount; i++) {
-		if (meshes[i])
-			meshes[i]->DecrementReferenceCount();
-	}
-	for (int i = 0; i < effectCount; i++) {
-		if (effects[i])
-			effects[i]->DecrementReferenceCount();
-	}
+	entity.CleanUp();
+	entity2.CleanUp();
+	entity3.CleanUp();
 }
 
 // Initialize / Clean Up
@@ -128,13 +123,6 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		if ( Graphics::cEffect::CreateEffect(effects[1],
 			"data/Shaders/Vertex/standard.shader",
 			"data/Shaders/Fragment/standard.shader") )
-			effectCount++;
-	}
-
-	// Effect 3
-	{
-		if ( Graphics::cEffect::CreateEffect(effects[2], "data/Shaders/Vertex/standard.shader",
-			"data/Shaders/Fragment/animatedshader.shader") )
 			effectCount++;
 	}
 

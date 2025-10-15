@@ -24,5 +24,5 @@ void MainDefineFragmentShader
 	calculatedColor.r = sqrt(pow(sin(g_elapsedSecondCount_simulationTime), 2));
 	calculatedColor.g = sqrt(pow(sin(g_elapsedSecondCount_simulationTime + 2), 2));
 	calculatedColor.b = sqrt(pow(sin(g_elapsedSecondCount_simulationTime + 4), 2));
-	o_color = float4(i_color);
+	o_color = calculatedColor * i_color;
 }
