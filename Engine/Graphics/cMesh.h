@@ -61,28 +61,28 @@ namespace eae6320 {
 		private:
 			cResult Initialize(
 				eae6320::Graphics::VertexFormats::sVertex_mesh* vertexData,
-				int vertexCount,
+				unsigned int vertexCount,
 				uint16_t* indexData,
-				int indexCount);
+				unsigned int indexCount);
 			static cResult CreateMesh(cMesh*& o_mesh,
 				eae6320::Graphics::VertexFormats::sVertex_mesh* vertexData,
-				int vertexCount,
+				unsigned int vertexCount,
 				uint16_t* indexData,
-				int indexCount);
+				unsigned int indexCount);
 
 			cResult LoadTableValues(lua_State& io_luaState, cMesh*& o_mesh);
 			cResult LoadTableValues_Vertices(lua_State& io_luaState, 
 				eae6320::Graphics::VertexFormats::sVertex_mesh*& vertexData,
-				int& vertexCount);
+				unsigned int& vertexCount);
 			cResult LoadTableValues_Vertices_Paths(lua_State& io_luaState,
 				eae6320::Graphics::VertexFormats::sVertex_mesh*& vertexData,
-				int& vertexCount);
+				unsigned int& vertexCount);
 			cResult LoadTableValues_Indices(lua_State& io_luaState, 
-				uint16_t*& indexData, int& indexCount);
+				uint16_t*& indexData, unsigned int& indexCount);
 			cResult LoadTableValues_Indices_Paths(lua_State& io_luaState, 
-				uint16_t*& indexData, int& indexCount);
+				uint16_t*& indexData, unsigned int& indexCount);
 			cResult LoadTableValues_Indices_Paths_Vertices(lua_State& io_luaState,
-				uint16_t*& indexData, int& indexCount, int startCount, 
+				uint16_t*& indexData, unsigned int& indexCount, int startCount,
 				int indexCountPerMesh);
 
 			cResult CleanUp();

@@ -95,7 +95,7 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 {
 	// Mesh 1
 	{
-		if ( Graphics::cMesh::Load(meshes[0], "data/Meshes/PlayerCharacter.mesh") )
+		if ( Graphics::cMesh::Load(meshes[0], "data/Meshes/TooManyVertices.mesh") )
 			meshCount++;
 	}
 

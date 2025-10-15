@@ -6,7 +6,7 @@
 void ConvertLeftToRightWindingOrder(uint16_t* indexData, int indexCount);
 
 eae6320::cResult eae6320::Graphics::cMesh::Initialize(eae6320::Graphics::VertexFormats::sVertex_mesh* vertexData,
-	int vertexCount, uint16_t* indexData, int indexCount) {
+	unsigned int vertexCount, uint16_t* indexData, unsigned int indexCount) {
 	auto result = eae6320::Results::Success;
 
 	// Create a vertex array object and make it active

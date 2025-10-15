@@ -102,7 +102,7 @@ eae6320::cResult eae6320::Graphics::cMesh::Load(cMesh*& o_mesh, const std::strin
 
 eae6320::cResult eae6320::Graphics::cMesh::CreateMesh(cMesh*& o_mesh,
 	eae6320::Graphics::VertexFormats::sVertex_mesh* vertexData,
-	int vertexCount, uint16_t* indexData, int indexCount) 
+	unsigned int vertexCount, uint16_t* indexData, unsigned int indexCount)
 {
 	auto result = Results::Success;
 	cMesh* newMesh = nullptr;
@@ -154,9 +154,9 @@ eae6320::cResult eae6320::Graphics::cMesh::LoadTableValues(lua_State& io_luaStat
 	int indexCount;*/
 
 	eae6320::Graphics::VertexFormats::sVertex_mesh* vertexData = nullptr;
-	int vertexCount;
+	unsigned int vertexCount;
 	uint16_t* indexData = nullptr;
-	int indexCount;
+	unsigned int indexCount;
 
 	if (!(result = LoadTableValues_Vertices(io_luaState, vertexData, vertexCount)))
 	{
@@ -166,6 +166,7 @@ eae6320::cResult eae6320::Graphics::cMesh::LoadTableValues(lua_State& io_luaStat
 	}
 	if (!(result = LoadTableValues_Indices(io_luaState, indexData, indexCount)))
 	{
+		Logging::OutputError("Mesh has too many vertices, cannot load mesh.");
 		o_mesh = nullptr;
 		return result;
 	}
@@ -177,7 +178,7 @@ eae6320::cResult eae6320::Graphics::cMesh::LoadTableValues(lua_State& io_luaStat
 
 eae6320::cResult eae6320::Graphics::cMesh::LoadTableValues_Vertices(lua_State& io_luaState, 
 	eae6320::Graphics::VertexFormats::sVertex_mesh*& vertexData,
-	int& vertexCount)
+	unsigned int& vertexCount)
 {
 	auto result = eae6320::Results::Success;
 
@@ -210,16 +211,16 @@ eae6320::cResult eae6320::Graphics::cMesh::LoadTableValues_Vertices(lua_State& i
 
 eae6320::cResult eae6320::Graphics::cMesh::LoadTableValues_Vertices_Paths(lua_State& io_luaState, 
 	eae6320::Graphics::VertexFormats::sVertex_mesh*& vertexData,
-	int& vertexCount)
+	unsigned int& vertexCount)
 {
 	auto result = eae6320::Results::Success;
 
 	vertexCount = (int) luaL_len(&io_luaState, -1);
-	if (vertexCount >= 10000)
+	if (vertexCount >= std::numeric_limits<unsigned int>::max())
 		return eae6320::Results::Failure;
 	vertexData = new eae6320::Graphics::VertexFormats::sVertex_mesh[vertexCount];
 
-	for (int i = 1; i <= vertexCount; ++i) {
+	for (unsigned int i = 1; i <= vertexCount; ++i) {
 		lua_pushinteger(&io_luaState, i);
 		lua_gettable(&io_luaState, -2);
 		eae6320::cScopeGuard scopeGuard_popValue([&io_luaState] { lua_pop(&io_luaState, 1); });
@@ -275,7 +276,7 @@ eae6320::cResult eae6320::Graphics::cMesh::LoadTableValues_Vertices_Paths(lua_St
 }
 
 eae6320::cResult eae6320::Graphics::cMesh::LoadTableValues_Indices(lua_State& io_luaState, 
-	uint16_t*& indexData, int& indexCount)
+	uint16_t*& indexData, unsigned int& indexCount)
 {
 	auto result = eae6320::Results::Success;
 
@@ -307,13 +308,15 @@ eae6320::cResult eae6320::Graphics::cMesh::LoadTableValues_Indices(lua_State& io
 }
 
 eae6320::cResult eae6320::Graphics::cMesh::LoadTableValues_Indices_Paths(lua_State& io_luaState, 
-	uint16_t*& indexData, int& indexCount)
+	uint16_t*& indexData, unsigned int& indexCount)
 {
 	auto result = eae6320::Results::Success;
 
 	const auto indexTableCount = luaL_len(&io_luaState, -1);
 	const auto indexCountPerMesh = 3;
 	indexCount = (unsigned int) (indexTableCount * indexCountPerMesh);
+	if (indexCount >= std::numeric_limits<unsigned int>::max())
+		return eae6320::Results::Failure;
 	indexData = new uint16_t[indexCount];
 
 	for (int i = 1; i <= indexTableCount; ++i) {
@@ -346,7 +349,7 @@ eae6320::cResult eae6320::Graphics::cMesh::LoadTableValues_Indices_Paths(lua_Sta
 }
 
 eae6320::cResult eae6320::Graphics::cMesh::LoadTableValues_Indices_Paths_Vertices(lua_State& io_luaState, 
-	uint16_t*& indexData, int& indexCount, int startCount, int indexCountPerMesh)
+	uint16_t*& indexData, unsigned int& indexCount, int startCount, int indexCountPerMesh)
 {
 	auto result = eae6320::Results::Success;
 
