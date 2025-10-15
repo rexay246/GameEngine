@@ -26,9 +26,11 @@ void eae6320::GameObject::cEntity::Rendering(const float i_elapsedSecondCount_si
 }
 
 void eae6320::GameObject::cEntity::CleanUp() {
-	if (m_mesh != nullptr && m_effect != nullptr) {
+	if (m_mesh != nullptr) {
 		m_mesh->DecrementReferenceCount();
 		m_mesh = nullptr;
+	}
+	if (m_effect != nullptr) {
 		m_effect->DecrementReferenceCount();
 		m_effect = nullptr;
 	}

@@ -19,6 +19,8 @@
 #include <string>
 #include <External/Lua/Includes.h>
 
+#define MAX_VERTEX_COUNT 50000
+
 // Forward Declarations
 //=====================
 

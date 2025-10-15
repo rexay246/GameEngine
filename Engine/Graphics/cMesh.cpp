@@ -216,7 +216,7 @@ eae6320::cResult eae6320::Graphics::cMesh::LoadTableValues_Vertices_Paths(lua_St
 	auto result = eae6320::Results::Success;
 
 	vertexCount = (int) luaL_len(&io_luaState, -1);
-	if (vertexCount >= std::numeric_limits<unsigned int>::max())
+	if (vertexCount > MAX_VERTEX_COUNT)
 		return eae6320::Results::Failure;
 	vertexData = new eae6320::Graphics::VertexFormats::sVertex_mesh[vertexCount];
 
@@ -315,7 +315,7 @@ eae6320::cResult eae6320::Graphics::cMesh::LoadTableValues_Indices_Paths(lua_Sta
 	const auto indexTableCount = luaL_len(&io_luaState, -1);
 	const auto indexCountPerMesh = 3;
 	indexCount = (unsigned int) (indexTableCount * indexCountPerMesh);
-	if (indexCount >= std::numeric_limits<unsigned int>::max())
+	if (indexCount > MAX_VERTEX_COUNT)
 		return eae6320::Results::Failure;
 	indexData = new uint16_t[indexCount];
 
