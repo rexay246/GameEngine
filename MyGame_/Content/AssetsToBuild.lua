@@ -17,7 +17,8 @@ return
 		{ path = "Meshes/mesh.mesh" },
 		{ path = "Meshes/mesh2.mesh" },
 		{ path = "Meshes/test.mesh" },
-		{ path = "Meshes/test2.mesh" },
-		{ path = "Meshes/test3.mesh" },
+		{ path = "Meshes/PlayerCharacter.mesh" },
+		{ path = "Meshes/SunObject.mesh" },
+		{ path = "Meshes/FloorObject.mesh" },
 	}
 }

@@ -160,10 +160,13 @@ eae6320::cResult eae6320::Graphics::cMesh::LoadTableValues(lua_State& io_luaStat
 
 	if (!(result = LoadTableValues_Vertices(io_luaState, vertexData, vertexCount)))
 	{
+		Logging::OutputError("Mesh has too many vertices, cannot load mesh.");
+		o_mesh = nullptr;
 		return result;
 	}
 	if (!(result = LoadTableValues_Indices(io_luaState, indexData, indexCount)))
 	{
+		o_mesh = nullptr;
 		return result;
 	}
 
@@ -212,6 +215,8 @@ eae6320::cResult eae6320::Graphics::cMesh::LoadTableValues_Vertices_Paths(lua_St
 	auto result = eae6320::Results::Success;
 
 	vertexCount = (int) luaL_len(&io_luaState, -1);
+	if (vertexCount >= 10000)
+		return eae6320::Results::Failure;
 	vertexData = new eae6320::Graphics::VertexFormats::sVertex_mesh[vertexCount];
 
 	for (int i = 1; i <= vertexCount; ++i) {
@@ -237,22 +242,31 @@ eae6320::cResult eae6320::Graphics::cMesh::LoadTableValues_Vertices_Paths(lua_St
 		lua_pushstring(&io_luaState, "r");
 		lua_gettable(&io_luaState, -5);
 		eae6320::cScopeGuard scopeGuard_popValueR([&io_luaState] { lua_pop(&io_luaState, 1); });
-		const uint8_t r = static_cast<uint8_t>(lua_tonumber(&io_luaState, -1) * 255);
+		const auto check = lua_tostring(&io_luaState, -1);
+		uint8_t r = 255;
+		if (lua_tostring(&io_luaState, -1))
+			r = static_cast<uint8_t>(lua_tonumber(&io_luaState, -1) * 255);
 
 		lua_pushstring(&io_luaState, "g");
 		lua_gettable(&io_luaState, -6);
 		eae6320::cScopeGuard scopeGuard_popValueG([&io_luaState] { lua_pop(&io_luaState, 1); });
-		const uint8_t g = static_cast<uint8_t>(lua_tonumber(&io_luaState, -1) * 255);
+		uint8_t g = 255;
+		if (lua_tostring(&io_luaState, -1))
+			g = static_cast<uint8_t>(lua_tonumber(&io_luaState, -1) * 255);
 
 		lua_pushstring(&io_luaState, "b");
 		lua_gettable(&io_luaState, -7);
 		eae6320::cScopeGuard scopeGuard_popValueB([&io_luaState] { lua_pop(&io_luaState, 1); });
-		const uint8_t b = static_cast<uint8_t>(lua_tonumber(&io_luaState, -1) * 255);
+		uint8_t b = 255;
+		if (lua_tostring(&io_luaState, -1))
+			b = static_cast<uint8_t>(lua_tonumber(&io_luaState, -1) * 255);
 
 		lua_pushstring(&io_luaState, "a");
 		lua_gettable(&io_luaState, -8);
 		eae6320::cScopeGuard scopeGuard_popValueA([&io_luaState] { lua_pop(&io_luaState, 1); });
-		const uint8_t a = static_cast<uint8_t>(lua_tonumber(&io_luaState, -1) * 255);
+		uint8_t a = 255;
+		if (lua_tostring(&io_luaState, -1))
+			uint8_t a = static_cast<uint8_t>(lua_tonumber(&io_luaState, -1) * 255);
 
 		vertexData[i - 1] = { (float) x, (float) y, (float) z , (uint8_t) r, (uint8_t) g , (uint8_t) b , (uint8_t) a };
 	}

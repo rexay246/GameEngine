@@ -8,10 +8,14 @@ void eae6320::GameObject::cEntity::Initialize(Math::sVector position, float spee
 
 void eae6320::GameObject::cEntity::setMeshAndEffect(Graphics::cMesh* mesh, Graphics::cEffect* effect)
 {
-	m_mesh = mesh;
-	m_mesh->IncrementReferenceCount();
-	m_effect = effect;
-	m_effect->IncrementReferenceCount();
+	if (mesh) {
+		m_mesh = mesh;
+		m_mesh->IncrementReferenceCount();
+	}
+	if (effect) {
+		m_effect = effect;
+		m_effect->IncrementReferenceCount();
+	}
 }
 
 void eae6320::GameObject::cEntity::Rendering(const float i_elapsedSecondCount_sinceLastSimulationUpdate)

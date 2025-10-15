@@ -795,27 +795,32 @@ namespace
 			fout << "return" "\n"
 				"{" "\n";
 			{
-				fout << "vertices =" "\n"
-					"{" "\n";
+				fout << "\tvertices =" "\n"
+					"\t{" "\n";
 				for (sVertexInfo vertexInfo : i_vertexArray) {
 
-					fout << "{ x = " << vertexInfo.vertex.x << ", y = " << 
-						vertexInfo.vertex.y << ", z = " << 
-						vertexInfo.vertex.z << " }, " "\n";
+					fout << "\t\t{ x = " << vertexInfo.vertex.x << 
+						", y = " << vertexInfo.vertex.y << 
+						", z = " << vertexInfo.vertex.z << 
+						", r = " << vertexInfo.vertex.r <<
+						", g = " << vertexInfo.vertex.g <<
+						", b = " << vertexInfo.vertex.b <<
+						", a = " << vertexInfo.vertex.a <<
+						" }, " "\n";
 				}
-				fout << "}," "\n";
+				fout << "\t}," "\n";
 
-				fout << "indices =" "\n"
-					"{" "\n";
+				fout << "\tindices =" "\n"
+					"\t{" "\n";
 				int count = 0;
 				for (int i = 0; i < i_indexArray.size(); i += 3) {
-					fout << "{ name = \"Triangle " << count << "\", vertices = {" <<
+					fout << "\t\t{ name = \"Triangle " << count << "\", vertices = {" <<
 						i_indexArray[i] << ", " << 
 						i_indexArray[i + 1] << ", " << 
 						i_indexArray[i + 2] << "} }," "\n";
 					count++;
 				}
-				fout << "}," "\n";
+				fout << "\t}," "\n";
 			}
 			// Close table
 			fout << "}" "\n";
