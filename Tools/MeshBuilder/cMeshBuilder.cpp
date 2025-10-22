@@ -11,7 +11,7 @@ eae6320::cResult eae6320::Assets::cMeshBuilder::Build(const std::vector<std::str
 	if (!result) {
 		Assets::OutputErrorMessageWithFileInfo(m_path_source, errorMessage.c_str());
 	}
-	Load(m_path_source);
+	result = Load(m_path_source);
 	return result;
 }
 
@@ -136,6 +136,14 @@ eae6320::cResult eae6320::Assets::cMeshBuilder::LoadTableValues(lua_State& io_lu
 
 	//result = o_mesh->CreateMesh(o_mesh, vertexData, vertexCount, indexData, indexCount);
 	std::ofstream outfile(m_path_target, std::ofstream::binary);
+	if (vertexCount > std::numeric_limits<uint16_t>::max()) {
+		Assets::OutputErrorMessageWithFileInfo(m_path_target, "Too many vertices: %s", m_path_source);
+		return eae6320::Results::Failure;
+	}
+	if (indexCount > std::numeric_limits<uint16_t>::max()) {
+		Assets::OutputErrorMessageWithFileInfo(m_path_target, "Too many indices: %s", m_path_source);
+		return eae6320::Results::Failure;
+	}
 	outfile.write(reinterpret_cast<const char*>(&vertexCount), sizeof(uint16_t));
 	outfile.write(reinterpret_cast<const char*>(&indexCount), sizeof(uint16_t));
 	outfile.write(reinterpret_cast<const char*>(vertexData), 
@@ -185,8 +193,6 @@ eae6320::cResult eae6320::Assets::cMeshBuilder::LoadTableValues_Vertices_Paths(l
 	auto result = eae6320::Results::Success;
 
 	vertexCount = (int)luaL_len(&io_luaState, -1);
-	if (vertexCount > MAX_VERTEX_COUNT)
-		return eae6320::Results::Failure;
 	vertexData = new eae6320::Graphics::VertexFormats::sVertex_mesh[vertexCount];
 
 	for (unsigned int i = 1; i <= vertexCount; ++i) {
@@ -284,8 +290,6 @@ eae6320::cResult eae6320::Assets::cMeshBuilder::LoadTableValues_Indices_Paths(lu
 	const auto indexTableCount = luaL_len(&io_luaState, -1);
 	const auto indexCountPerMesh = 3;
 	indexCount = (unsigned int)(indexTableCount * indexCountPerMesh);
-	if (indexCount > MAX_VERTEX_COUNT)
-		return eae6320::Results::Failure;
 	indexData = new uint16_t[indexCount];
 
 	for (int i = 1; i <= indexTableCount; ++i) {

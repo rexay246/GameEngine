@@ -66,6 +66,10 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(eae6320::Graphics::VertexF
 	// Assign the data to the buffer
 	{
 		int bufferSize = sizeof(vertexData[0]) * vertexCount;
+		if (bufferSize > std::numeric_limits<GLsizeiptr>::max()) {
+			Logging::OutputError("Mesh has too many vertices, cannot load mesh.");
+			return eae6320::Results::Failure;
+		}
 		EAE6320_ASSERT(bufferSize <= std::numeric_limits<GLsizeiptr>::max());
 		glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(bufferSize), reinterpret_cast<GLvoid*>(vertexData),
 			// In our class we won't ever read from the buffer

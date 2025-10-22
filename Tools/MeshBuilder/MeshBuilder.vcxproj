@@ -141,6 +141,9 @@
     <ProjectReference Include="..\..\Engine\Asserts\Asserts.vcxproj">
       <Project>{464a6551-fca9-4027-bd9e-2b26914782ab}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\Engine\Time\Time.vcxproj">
+      <Project>{674d3e72-cbd0-4ebd-bd0c-cf9326489421}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\Engine\Windows\Windows.vcxproj">
       <Project>{6ff846d1-2377-4601-b2f6-83e31748cb16}</Project>
     </ProjectReference>

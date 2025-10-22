@@ -5,7 +5,6 @@
 #include <Engine/ScopeGuard/cScopeGuard.h>
 #include <Engine/Platform/Platform.h>
 
-
 eae6320::cResult eae6320::Graphics::cMesh::Load(cMesh*& o_mesh, const std::string& i_path)
 {
 	auto result = eae6320::Results::Success;
