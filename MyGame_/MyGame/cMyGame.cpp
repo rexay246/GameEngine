@@ -95,19 +95,19 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 {
 	// Mesh 1
 	{
-		Graphics::cMesh::LoadFromBinary(meshes[0], "data/Meshes/PlayerCharacter.mesh");
+		Graphics::cMesh::Load(meshes[0], "data/Meshes/PlayerCharacter.mesh");
 		meshCount++;
 	}
 
 	// Mesh 2
 	{
-		Graphics::cMesh::LoadFromBinary(meshes[1], "data/Meshes/SunObject.mesh");
+		Graphics::cMesh::Load(meshes[1], "data/Meshes/SunObject.mesh");
 		meshCount++;
 	}
 
 	// Mesh 3
 	{
-		Graphics::cMesh::LoadFromBinary(meshes[2], "data/Meshes/FloorObject.mesh");
+		Graphics::cMesh::Load(meshes[2], "data/Meshes/FloorObject.mesh");
 		meshCount++;
 	}
 
