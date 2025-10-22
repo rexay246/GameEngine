@@ -112,6 +112,10 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(eae6320::Graphics::VertexF
 		m_indexCountToRender = indexCount;
 		ConvertLeftToRightWindingOrder(indexData, indexCount);
 		int bufferSize = sizeof(indexData[0]) * indexCount;
+		if (bufferSize > std::numeric_limits<GLsizeiptr>::max()) {
+			Logging::OutputError("Mesh has too many vertices, cannot load mesh.");
+			return eae6320::Results::Failure;
+		}
 		EAE6320_ASSERT(bufferSize <= std::numeric_limits<GLsizeiptr>::max());
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizeiptr>(bufferSize), reinterpret_cast<GLvoid*>(indexData),
 			// In our class we won't ever read from the buffer

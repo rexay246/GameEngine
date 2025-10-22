@@ -24,6 +24,10 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(eae6320::Graphics::VertexF
 	// Vertex Buffer
 	{
 		auto bufferSize = sizeof(vertexData[0]) * vertexCount;
+		if (bufferSize > std::numeric_limits<decltype(D3D11_BUFFER_DESC::ByteWidth)>::max()) {
+			Logging::OutputError("Mesh has too many vertices, cannot load mesh.");
+			return eae6320::Results::Failure;
+		}
 		EAE6320_ASSERT(bufferSize <= std::numeric_limits<decltype(D3D11_BUFFER_DESC::ByteWidth)>::max());
 		auto bufferDescription = [bufferSize]
 			{

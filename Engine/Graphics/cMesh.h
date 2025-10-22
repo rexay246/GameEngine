@@ -33,6 +33,7 @@ namespace eae6320 {
 		class cMesh {
 
 		public:
+			static cResult LoadFromBinary(cMesh*& o_mesh, const std::string& i_path);
 			static cResult Load(cMesh*& o_mesh, const std::string& i_path);
 			void DrawMesh();
 

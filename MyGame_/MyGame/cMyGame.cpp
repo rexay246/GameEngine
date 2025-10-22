@@ -72,24 +72,20 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 
 	GameObject::cEntity entity2;
 	GameObject::cEntity entity3;
-	GameObject::cEntity entity4;
 
 	entity.setMeshAndEffect(meshes[0], effects[0]);
 	entity2.setMeshAndEffect(meshes[1], effects[1]);
 	entity3.setMeshAndEffect(meshes[2], effects[0]);
-	entity4.setMeshAndEffect(meshes[3], effects[1]);
 
 	entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 	entity2.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 	entity3.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
-	entity4.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 
 	camera.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 
 	entity.CleanUp();
 	entity2.CleanUp();
 	entity3.CleanUp();
-	entity4.CleanUp();
 }
 
 // Initialize / Clean Up
@@ -99,25 +95,19 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 {
 	// Mesh 1
 	{
-		Graphics::cMesh::Load(meshes[0], "data/Meshes/PlayerCharacter.mesh");
+		Graphics::cMesh::LoadFromBinary(meshes[0], "data/Meshes/PlayerCharacter.mesh");
 		meshCount++;
 	}
 
 	// Mesh 2
 	{
-		Graphics::cMesh::Load(meshes[1], "data/Meshes/SunObject.mesh");
+		Graphics::cMesh::LoadFromBinary(meshes[1], "data/Meshes/SunObject.mesh");
 		meshCount++;
 	}
 
 	// Mesh 3
 	{
-		Graphics::cMesh::Load(meshes[2], "data/Meshes/FloorObject.mesh");
-		meshCount++;
-	}
-
-	// Mesh 4
-	{
-		Graphics::cMesh::Load(meshes[3], "data/Meshes/TooManyVertices.mesh");
+		Graphics::cMesh::LoadFromBinary(meshes[2], "data/Meshes/FloorObject.mesh");
 		meshCount++;
 	}
 

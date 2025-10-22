@@ -3,6 +3,39 @@
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/ScopeGuard/cScopeGuard.h>
+#include <Engine/Platform/Platform.h>
+
+
+eae6320::cResult eae6320::Graphics::cMesh::LoadFromBinary(cMesh*& o_mesh, const std::string& i_path)
+{
+	auto result = eae6320::Results::Success;
+	Platform::sDataFromFile dataFromFile;
+	if (!(result = Platform::LoadBinaryFile(i_path.c_str(), dataFromFile))) {
+		Logging::OutputError("Error when reading from binary file");
+		o_mesh = nullptr;
+		return result;
+	}
+	auto currentOffset = reinterpret_cast<uintptr_t>(dataFromFile.data);
+	const auto finalOffset = currentOffset + dataFromFile.size;
+
+	uint16_t vertexCount;
+	memcpy(&vertexCount, reinterpret_cast<void*>(currentOffset), sizeof(vertexCount));
+	currentOffset += sizeof(vertexCount);
+
+	uint16_t indexCount;
+	memcpy(&indexCount, reinterpret_cast<void*>(currentOffset), sizeof(indexCount));
+	currentOffset += sizeof(indexCount);
+
+	auto* const vertexArray = reinterpret_cast<VertexFormats::sVertex_mesh*>(currentOffset);
+	currentOffset += sizeof(VertexFormats::sVertex_mesh) * vertexCount;
+
+	auto* const indexArray = reinterpret_cast<uint16_t*>(currentOffset);
+	currentOffset += sizeof(uint16_t) * indexCount;
+
+	result = CreateMesh(o_mesh, vertexArray, vertexCount, indexArray, indexCount);
+
+	return result;
+}
 
 eae6320::cResult eae6320::Graphics::cMesh::Load(cMesh*& o_mesh, const std::string& i_path)
 {
@@ -216,8 +249,6 @@ eae6320::cResult eae6320::Graphics::cMesh::LoadTableValues_Vertices_Paths(lua_St
 	auto result = eae6320::Results::Success;
 
 	vertexCount = (int) luaL_len(&io_luaState, -1);
-	if (vertexCount > MAX_VERTEX_COUNT)
-		return eae6320::Results::Failure;
 	vertexData = new eae6320::Graphics::VertexFormats::sVertex_mesh[vertexCount];
 
 	for (unsigned int i = 1; i <= vertexCount; ++i) {
@@ -315,8 +346,6 @@ eae6320::cResult eae6320::Graphics::cMesh::LoadTableValues_Indices_Paths(lua_Sta
 	const auto indexTableCount = luaL_len(&io_luaState, -1);
 	const auto indexCountPerMesh = 3;
 	indexCount = (unsigned int) (indexTableCount * indexCountPerMesh);
-	if (indexCount > MAX_VERTEX_COUNT)
-		return eae6320::Results::Failure;
 	indexData = new uint16_t[indexCount];
 
 	for (int i = 1; i <= indexTableCount; ++i) {
