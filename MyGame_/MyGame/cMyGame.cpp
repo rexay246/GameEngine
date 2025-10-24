@@ -70,15 +70,26 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 
 	Graphics::SetBackgroundColor(bgColor);
 
-	Graphics::cMesh* renderMesh = hideObjects ? meshes[1] : meshes[0];
-	Graphics::cEffect* renderEffect = changeEffects ? effects[1] : effects[0];
-	entity.setMeshAndEffect(renderMesh, renderEffect);
+	GameObject::cEntity entity2;
+	GameObject::cEntity entity3;
+	GameObject::cEntity entity4;
+
+	entity.setMeshAndEffect(meshes[0], effects[0]);
+	entity2.setMeshAndEffect(meshes[1], effects[1]);
+	entity3.setMeshAndEffect(meshes[2], effects[0]);
+	entity4.setMeshAndEffect(meshes[3], effects[1]);
+
 	entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	entity2.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	entity3.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	entity4.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+
 	camera.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
-	renderMesh->DecrementReferenceCount();
-	renderMesh = nullptr;
-	renderEffect->DecrementReferenceCount();
-	renderEffect = nullptr;
+
+	entity.CleanUp();
+	entity2.CleanUp();
+	entity3.CleanUp();
+	entity4.CleanUp();
 }
 
 // Initialize / Clean Up
@@ -88,13 +99,25 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 {
 	// Mesh 1
 	{
-		Graphics::cMesh::Load(meshes[0], "data/Meshes/mesh.mesh");
+		Graphics::cMesh::Load(meshes[0], "data/Meshes/PlayerCharacter.mesh");
 		meshCount++;
 	}
 
 	// Mesh 2
 	{
-		Graphics::cMesh::Load(meshes[1], "data/Meshes/mesh2.mesh");
+		Graphics::cMesh::Load(meshes[1], "data/Meshes/SunObject.mesh");
+		meshCount++;
+	}
+
+	// Mesh 3
+	{
+		Graphics::cMesh::Load(meshes[2], "data/Meshes/FloorObject.mesh");
+		meshCount++;
+	}
+
+	// Mesh 4
+	{
+		Graphics::cMesh::Load(meshes[3], "data/Meshes/TooManyVertices.mesh");
 		meshCount++;
 	}
 
@@ -116,9 +139,9 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 	entity.Initialize({ 0, 0, 0 }, 5.f);
 	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f, 5.f);
 
-	bgColor[0] = 0.0f;
+	bgColor[0] = 0.5f;
 	bgColor[1] = 0.5f;
-	bgColor[2] = 0.0f;
+	bgColor[2] = 1.0f;
 	bgColor[3] = 1.0f;
 
 	return Results::Success;
@@ -128,12 +151,16 @@ eae6320::cResult eae6320::cMyGame::CleanUp()
 {
 	entity.CleanUp();
 	for (int i = 0; i < meshCount; i++) {
-		meshes[i]->DecrementReferenceCount();
-		meshes[i] = nullptr;
+		if (meshes[i]) {
+			meshes[i]->DecrementReferenceCount();
+			meshes[i] = nullptr;
+		}
 	}
 	for (int i = 0; i < effectCount; i++) {
-		effects[i]->DecrementReferenceCount();
-		effects[i] = nullptr;
+		if (effects[i]) {
+			effects[i]->DecrementReferenceCount();
+			effects[i] = nullptr;
+		}
 	}
 	return Results::Success;
 }

@@ -77,10 +77,15 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize(std::string vertexShader
 			{
 				uint8_t renderStateBits = u_renderStateBits;
 
-				eae6320::Graphics::RenderStates::DisableAlphaTransparency(renderStateBits);
-				eae6320::Graphics::RenderStates::DisableDepthTesting(renderStateBits);
-				eae6320::Graphics::RenderStates::DisableDepthWriting(renderStateBits);
-				eae6320::Graphics::RenderStates::DisableDrawingBothTriangleSides(renderStateBits);
+				//eae6320::Graphics::RenderStates::DisableAlphaTransparency(renderStateBits);
+				//eae6320::Graphics::RenderStates::DisableDepthTesting(renderStateBits);
+				//eae6320::Graphics::RenderStates::DisableDepthWriting(renderStateBits);
+				//eae6320::Graphics::RenderStates::DisableDrawingBothTriangleSides(renderStateBits);
+
+				eae6320::Graphics::RenderStates::EnableAlphaTransparency(renderStateBits);
+				eae6320::Graphics::RenderStates::EnableDepthTesting(renderStateBits);
+				eae6320::Graphics::RenderStates::EnableDepthWriting(renderStateBits);
+				eae6320::Graphics::RenderStates::EnableDrawingBothTriangleSides(renderStateBits);
 
 				return renderStateBits;
 			}();

@@ -9,14 +9,12 @@
 // Entry Point
 //============
 
+InputColor
+
 OutputColor
 
 void MainDefineFragmentShader
 {
 	// Output solid white
-	o_color = float4(
-		// RGB (color)
-		1.0, 1.0, 1.0,
-		// Alpha (opacity)
-		1.0 );
+	o_color = float4(i_color);
 }
