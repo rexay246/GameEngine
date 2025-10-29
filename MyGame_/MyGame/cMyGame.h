@@ -12,6 +12,7 @@
 #include <Engine/Results/Results.h>
 #include <Engine/Graphics/Graphics.h>
 #include <Engine/GameObject/cEntity.h>
+#include <Engine/EntityAI/cEntityAI.h>
 #include <Engine/GameObject/cCamera.h>
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
@@ -88,6 +89,8 @@ namespace eae6320
 
 		GameObject::cEntity entity;
 		GameObject::cCamera camera;
+
+		EntityAI::cEntityAI enemy;
 
 		bool hideObjects = false;
 		bool changeEffects = false;

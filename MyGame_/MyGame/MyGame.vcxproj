@@ -43,6 +43,9 @@
     <ProjectReference Include="..\..\Engine\Asserts\Asserts.vcxproj">
       <Project>{464a6551-fca9-4027-bd9e-2b26914782ab}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\Engine\EntityAI\EntityAI.vcxproj">
+      <Project>{84e2a53b-1168-48c4-a3e9-4f4fb6375ab0}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\Engine\GameObject\GameObject.vcxproj">
       <Project>{e58ec3f2-243b-4703-83ea-7f2dc70f4b8e}</Project>
     </ProjectReference>
