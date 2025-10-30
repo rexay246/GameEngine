@@ -1,6 +1,6 @@
 #include "cEntity.h"
 
-void eae6320::EntityAI::cEntity::Initialize(Math::sVector position, float speed)
+eae6320::EntityAI::cEntity::cEntity(Math::sVector position, float speed)
 {
 	SetSpeed(speed);
 	SetPosition(position);

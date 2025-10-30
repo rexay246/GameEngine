@@ -9,7 +9,7 @@ namespace eae6320 {
 	namespace EntityAI {
 		class cEntity : public cGameObject {
 		public:
-			void Initialize(Math::sVector position, float speed);
+			cEntity(Math::sVector position, float speed);
 			void setMeshAndEffect(Graphics::cMesh* mesh, Graphics::cEffect* effect);
 			void Rendering(const float i_elapsedSecondCount_sinceLastSimulationUpdate) final;
 			void CleanUp();

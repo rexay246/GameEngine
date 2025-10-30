@@ -63,8 +63,8 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput() {
 void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) {
 	entity.Update(i_elapsedSecondCount_sinceLastUpdate);
 	camera.Update(i_elapsedSecondCount_sinceLastUpdate);
-	enemy.MoveTo(1, 1, 0);
-	enemy.Update(i_elapsedSecondCount_sinceLastUpdate);
+	enemy->MoveRandomly();
+	enemy->Update(i_elapsedSecondCount_sinceLastUpdate);
 }
 
 void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime,
@@ -76,9 +76,9 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 	entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 	entity.CleanUp();
 
-	enemy.setMeshAndEffect(meshes[0], effects[1]);
-	enemy.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
-	enemy.CleanUp();
+	enemy->setMeshAndEffect(meshes[0], effects[1]);
+	enemy->Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	enemy->CleanUp();
 
 	camera.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 	
@@ -125,7 +125,8 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 	entity.Initialize({ 0, 0, 0 }, 5.f);
 	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f, 5.f);
 
-	enemy.Initialize({ 0, 0, 0 }, 10.f);
+	BoundingBox = new EntityAI::cBoundingBox({ 0, 0, 0 }, { 5, 5, 0 });
+	enemy = new EntityAI::cEntityAI({ 0, 0, 0 }, 2.f, BoundingBox);
 
 	bgColor[0] = 0.5f;
 	bgColor[1] = 0.5f;
