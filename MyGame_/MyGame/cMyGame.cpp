@@ -63,7 +63,7 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput() {
 void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) {
 	entity.Update(i_elapsedSecondCount_sinceLastUpdate);
 	camera.Update(i_elapsedSecondCount_sinceLastUpdate);
-	enemy->MoveRandomly();
+	enemy->ChaseOrPatrol(entity.GetPosition());
 	enemy->Update(i_elapsedSecondCount_sinceLastUpdate);
 }
 
@@ -126,7 +126,12 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f, 5.f);
 
 	BoundingBox = new EntityAI::cBoundingBox({ 0, 0, 0 }, { 5, 5, 0 });
-	enemy = new EntityAI::cEntityAI({ 0, 0, 0 }, 2.f, BoundingBox);
+	enemy = new EntityAI::cEntityAI({ 3, 3, 0 }, 2.f, BoundingBox, 0.5f);
+	
+	int numPatrolPoints = 4;
+	Math::sVector PatrolPoints[] = { {3, 3, 0}, {3, -3, 0}, {-3, -3, 0}, {-3, 3, 0} };
+	enemy->SetPatrolPoints(PatrolPoints, numPatrolPoints);
+	enemy->SetDetectionRange(3.f);
 
 	bgColor[0] = 0.5f;
 	bgColor[1] = 0.5f;
