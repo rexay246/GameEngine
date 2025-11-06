@@ -20,5 +20,7 @@ return
 		{ path = "Meshes/PlayerCharacter.mesh" },
 		{ path = "Meshes/SunObject.mesh" },
 		{ path = "Meshes/FloorObject.mesh" },
+		{ path = "Meshes/PlayerEntityMesh.mesh" },
+		{ path = "Meshes/EnemyEntityMesh.mesh" },
 	}
 }

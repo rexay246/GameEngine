@@ -21,6 +21,7 @@ namespace eae6320 {
 
 			float GetSpeed() { return m_speed; }
 			void SetSpeed(float speed) { m_speed = speed; }
+			Math::sVector GetVelocity() { return m_physicsState->velocity; };
 
 		private:
 			Physics::sRigidBodyState* m_physicsState = new Physics::sRigidBodyState();

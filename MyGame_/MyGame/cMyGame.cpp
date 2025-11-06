@@ -63,7 +63,8 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput() {
 void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) {
 	entity.Update(i_elapsedSecondCount_sinceLastUpdate);
 	camera.Update(i_elapsedSecondCount_sinceLastUpdate);
-	enemy->ChaseOrPatrol(entity.GetPosition());
+	//enemy->ChaseOrPatrol(entity.GetPosition(), i_elapsedSecondCount_sinceLastUpdate);
+	enemy->MoveRandomlyBouncing();
 	enemy->Update(i_elapsedSecondCount_sinceLastUpdate);
 }
 
@@ -72,11 +73,11 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 
 	Graphics::SetBackgroundColor(bgColor);
 
-	entity.setMeshAndEffect(meshes[0], effects[0]);
+	entity.setMeshAndEffect(meshes[0], effects[1]);
 	entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 	entity.CleanUp();
 
-	enemy->setMeshAndEffect(meshes[0], effects[1]);
+	enemy->setMeshAndEffect(meshes[1], effects[0]);
 	enemy->Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 	enemy->CleanUp();
 
@@ -91,13 +92,13 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 {
 	// Mesh 1
 	{
-		Graphics::cMesh::Load(meshes[0], "data/Meshes/PlayerCharacter.mesh");
+		Graphics::cMesh::Load(meshes[0], "data/Meshes/PlayerEntityMesh.mesh");
 		meshCount++;
 	}
 
 	// Mesh 2
 	{
-		Graphics::cMesh::Load(meshes[1], "data/Meshes/SunObject.mesh");
+		Graphics::cMesh::Load(meshes[1], "data/Meshes/EnemyEntityMesh.mesh");
 		meshCount++;
 	}
 
@@ -125,8 +126,8 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 	entity.Initialize({ 0, 0, 0 }, 5.f);
 	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f, 5.f);
 
-	BoundingBox = new EntityAI::cBoundingBox({ 0, 0, 0 }, { 5, 5, 0 });
-	enemy = new EntityAI::cEntityAI({ 3, 3, 0 }, 2.f, BoundingBox, 0.5f);
+	BoundingBox = new EntityAI::cBoundingBox({ 0, 0, 0 }, { 4, 4, 0 });
+	enemy = new EntityAI::cEntityAI({ 0, 0, 0 }, 2.f, BoundingBox, 0.05f);
 	
 	int numPatrolPoints = 4;
 	Math::sVector PatrolPoints[] = { {3, 3, 0}, {3, -3, 0}, {-3, -3, 0}, {-3, 3, 0} };
