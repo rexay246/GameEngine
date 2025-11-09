@@ -1,8 +1,10 @@
 #include "cEntityAI.h"
 
-eae6320::EntityAI::cEntityAI::cEntityAI(Math::sVector position, float speed, 
-	eae6320::EntityAI::cBoundingBox* boundingBox, float acceptanceRadius) : 
-	eae6320::EntityAI::cEntity(position, speed) {
+eae6320::EntityAI::cEntityAI::cEntityAI(Math::sVector position, float WalkSpeed, float RunSpeed, 
+	cBoundingBox* boundingBox, float acceptanceRadius, 
+	Math::sVector* patrolPoints, int numOfPoints, 
+	float detectionRange) : eae6320::EntityAI::cEntity(position, WalkSpeed)
+{
 	BoundingBox = boundingBox;
 
 	if (acceptanceRadius > 1.)
@@ -11,8 +13,24 @@ eae6320::EntityAI::cEntityAI::cEntityAI(Math::sVector position, float speed,
 		acceptanceRadius = 0.f;
 	AcceptanceRadius = acceptanceRadius;
 
-	RunSpeed = GetSpeed() * 2;
-	WalkSpeed = GetSpeed();
+	RunSpeed = RunSpeed;
+	SetPatrolPoints(patrolPoints, numOfPoints);
+	SetDetectionRange(detectionRange);
+}
+
+eae6320::EntityAI::cEntityAI::cEntityAI(Math::sVector position, float WalkSpeed,
+	float RunSpeed, cBoundingBox* boundingBox = nullptr,
+	float acceptanceRadius) :
+	eae6320::EntityAI::cEntity(position, WalkSpeed) {
+	BoundingBox = boundingBox;
+
+	if (acceptanceRadius > 1.)
+		acceptanceRadius = 1.f;
+	if (acceptanceRadius < 0.)
+		acceptanceRadius = 0.f;
+	AcceptanceRadius = acceptanceRadius;
+
+	RunSpeed = RunSpeed;
 }
 
 void eae6320::EntityAI::cEntityAI::SetPatrolPoints(Math::sVector* patrolPoints, int numOfPoints) {

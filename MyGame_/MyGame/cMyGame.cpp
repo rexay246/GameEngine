@@ -127,7 +127,7 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f, 5.f);
 
 	BoundingBox = new EntityAI::cBoundingBox({ 0, 0, 0 }, { 4, 4, 0 });
-	enemy = new EntityAI::cEntityAI({ 0, 0, 0 }, 2.f, BoundingBox, 0.05f);
+	enemy = new EntityAI::cEntityAI({ 0, 0, 0 }, 2.f, 4.f, BoundingBox, 0.05f);
 	
 	int numPatrolPoints = 4;
 	Math::sVector PatrolPoints[] = { {3, 3, 0}, {3, -3, 0}, {-3, -3, 0}, {-3, 3, 0} };

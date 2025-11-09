@@ -25,7 +25,9 @@ namespace eae6320 {
 	namespace EntityAI {
 		class cEntityAI : public cEntity {
 		public:
-			cEntityAI(Math::sVector position, float speed, cBoundingBox* boundingBox = nullptr,
+			cEntityAI(Math::sVector position, float WalkSpeed, float RunSpeed, cBoundingBox* boundingBox = nullptr,
+				float acceptanceRadius = 1.f, Math::sVector* patrolPoints, int numOfPoints, float detectionRange);
+			cEntityAI(Math::sVector position, float WalkSpeed, float RunSpeed, cBoundingBox* boundingBox = nullptr,
 				float acceptanceRadius = 1.f);
 			void SetPatrolPoints(Math::sVector* patrolPoints, int numOfPoints);
 			void SetDetectionRange(float range);
