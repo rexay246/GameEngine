@@ -30,42 +30,40 @@ namespace eae6320 {
 			static cResult Load(cEntityAI*& entityAI, const std::string& i_path);
 			void SetPatrolPoints(Math::sVector* patrolPoints, int numOfPoints);
 			void SetDetectionRange(float range);
-			void SetMaxWaitTime(float waitTime);
+			void SetMaxChaseWaitTime(float waitTime);
+			void SetMaxPatrolWaitTime(float waitTime);
 			void SetActiveChase(bool active);
-			void SetChaseTarget(Math::sVector* chaseTargetPosition);
 
-			float GetMaxWaitTime() { return MaxWaitTime; };
+			float GetMaxChaseWaitTime() { return MaxChaseWaitTime; };
+			float GetMaxPatrolWaitTime() { return MaxPatrolWaitTime; };
 			bool GetActiveChase() { return ChaseActive; };
-			Math::sVector GetChaseTargetLocation() { return *chaseTarget; };
 
 			EAE6320_ASSETS_DECLAREREFERENCECOUNTINGFUNCTIONS();
 			EAE6320_ASSETS_DECLAREDELETEDREFERENCECOUNTEDFUNCTIONS(cEntityAI);
 			EAE6320_ASSETS_DECLAREREFERENCECOUNT();
 
-			bool IsNearPosition(Math::sVector position);
-
-			void Move(Math::sVector vector, float elapsedTime);
-			void MoveRandomly(float elapsedTime);
-			void MoveRandomlyBouncing(float elapsedTime);
-			bool MoveTo(Math::sVector position, float elapsedTime);
-			void MoveTo(float x, float y, float z, float elapsedTime);
+			void MoveRandomly(float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
+			void MoveRandomlyBouncing(float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
+			bool MoveInOneDirection(Math::sVector vector, float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
+			bool MoveTo(Math::sVector position, float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
+			void Patrol(float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
 			void Idle();
-
-			void Patrol(float elapsedTime);
-			void FindClosestPatrolRoute();
-			void Chase(Math::sVector position, float elapsedTime);
-			void ChaseOrPatrol(Math::sVector position, float elapsedTime);
 
 		private:
 			static cResult Initialize(cEntityAI*& entityAI, Math::sVector position,
 				float WalkSpeed, float RunSpeed, cBoundingBox* boundingBox = nullptr,
 				float acceptanceRadius = 1.f, Math::sVector* patrolPoints = nullptr, int numOfPoints = 0, 
-				float detectionRange = 0, bool activeChase = false, float maxWaitTime = 0.f);
+				float detectionRange = 0, bool activeChase = false, float maxPatrolWaitTime = 0.f,
+				float maxChaseWaitTime = 0.f);
 			cEntityAI(Math::sVector position, float WalkSpeed, float RunSpeed,
 				cBoundingBox* boundingBox, float acceptanceRadius,
 				Math::sVector* patrolPoints, int numOfPoints,
-				float detectionRange, bool activeChase, float maxWaitTime);
+				float detectionRange, bool activeChase, float maxPatrolWaitTime,
+				float maxChaseWaitTime);
 			~cEntityAI();
+			void Move(Math::sVector vector, float elapsedTime);
+			void FindClosestPatrolRoute();
+			bool IsNearPosition(Math::sVector position);
 
 			Math::sVector CurTargetLocation;
 			cBoundingBox* BoundingBox;
@@ -77,13 +75,14 @@ namespace eae6320 {
 
 			bool ChaseActive = false;
 			float DetectionRange = 0.f;
-			Math::sVector* chaseTarget = nullptr;
 
 			float RunSpeed = 0.f;
 			float WalkSpeed = 0.f;
 
-			float WaitTime = 0.f;
-			float MaxWaitTime = 1.f;
+			float ChaseWaitTime = 0.f;
+			float PatrolWaitTime = 0.f;
+			float MaxChaseWaitTime = 1.f;
+			float MaxPatrolWaitTime = 1.f;
 
 			EnemyStates CurrentState = EnemyStates::Idle;
 			EnemyMovementType CurrentMovementType = EnemyMovementType::None;
@@ -96,7 +95,7 @@ namespace eae6320 {
 			cResult LoadTableValues_BBPosition(lua_State& io_luaState, Math::sVector& bbPos);
 			cResult LoadTableValues_BBLength(lua_State& io_luaState, Math::sVector& bbLen);
 			cResult LoadTableValues_AcceptanceRadius(lua_State& io_luaState, float& acceptanceRad);
-			cResult LoadTableValues_PatrolPoints(lua_State& io_luaState, Math::sVector*& patrolPoints, unsigned int& num);
+			cResult LoadTableValues_PatrolPoints(lua_State& io_luaState, Math::sVector*& patrolPoints, unsigned int& num, float& time);
 			cResult LoadTableValues_PatrolPoints_Values(lua_State& io_luaState, Math::sVector*& patrolPoints, unsigned int& num);
 			cResult LoadTableValues_Chase(lua_State& io_luaState, float& detectionRange, bool& activeChase, float& maxWaitTime);
 		};

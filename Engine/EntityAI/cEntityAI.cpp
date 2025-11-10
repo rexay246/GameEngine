@@ -2,10 +2,11 @@
 #include <Engine/ScopeGuard/cScopeGuard.h>
 #include <Engine/Logging/Logging.h>
 
-eae6320::EntityAI::cEntityAI::cEntityAI(Math::sVector position, float WalkSpeed, float RunSpeed, 
+eae6320::EntityAI::cEntityAI::cEntityAI(Math::sVector position, float walkSpeed, float runSpeed, 
 	cBoundingBox* boundingBox, float acceptanceRadius, 
 	Math::sVector* patrolPoints, int numOfPoints, 
-	float detectionRange, bool activeChase, float maxWaitTime) : eae6320::EntityAI::cEntity(position, WalkSpeed)
+	float detectionRange, bool activeChase, float maxPatrolWaitTime,
+	float maxChaseWaitTime) : eae6320::EntityAI::cEntity(position, walkSpeed)
 {
 	BoundingBox = boundingBox;
 
@@ -15,11 +16,13 @@ eae6320::EntityAI::cEntityAI::cEntityAI(Math::sVector position, float WalkSpeed,
 		acceptanceRadius = 0.f;
 	AcceptanceRadius = acceptanceRadius;
 
-	RunSpeed = RunSpeed;
+	WalkSpeed = GetSpeed();
+	RunSpeed = runSpeed;
 	SetPatrolPoints(patrolPoints, numOfPoints);
 	SetDetectionRange(detectionRange);
 	SetActiveChase(activeChase);
-	SetMaxWaitTime(maxWaitTime);
+	SetMaxPatrolWaitTime(maxPatrolWaitTime);
+	SetMaxChaseWaitTime(maxChaseWaitTime);
 }
 
 eae6320::EntityAI::cEntityAI::~cEntityAI()
@@ -30,7 +33,8 @@ eae6320::EntityAI::cEntityAI::~cEntityAI()
 
 eae6320::cResult eae6320::EntityAI::cEntityAI::Initialize(cEntityAI*& entityAI, Math::sVector position, 
 	float WalkSpeed, float RunSpeed, cBoundingBox* boundingBox, float acceptanceRadius, 
-	Math::sVector* patrolPoints, int numOfPoints, float detectionRange, bool activeChase, float maxWaitTime)
+	Math::sVector* patrolPoints, int numOfPoints, float detectionRange, bool activeChase, float maxPatrolWaitTime,
+	float maxChaseWaitTime)
 {
 	cResult result = Results::Success;
 	cEntityAI* newEntityAI = nullptr;
@@ -55,7 +59,8 @@ eae6320::cResult eae6320::EntityAI::cEntityAI::Initialize(cEntityAI*& entityAI, 
 	{
 		newEntityAI = new cEntityAI(position, WalkSpeed, RunSpeed, 
 			boundingBox, acceptanceRadius, 
-			patrolPoints, numOfPoints, detectionRange, activeChase, maxWaitTime);
+			patrolPoints, numOfPoints, detectionRange, activeChase,
+			maxPatrolWaitTime, maxChaseWaitTime);
 		if (!newEntityAI)
 		{
 			result = Results::OutOfMemory;
@@ -77,9 +82,14 @@ void eae6320::EntityAI::cEntityAI::SetDetectionRange(float detectionRange) {
 	DetectionRange = detectionRange;
 }
 
-void eae6320::EntityAI::cEntityAI::SetMaxWaitTime(float waitTime)
+void eae6320::EntityAI::cEntityAI::SetMaxPatrolWaitTime(float waitTime)
 {
-	MaxWaitTime = waitTime;
+	MaxPatrolWaitTime = waitTime;
+}
+
+void eae6320::EntityAI::cEntityAI::SetMaxChaseWaitTime(float waitTime)
+{
+	MaxChaseWaitTime = waitTime;
 }
 
 void eae6320::EntityAI::cEntityAI::SetActiveChase(bool active)
@@ -87,53 +97,27 @@ void eae6320::EntityAI::cEntityAI::SetActiveChase(bool active)
 	ChaseActive = active;
 }
 
-void eae6320::EntityAI::cEntityAI::SetChaseTarget(Math::sVector* chaseTargetPosition)
-{
-	chaseTarget = chaseTargetPosition;
-}
-
-void eae6320::EntityAI::cEntityAI::Patrol(float elapsedTime) {
+void eae6320::EntityAI::cEntityAI::Patrol(float elapsedTime, Math::sVector* chaseTargetPosition) {
 	if (NumberOfPatrolPoints <= 0)
 		return;
 	if (CurrentState == EnemyStates::Idle && BoundingBox) {
-		CurrentPatrolIndex++;
-		if (CurrentPatrolIndex >= NumberOfPatrolPoints)
-			CurrentPatrolIndex = 0;
-	}
-	if (PatrolPoints)
-	{
-		CurrentMovementType = EnemyMovementType::Patrol;
-		MoveTo(PatrolPoints[CurrentPatrolIndex], elapsedTime);
-	}
-}
-
-void eae6320::EntityAI::cEntityAI::Chase(Math::sVector position, float elapsedTime) {
-	CurrentMovementType = EnemyMovementType::Chase;
-	if (!MoveTo(position, elapsedTime)) {
-		MoveTo(CurTargetLocation, elapsedTime);
-	}
-}
-
-void eae6320::EntityAI::cEntityAI::ChaseOrPatrol(Math::sVector position, float elapsedTime) {
-	if (IsNearPosition(position)) {
-		// Detect Player
-		SetSpeed(RunSpeed);
-		Chase(position, elapsedTime);
-		WaitTime = MaxWaitTime;
-	}
-	else {
-		if (CurrentMovementType == EnemyMovementType::Chase && 
-			CurrentState == EnemyStates::Moving) {
-			MoveTo(CurTargetLocation, elapsedTime);
-		}
-		else if (WaitTime > 0.f) {
+		if (PatrolWaitTime > 0.f) {
 			Idle();
-			WaitTime -= elapsedTime;
-			FindClosestPatrolRoute();
+			PatrolWaitTime -= elapsedTime;
 		}
 		else {
 			SetSpeed(WalkSpeed);
-			Patrol(elapsedTime);
+			PatrolWaitTime = MaxPatrolWaitTime;
+			CurrentPatrolIndex++;
+			if (CurrentPatrolIndex >= NumberOfPatrolPoints)
+				CurrentPatrolIndex = 0;
+		}
+	}
+	if (PatrolPoints)
+	{
+		//CurrentMovementType = EnemyMovementType::Patrol;
+		if (!MoveTo(PatrolPoints[CurrentPatrolIndex], elapsedTime, chaseTargetPosition)) {
+			FindClosestPatrolRoute();
 		}
 	}
 }
@@ -148,15 +132,15 @@ void eae6320::EntityAI::cEntityAI::FindClosestPatrolRoute() {
 			indexForPatrolPoint = i;
 		}
 	}
-	CurrentPatrolIndex = indexForPatrolPoint - 1;
+	CurrentPatrolIndex = indexForPatrolPoint;
 }
 
-void eae6320::EntityAI::cEntityAI::MoveRandomly(float elapsedTime) {
+void eae6320::EntityAI::cEntityAI::MoveRandomly(float elapsedTime, Math::sVector* chaseTargetPosition) {
 	if (!BoundingBox)
 		return;
 	if (CurrentState == EnemyStates::Idle)
 		CurTargetLocation = BoundingBox->getRandomPointInBoundingBox();
-	MoveTo(CurTargetLocation, elapsedTime);
+	MoveTo(CurTargetLocation, elapsedTime, chaseTargetPosition);
 }
 
 float RandomFloat(float max, float min) {
@@ -165,7 +149,7 @@ float RandomFloat(float max, float min) {
 	return min + random * diff;
 }
 
-void eae6320::EntityAI::cEntityAI::MoveRandomlyBouncing(float elapsedTime) {
+void eae6320::EntityAI::cEntityAI::MoveRandomlyBouncing(float elapsedTime, Math::sVector* chaseTargetPosition) {
 	if (!BoundingBox)
 		return;
 	Math::sVector currentPos = GetPosition();
@@ -191,7 +175,7 @@ void eae6320::EntityAI::cEntityAI::MoveRandomlyBouncing(float elapsedTime) {
 		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(0, 1, 0)) * Math::sVector(0, 1, 0);
 		currentVelocity.x += RandomFloat(-0.5, 0.5);
 	}
-	Move(currentVelocity, elapsedTime);
+	MoveInOneDirection(currentVelocity, elapsedTime, chaseTargetPosition);
 }
 
 bool IsItCloseEnough(eae6320::Math::sVector pos1, eae6320::Math::sVector pos2, float AcceptanceRadius) {
@@ -214,7 +198,67 @@ void eae6320::EntityAI::cEntityAI::Move(Math::sVector vector, float elapsedTime)
 	SetVelocity(vector);
 }
 
-bool eae6320::EntityAI::cEntityAI::MoveTo(Math::sVector position, float elapsedTime) {
+bool eae6320::EntityAI::cEntityAI::MoveInOneDirection(Math::sVector vector, float elapsedTime, Math::sVector* chaseTargetPosition)
+{
+	Math::sVector currentPos = GetPosition();
+	if (ChaseActive && chaseTargetPosition) {
+		if (IsNearPosition(*chaseTargetPosition) &&
+			BoundingBox->isValidPointInBoundingBox(*chaseTargetPosition)) {
+			CurrentMovementType = EnemyMovementType::Chase;
+			SetSpeed(RunSpeed);
+			vector = *chaseTargetPosition - currentPos;
+			CurTargetLocation = *chaseTargetPosition;
+			ChaseWaitTime = MaxChaseWaitTime;
+		}
+		else {
+			if (CurrentMovementType == EnemyMovementType::Chase &&
+				CurrentState == EnemyStates::Moving) {
+				vector = CurTargetLocation - currentPos;
+				if (IsItCloseEnough(currentPos, CurTargetLocation, AcceptanceRadius)) {
+					Idle();
+					return true;
+				}
+			}
+			else if (ChaseWaitTime > 0.f) {
+				Idle();
+				ChaseWaitTime -= elapsedTime;
+				return false;
+			}
+			else {
+				CurrentMovementType = EnemyMovementType::None;
+				SetSpeed(WalkSpeed);
+			}
+		}
+	}
+	Move(vector, elapsedTime);
+	return true;
+}
+
+bool eae6320::EntityAI::cEntityAI::MoveTo(Math::sVector position, float elapsedTime, Math::sVector* chaseTargetPosition) {
+	if (ChaseActive && chaseTargetPosition) {
+		if (IsNearPosition(*chaseTargetPosition) && 
+			BoundingBox->isValidPointInBoundingBox(*chaseTargetPosition)) {
+			CurrentMovementType = EnemyMovementType::Chase;
+			SetSpeed(RunSpeed);
+			position = *chaseTargetPosition;
+			ChaseWaitTime = MaxChaseWaitTime;
+		}
+		else {
+			if (CurrentMovementType == EnemyMovementType::Chase &&
+				CurrentState == EnemyStates::Moving) {
+				position = CurTargetLocation;
+			}
+			else if (ChaseWaitTime > 0.f) {
+				Idle();
+				ChaseWaitTime -= elapsedTime;
+				return false;
+			}
+			else {
+				CurrentMovementType = EnemyMovementType::None;
+				SetSpeed(WalkSpeed);
+			}
+		}
+	}
 	if (!BoundingBox->isValidPointInBoundingBox(position))
 	{
 		Idle();
@@ -229,10 +273,6 @@ bool eae6320::EntityAI::cEntityAI::MoveTo(Math::sVector position, float elapsedT
 	Math::sVector movementVector = CurTargetLocation - currentPos;
 	Move(movementVector, elapsedTime);
 	return true;
-}
-
-void eae6320::EntityAI::cEntityAI::MoveTo(float x, float y, float z, float elapsedTime) {
-	MoveTo(Math::sVector(x, y, z), elapsedTime);
 }
 
 void eae6320::EntityAI::cEntityAI::Idle() {
@@ -346,9 +386,10 @@ eae6320::cResult eae6320::EntityAI::cEntityAI::LoadTableValues(cEntityAI*& entit
 	float acceptanceRadius = 0.f;
 	Math::sVector* patrolPoints = nullptr;
 	unsigned int numOfPatrolPoints = 0;
+	float maxPatrolWaitTime = 0.f;
 	float detectionRange = 0.f;
 	bool activeChase = false;
-	float maxWaitTime = 0.f;
+	float maxChaseWaitTime = 0.f;
 
 	if (!(result = LoadTableValues_Position(io_luaState, startingPos))) {
 		return result;
@@ -362,16 +403,16 @@ eae6320::cResult eae6320::EntityAI::cEntityAI::LoadTableValues(cEntityAI*& entit
 	if (!(result = LoadTableValues_AcceptanceRadius(io_luaState, acceptanceRadius))) {
 		return result;
 	}
-	if (!(result = LoadTableValues_PatrolPoints(io_luaState, patrolPoints, numOfPatrolPoints))) {
+	if (!(result = LoadTableValues_PatrolPoints(io_luaState, patrolPoints, numOfPatrolPoints, maxPatrolWaitTime))) {
 		return result;
 	}
-	if (!(result = LoadTableValues_Chase(io_luaState, detectionRange, activeChase, maxWaitTime))) {
+	if (!(result = LoadTableValues_Chase(io_luaState, detectionRange, activeChase, maxChaseWaitTime))) {
 		return result;
 	}
 
 	cBoundingBox* boundingBox = new cBoundingBox(boundingBoxPosition, boundingBoxLength);
 	result = Initialize(entityAI, startingPos, walkSpeed, runSpeed, boundingBox, acceptanceRadius,
-		patrolPoints, numOfPatrolPoints, detectionRange, activeChase, maxWaitTime);
+		patrolPoints, numOfPatrolPoints, detectionRange, activeChase, maxPatrolWaitTime, maxChaseWaitTime);
 	return result;
 }
 
@@ -596,7 +637,7 @@ eae6320::cResult eae6320::EntityAI::cEntityAI::LoadTableValues_AcceptanceRadius(
 }
 
 eae6320::cResult eae6320::EntityAI::cEntityAI::LoadTableValues_PatrolPoints(lua_State& io_luaState, Math::sVector*& patrolPoints, 
-	unsigned int& num) {
+	unsigned int& num, float& time) {
 	auto result = eae6320::Results::Success;
 
 	constexpr auto* const key = "PatrolPoints";
@@ -614,6 +655,22 @@ eae6320::cResult eae6320::EntityAI::cEntityAI::LoadTableValues_PatrolPoints(lua_
 		{
 			return result;
 		}
+	}
+	else
+	{
+		result = eae6320::Results::InvalidFile;
+		//Assets::OutputErrorMessageWithFileInfo(m_path_target, "The value at \"", key, "\" must be a table "
+		//	"(instead of a ", luaL_typename(&io_luaState, -1), ")");
+		return result;
+	}
+
+	constexpr auto* const key2 = "MaxPatrolWaitTime";
+	lua_pushstring(&io_luaState, key2);
+	lua_gettable(&io_luaState, -3);
+	eae6320::cScopeGuard scopeGuard_popWalkSpeed([&io_luaState] { lua_pop(&io_luaState, 1); });
+	if (lua_isnumber(&io_luaState, -1)) {
+		const auto x = lua_tonumber(&io_luaState, -1);
+		time = (float)x;
 	}
 	else
 	{
@@ -695,7 +752,7 @@ eae6320::cResult eae6320::EntityAI::cEntityAI::LoadTableValues_Chase(lua_State& 
 		return result;
 	}
 
-	constexpr auto* const key3 = "MaxWaitTime";
+	constexpr auto* const key3 = "MaxChaseWaitTime";
 	lua_pushstring(&io_luaState, key3);
 	lua_gettable(&io_luaState, -4);
 	eae6320::cScopeGuard scopeGuard_popMaxWaitTime([&io_luaState] { lua_pop(&io_luaState, 1); });

@@ -63,8 +63,9 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput() {
 void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) {
 	entity.Update(i_elapsedSecondCount_sinceLastUpdate);
 	camera.Update(i_elapsedSecondCount_sinceLastUpdate);
-	//enemy->ChaseOrPatrol(entity.GetPosition(), i_elapsedSecondCount_sinceLastUpdate);
-	enemy->MoveRandomlyBouncing(i_elapsedSecondCount_sinceLastUpdate);
+	enemy->MoveRandomlyBouncing(i_elapsedSecondCount_sinceLastUpdate, &entity.GetPosition());
+	//enemy->Patrol(i_elapsedSecondCount_sinceLastUpdate, &entity.GetPosition());
+	//enemy->MoveTo({ 1, 0, 0 }, i_elapsedSecondCount_sinceLastUpdate, &entity.GetPosition());
 	enemy->Update(i_elapsedSecondCount_sinceLastUpdate);
 }
 
@@ -123,7 +124,7 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		effectCount++;
 	}
 
-	entity.Initialize({ 0, 0, 0 }, 5.f);
+	entity.Initialize({ 4, 0, 0 }, 5.f);
 	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f, 5.f);
 
 	EntityAI::cEntityAI::Load(enemy, "data/EntityAI/test.eai");
