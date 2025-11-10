@@ -58,14 +58,71 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput() {
 		input.x += entity.GetSpeed();
 	}
 	entity.SetVelocity(input);
+
+
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key1)) {
+		currentState = PresentationState::Idle;
+	}
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key2)) {
+		currentState = PresentationState::Patrolling;
+	}
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key3)) {
+		currentState = PresentationState::RandomLocation;
+	}
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key4)) {
+		currentState = PresentationState::RandomBouncing;
+	}
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key5)) {
+		currentState = PresentationState::MoveTo;
+	}
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key6)) {
+		currentState = PresentationState::MoveDirection;
+	}
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key7)) {
+		currentState = PresentationState::Chase;
+	}
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key8)) {
+		Chase = !Chase;
+	}
 }
 
 void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) {
 	entity.Update(i_elapsedSecondCount_sinceLastUpdate);
 	camera.Update(i_elapsedSecondCount_sinceLastUpdate);
-	//enemy->Chase(&entity.GetPosition(), i_elapsedSecondCount_sinceLastUpdate);
-	enemy->Patrol(i_elapsedSecondCount_sinceLastUpdate, &entity.GetPosition());
-	//enemy->MoveTo({ 1, 0, 0 }, i_elapsedSecondCount_sinceLastUpdate, &entity.GetPosition());
+
+	switch (currentState)
+	{
+	case eae6320::PresentationState::Patrolling:
+		enemy->Patrol(i_elapsedSecondCount_sinceLastUpdate, 
+			&entity.GetPosition());
+		break;
+	case eae6320::PresentationState::RandomLocation:
+		enemy->MoveRandomly(i_elapsedSecondCount_sinceLastUpdate, 
+			&entity.GetPosition());
+		break;
+	case eae6320::PresentationState::RandomBouncing:
+		enemy->MoveRandomlyBouncing(i_elapsedSecondCount_sinceLastUpdate, 
+			&entity.GetPosition());
+		break;
+	case eae6320::PresentationState::MoveTo:
+		enemy->MoveTo({ 1, 0, 0 }, i_elapsedSecondCount_sinceLastUpdate, 
+			&entity.GetPosition());
+		break;
+	case eae6320::PresentationState::MoveDirection:
+		enemy->MoveInOneDirection({ 1, 0, 0 }, i_elapsedSecondCount_sinceLastUpdate, 
+			&entity.GetPosition());
+		break;
+	case eae6320::PresentationState::Idle:
+		enemy->Idle();
+		break;
+	case eae6320::PresentationState::Chase:
+		enemy->Chase(&entity.GetPosition(), i_elapsedSecondCount_sinceLastUpdate);
+		break;
+	default:
+		break;
+	}
+	enemy->SetActiveChase(Chase);
+
 	enemy->Update(i_elapsedSecondCount_sinceLastUpdate);
 }
 
@@ -129,6 +186,7 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 
 	EntityAI::cEntityAI::Load(enemy, "data/EntityAI/test.eai");
 	enemy->SetStartingPatrolIndex(1);
+	Chase = enemy->GetActiveChase();
 
 	bgColor[0] = 0.5f;
 	bgColor[1] = 0.5f;

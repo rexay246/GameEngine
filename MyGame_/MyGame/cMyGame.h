@@ -23,6 +23,20 @@
 // Class Declaration
 //==================
 
+namespace eae6320 {
+	namespace PresentationState {
+		enum EnemyState {
+			Patrolling,
+			RandomLocation,
+			RandomBouncing,
+			MoveTo,
+			MoveDirection,
+			Chase,
+			Idle,
+		};
+	}
+}
+
 namespace eae6320
 {
 	class cMyGame final : public Application::iApplication
@@ -93,6 +107,9 @@ namespace eae6320
 
 		EntityAI::cBoundingBox* BoundingBox;
 		EntityAI::cEntityAI* enemy;
+
+		bool Chase;
+		PresentationState::EnemyState currentState = PresentationState::Idle;
 
 		bool hideObjects = false;
 		bool changeEffects = false;

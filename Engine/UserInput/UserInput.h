@@ -41,6 +41,15 @@ namespace eae6320
 				S = 0x53,
 				D = 0x44,
 
+				Key1 = 0x31,
+				Key2 = 0x32,
+				Key3 = 0x33,
+				Key4 = 0x34,
+				Key5 = 0x35,
+				Key6 = 0x36,
+				Key7 = 0x37,
+				Key8 = 0x38,
+
 				Space = 0x20,
 
 				Escape = 0x1b,

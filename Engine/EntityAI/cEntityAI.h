@@ -32,17 +32,52 @@ namespace eae6320 {
 		class cEntityAI : public cEntity {
 		public:
 
-			// Initialization
+			// Initialization from file
 			static cResult Load(cEntityAI*& entityAI, const std::string& i_path);
 
 			// Various Movement
+
+			/* Moves to random location within the boundary box.
+			* chaseTargetPosition is used if you have a player the entityAI should follow. Default = nullptr.
+			* elapsedTime is the time between frames.
+			*/
 			void MoveRandomly(float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
+
+			/* Moves in a random direction. Follows one direction until it hits the boundary wall and then bounces.
+			* chaseTargetPosition is used if you have a player the entityAI should follow. Default = nullptr.
+			* elapsedTime is the time between frames.
+			*/
 			void MoveRandomlyBouncing(float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
+
+			/* Moves in one direction indefinitely.
+			* vector is the direction of the movement
+			* chaseTargetPosition is used if you have a player the entityAI should follow. Default = nullptr.
+			* elapsedTime is the time between frames.
+			*/
 			bool MoveInOneDirection(Math::sVector vector, float elapsedTime, 
 				Math::sVector* chaseTargetPosition = nullptr);
+
+			/* Moves to a specified location and then stops.
+			* position is the location
+			* chaseTargetPosition is used if you have a player the entityAI should follow. Default = nullptr.
+			* elapsedTime is the time between frames.
+			*/
 			bool MoveTo(Math::sVector position, float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
+
+			/* Move through the patrol route.The start of the patrol can be changed through SetStartingPatrolIndex.
+			* chaseTargetPosition is used if you have a player the entityAI should follow. Default = nullptr.
+			* elapsedTime is the time between frames.
+			*/
 			void Patrol(float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
+
+			/* Chases the target indefinitely.
+			* chaseTargetPosition is the target you want the entityAI to follow
+			* elapsedTime is the time between frames.
+			*/
 			void Chase(Math::sVector* chaseTargetPosition, float elapsedTime);
+
+			/* Stops moving
+			*/
 			void Idle();
 
 			EAE6320_ASSETS_DECLAREREFERENCECOUNTINGFUNCTIONS();
