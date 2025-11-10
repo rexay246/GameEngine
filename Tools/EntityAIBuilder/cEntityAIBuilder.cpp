@@ -37,7 +37,7 @@ eae6320::cResult eae6320::Assets::cEntityAIBuilder::Load(const std::string& i_pa
 		if (!luaState)
 		{
 			result = eae6320::Results::OutOfMemory;
-			//Assets::OutputErrorMessageWithFileInfo(m_path_target, "Failed to create a new Lua state");
+			Assets::OutputErrorMessageWithFileInfo(m_path_target, "Failed to create a new Lua state");
 			return result;
 		}
 	}
@@ -49,7 +49,7 @@ eae6320::cResult eae6320::Assets::cEntityAIBuilder::Load(const std::string& i_pa
 		if (luaResult != LUA_OK)
 		{
 			result = eae6320::Results::Failure;
-			//Assets::OutputErrorMessageWithFileInfo(m_path_target, lua_tostring(luaState, -1));
+			Assets::OutputErrorMessageWithFileInfo(m_path_target, lua_tostring(luaState, -1));
 			// Pop the error message
 			lua_pop(luaState, 1);
 			return result;
@@ -72,8 +72,8 @@ eae6320::cResult eae6320::Assets::cEntityAIBuilder::Load(const std::string& i_pa
 				if (!lua_istable(luaState, -1))
 				{
 					result = eae6320::Results::InvalidFile;
-					//Assets::OutputErrorMessageWithFileInfo(m_path_target, "Asset files must return a table (instead of a ",
-					//	luaL_typename(luaState, -1), ")");
+					Assets::OutputErrorMessageWithFileInfo(m_path_target, "Asset files must return a table (instead of a ",
+						luaL_typename(luaState, -1), ")");
 					// Pop the returned non-table value
 					lua_pop(luaState, 1);
 					return result;
@@ -82,8 +82,8 @@ eae6320::cResult eae6320::Assets::cEntityAIBuilder::Load(const std::string& i_pa
 			else
 			{
 				result = eae6320::Results::InvalidFile;
-				//Assets::OutputErrorMessageWithFileInfo(m_path_target, "Asset files must return a single table (instead of ",
-				//	returnedValueCount, " values)");
+				Assets::OutputErrorMessageWithFileInfo(m_path_target, "Asset files must return a single table (instead of ",
+					returnedValueCount, " values)");
 				// Pop every value that was returned
 				lua_pop(luaState, returnedValueCount);
 				return result;
@@ -92,7 +92,7 @@ eae6320::cResult eae6320::Assets::cEntityAIBuilder::Load(const std::string& i_pa
 		else
 		{
 			result = eae6320::Results::InvalidFile;
-			//Assets::OutputErrorMessageWithFileInfo(m_path_target, lua_tostring(luaState, -1));
+			Assets::OutputErrorMessageWithFileInfo(m_path_target, lua_tostring(luaState, -1));
 			// Pop the error message
 			lua_pop(luaState, 1);
 			return result;
@@ -197,8 +197,7 @@ eae6320::cResult eae6320::Assets::cEntityAIBuilder::LoadTableValues_Position(lua
 	else
 	{
 		result = eae6320::Results::InvalidFile;
-		//Assets::OutputErrorMessageWithFileInfo(m_path_target, "The value at \"", key, "\" must be a table "
-		//	"(instead of a ", luaL_typename(&io_luaState, -1), ")");
+		Assets::OutputErrorMessageWithFileInfo(m_path_target, "The value at \"", key, "\" is incorrect");
 		return result;
 	}
 
@@ -219,8 +218,7 @@ eae6320::cResult eae6320::Assets::cEntityAIBuilder::LoadTableValues_Speed(lua_St
 	else
 	{
 		result = eae6320::Results::InvalidFile;
-		//Assets::OutputErrorMessageWithFileInfo(m_path_target, "The value at \"", key, "\" must be a table "
-		//	"(instead of a ", luaL_typename(&io_luaState, -1), ")");
+		Assets::OutputErrorMessageWithFileInfo(m_path_target, "The value at \"", key, "\" is incorrect");
 		return result;
 	}
 
@@ -269,8 +267,7 @@ eae6320::cResult eae6320::Assets::cEntityAIBuilder::LoadTableValues_BoundingBox(
 	else
 	{
 		result = eae6320::Results::InvalidFile;
-		//Assets::OutputErrorMessageWithFileInfo(m_path_target, "The value at \"", key, "\" must be a table "
-		//	"(instead of a ", luaL_typename(&io_luaState, -1), ")");
+		Assets::OutputErrorMessageWithFileInfo(m_path_target, "The value at \"", key, "\" is incorrect");
 		return result;
 	}
 
@@ -311,8 +308,7 @@ eae6320::cResult eae6320::Assets::cEntityAIBuilder::LoadTableValues_BBPosition(l
 	else
 	{
 		result = eae6320::Results::InvalidFile;
-		//Assets::OutputErrorMessageWithFileInfo(m_path_target, "The value at \"", key, "\" must be a table "
-		//	"(instead of a ", luaL_typename(&io_luaState, -1), ")");
+		Assets::OutputErrorMessageWithFileInfo(m_path_target, "The value at \"", key, "\" is incorrect");
 		return result;
 	}
 
@@ -353,8 +349,7 @@ eae6320::cResult eae6320::Assets::cEntityAIBuilder::LoadTableValues_BBLength(lua
 	else
 	{
 		result = eae6320::Results::InvalidFile;
-		//Assets::OutputErrorMessageWithFileInfo(m_path_target, "The value at \"", key, "\" must be a table "
-		//	"(instead of a ", luaL_typename(&io_luaState, -1), ")");
+		Assets::OutputErrorMessageWithFileInfo(m_path_target, "The value at \"", key, "\" is incorrect");
 		return result;
 	}
 
@@ -375,8 +370,7 @@ eae6320::cResult eae6320::Assets::cEntityAIBuilder::LoadTableValues_AcceptanceRa
 	else
 	{
 		result = eae6320::Results::InvalidFile;
-		//Assets::OutputErrorMessageWithFileInfo(m_path_target, "The value at \"", key, "\" must be a table "
-		//	"(instead of a ", luaL_typename(&io_luaState, -1), ")");
+		Assets::OutputErrorMessageWithFileInfo(m_path_target, "The value at \"", key, "\" is incorrect");
 		return result;
 	}
 
