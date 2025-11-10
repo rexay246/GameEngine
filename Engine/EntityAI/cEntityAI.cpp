@@ -38,6 +38,10 @@ bool eae6320::EntityAI::cEntityAI::IsNearPosition(Math::sVector position) {
 // Movement
 //===================================
 
+/* Move through the patrol route.The start of the patrol can be changed through SetStartingPatrolIndex.
+*  - chaseTargetPosition is used if you have a player the entityAI should follow. Default = nullptr.
+*  - elapsedTime is the time between frames.
+*/
 void eae6320::EntityAI::cEntityAI::Patrol(float elapsedTime, Math::sVector* chaseTargetPosition) {
 	if (NumberOfPatrolPoints <= 0)
 		return;
@@ -63,6 +67,10 @@ void eae6320::EntityAI::cEntityAI::Patrol(float elapsedTime, Math::sVector* chas
 	}
 }
 
+/* Chases the target indefinitely.
+*  - chaseTargetPosition is the target you want the entityAI to follow
+*  - elapsedTime is the time between frames.
+*/
 void eae6320::EntityAI::cEntityAI::Chase(Math::sVector* chaseTargetPosition, float elapsedTime)
 {
 	if (ChaseActive) {
@@ -72,6 +80,10 @@ void eae6320::EntityAI::cEntityAI::Chase(Math::sVector* chaseTargetPosition, flo
 	}
 }
 
+/* Moves to random location within the boundary box.
+*  - chaseTargetPosition is used if you have a player the entityAI should follow. Default = nullptr.
+*  - elapsedTime is the time between frames.
+*/
 void eae6320::EntityAI::cEntityAI::MoveRandomly(float elapsedTime, Math::sVector* chaseTargetPosition) {
 	if (!BoundingBox)
 		return;
@@ -80,6 +92,10 @@ void eae6320::EntityAI::cEntityAI::MoveRandomly(float elapsedTime, Math::sVector
 	MoveTo(CurTargetLocation, elapsedTime, chaseTargetPosition);
 }
 
+/* Moves in a random direction. Follows one direction until it hits the boundary wall and then bounces.
+*  - chaseTargetPosition is used if you have a player the entityAI should follow. Default = nullptr.
+*  - elapsedTime is the time between frames.
+*/
 void eae6320::EntityAI::cEntityAI::MoveRandomlyBouncing(float elapsedTime, Math::sVector* chaseTargetPosition) {
 	if (!BoundingBox)
 		return;
@@ -109,7 +125,13 @@ void eae6320::EntityAI::cEntityAI::MoveRandomlyBouncing(float elapsedTime, Math:
 	MoveInOneDirection(currentVelocity, elapsedTime, chaseTargetPosition);
 }
 
-bool eae6320::EntityAI::cEntityAI::MoveInOneDirection(Math::sVector vector, float elapsedTime, Math::sVector* chaseTargetPosition)
+/* Moves in one direction indefinitely.
+*  - vector is the direction of the movement
+*  - chaseTargetPosition is used if you have a player the entityAI should follow. Default = nullptr.
+*  - elapsedTime is the time between frames.
+*/
+bool eae6320::EntityAI::cEntityAI::MoveInOneDirection(Math::sVector vector, float elapsedTime, 
+	Math::sVector* chaseTargetPosition)
 {
 	Math::sVector currentPos = GetPosition();
 	if (ChaseActive && chaseTargetPosition) {
@@ -141,11 +163,17 @@ bool eae6320::EntityAI::cEntityAI::MoveInOneDirection(Math::sVector vector, floa
 			}
 		}
 	}
-	Move(vector, elapsedTime);
+	Move(vector);
 	return true;
 }
 
-bool eae6320::EntityAI::cEntityAI::MoveTo(Math::sVector position, float elapsedTime, Math::sVector* chaseTargetPosition) {
+/* Moves to a specified location and then stops.
+*  - position is the location
+*  - chaseTargetPosition is used if you have a player the entityAI should follow. Default = nullptr.
+*  - elapsedTime is the time between frames.
+*/
+bool eae6320::EntityAI::cEntityAI::MoveTo(Math::sVector position, float elapsedTime, 
+	Math::sVector* chaseTargetPosition) {
 	if (ChaseActive && chaseTargetPosition) {
 		if (IsNearPosition(*chaseTargetPosition) &&
 			BoundingBox->isValidPointInBoundingBox(*chaseTargetPosition)) {
@@ -182,16 +210,18 @@ bool eae6320::EntityAI::cEntityAI::MoveTo(Math::sVector position, float elapsedT
 	}
 	CurTargetLocation = position;
 	Math::sVector movementVector = CurTargetLocation - currentPos;
-	Move(movementVector, elapsedTime);
+	Move(movementVector);
 	return true;
 }
 
+/* Stops moving
+*/
 void eae6320::EntityAI::cEntityAI::Idle() {
 	CurrentState = EnemyStates::Idle;
 	SetVelocity(Math::sVector(0, 0, 0));
 }
 
-void eae6320::EntityAI::cEntityAI::Move(Math::sVector vector, float elapsedTime) {
+void eae6320::EntityAI::cEntityAI::Move(Math::sVector vector) {
 	CurrentState = EnemyStates::Moving;
 	if (vector.GetLength() > 1 - AcceptanceRadius)
 		vector = vector.GetNormalized() * GetSpeed();
@@ -348,21 +378,15 @@ void eae6320::EntityAI::cEntityAI::SetPatrolPoints(Math::sVector* patrolPoints, 
 	memcpy(PatrolPoints, patrolPoints, sizeof(patrolPoints[0]) * NumberOfPatrolPoints);
 }
 
-void eae6320::EntityAI::cEntityAI::SetDetectionRange(float detectionRange) {
-	DetectionRange = detectionRange;
-}
-
-void eae6320::EntityAI::cEntityAI::SetMaxPatrolWaitTime(float waitTime)
+void eae6320::EntityAI::cEntityAI::SetStartingPatrolIndex(unsigned int index)
 {
-	MaxPatrolWaitTime = waitTime;
-}
-
-void eae6320::EntityAI::cEntityAI::SetMaxChaseWaitTime(float waitTime)
-{
-	MaxChaseWaitTime = waitTime;
-}
-
-void eae6320::EntityAI::cEntityAI::SetActiveChase(bool active)
-{
-	ChaseActive = active;
+	if (NumberOfPatrolPoints <= 0)
+		return;
+	if (index < 0)
+		index = 0;
+	if (index >= NumberOfPatrolPoints) {
+		index = NumberOfPatrolPoints - 1;
+	}
+	index -= 1;
+	CurrentPatrolIndex = index;
 }

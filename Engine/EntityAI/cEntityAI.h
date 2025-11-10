@@ -1,3 +1,7 @@
+/*
+	This file provides more advanced assert functionality than the standard library
+*/
+
 #pragma once
 #ifndef EAE6320_ENTITYAI_CENTITYAI_H
 #define EAE6320_ENTITYAI_CENTITYAI_H
@@ -65,7 +69,9 @@ namespace eae6320 {
 			// Wait Times for chasing and patrolling
 			float ChaseWaitTime = 0.f;
 			float PatrolWaitTime = 0.f;
+			// How long to wait after a chase
 			float MaxChaseWaitTime = 1.f;
+			// How long to wait in each patrol point
 			float MaxPatrolWaitTime = 1.f;
 
 			EnemyStates CurrentState = EnemyStates::Idle;
@@ -76,14 +82,17 @@ namespace eae6320 {
 
 			// Setters
 			void SetPatrolPoints(Math::sVector* patrolPoints, int numOfPoints);
-			void SetDetectionRange(float range);
-			void SetMaxChaseWaitTime(float waitTime);
-			void SetMaxPatrolWaitTime(float waitTime);
-			void SetActiveChase(bool active);
+			void SetDetectionRange(float range) { DetectionRange = range; };
+			void SetMaxChaseWaitTime(float waitTime) { MaxChaseWaitTime = waitTime; };
+			void SetMaxPatrolWaitTime(float waitTime) { MaxPatrolWaitTime = waitTime; };
+			void SetActiveChase(bool active) { ChaseActive = active; };
+			void SetBoundingBox(cBoundingBox* bb) { BoundingBox = bb; };
+			void SetStartingPatrolIndex(unsigned int index);
 
 			// Getters
 			float GetMaxChaseWaitTime() { return MaxChaseWaitTime; };
 			float GetMaxPatrolWaitTime() { return MaxPatrolWaitTime; };
+			float GetDetectionRange() { return DetectionRange; };
 			bool GetActiveChase() { return ChaseActive; };
 
 		private:
@@ -100,7 +109,7 @@ namespace eae6320 {
 				float maxChaseWaitTime);
 			~cEntityAI();
 
-			void Move(Math::sVector vector, float elapsedTime);
+			void Move(Math::sVector vector);
 			void FindClosestPatrolRoute();
 			bool IsNearPosition(Math::sVector position);
 		};

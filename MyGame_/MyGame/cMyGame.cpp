@@ -128,6 +128,7 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f, 5.f);
 
 	EntityAI::cEntityAI::Load(enemy, "data/EntityAI/test.eai");
+	enemy->SetStartingPatrolIndex(1);
 
 	bgColor[0] = 0.5f;
 	bgColor[1] = 0.5f;
