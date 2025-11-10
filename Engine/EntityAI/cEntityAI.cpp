@@ -122,6 +122,15 @@ void eae6320::EntityAI::cEntityAI::Patrol(float elapsedTime, Math::sVector* chas
 	}
 }
 
+void eae6320::EntityAI::cEntityAI::Chase(Math::sVector* chaseTargetPosition, float elapsedTime)
+{
+	if (ChaseActive) {
+		if (!(MoveTo(*chaseTargetPosition, elapsedTime))) {
+			MoveTo(CurTargetLocation, elapsedTime);
+		}
+	}
+}
+
 void eae6320::EntityAI::cEntityAI::FindClosestPatrolRoute() {
 	Math::sVector currentPos = GetPosition();
 	unsigned int indexForPatrolPoint = 0;

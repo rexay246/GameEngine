@@ -47,6 +47,7 @@ namespace eae6320 {
 			bool MoveInOneDirection(Math::sVector vector, float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
 			bool MoveTo(Math::sVector position, float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
 			void Patrol(float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
+			void Chase(Math::sVector* chaseTargetPosition, float elapsedTime);
 			void Idle();
 
 		private:

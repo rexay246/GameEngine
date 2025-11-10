@@ -63,7 +63,7 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput() {
 void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) {
 	entity.Update(i_elapsedSecondCount_sinceLastUpdate);
 	camera.Update(i_elapsedSecondCount_sinceLastUpdate);
-	enemy->MoveRandomlyBouncing(i_elapsedSecondCount_sinceLastUpdate, &entity.GetPosition());
+	enemy->Chase(&entity.GetPosition(), i_elapsedSecondCount_sinceLastUpdate);
 	//enemy->Patrol(i_elapsedSecondCount_sinceLastUpdate, &entity.GetPosition());
 	//enemy->MoveTo({ 1, 0, 0 }, i_elapsedSecondCount_sinceLastUpdate, &entity.GetPosition());
 	enemy->Update(i_elapsedSecondCount_sinceLastUpdate);
