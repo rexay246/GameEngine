@@ -1,0 +1,23 @@
+return
+{
+	StartPosition = {x = 0.0, y = 0.0, z = 0.0},
+	WalkSpeed = 2.0,
+	RunSpeed = 4.0,
+	BoundingBox = 
+	{
+		Position = {x = 0.0, y = 0.0, z = 0.0},
+		Length = {x = 4.0, y = 4.0, z = 0.0},
+	},
+	AcceptanceRadius = 0.05,
+	ActivePatrol = true,
+	PatrolPoints = 
+	{
+		{x = 3.0, y = 3.0, z = 0.0},
+		{x = 3.0, y = -3.0, z = 0.0},
+		{x = -3.0, y = -3.0, z = 0.0},
+		{x = -3.0, y = 3.0, z = 0.0},
+	},
+	ActiveChase = true,
+	DetectionRange = 3.0,
+	MaxWaitTime = 1.0,
+}

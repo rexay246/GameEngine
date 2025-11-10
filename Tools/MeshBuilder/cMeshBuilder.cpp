@@ -115,11 +115,6 @@ eae6320::cResult eae6320::Assets::cMeshBuilder::LoadTableValues(lua_State& io_lu
 {
 	auto result = eae6320::Results::Success;
 
-	/*eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[1000];
-	int vertexCount;
-	uint16_t indexData[1000];
-	int indexCount;*/
-
 	eae6320::Graphics::VertexFormats::sVertex_mesh* vertexData = nullptr;
 	unsigned int vertexCount;
 	uint16_t* indexData = nullptr;
