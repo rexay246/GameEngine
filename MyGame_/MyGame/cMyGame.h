@@ -110,6 +110,7 @@ namespace eae6320
 
 		bool Chase;
 		PresentationState::EnemyState currentState = PresentationState::Idle;
+		Math::sVector mouseLoc;
 
 		bool hideObjects = false;
 		bool changeEffects = false;

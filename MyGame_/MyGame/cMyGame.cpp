@@ -5,6 +5,8 @@
 
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/UserInput/UserInput.h>
+#include <iostream>
+#include <stdio.h>
 
 // Inherited Implementation
 //=========================
@@ -77,12 +79,26 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput() {
 	}
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key6)) {
 		currentState = PresentationState::MoveDirection;
-	}
+	}	
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key7)) {
 		currentState = PresentationState::Chase;
 	}
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key8)) {
 		Chase = !Chase;
+	}
+
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::MOUSELEFT)) {
+		long* test = new long[2];
+		UserInput::GetMouseLocation(test, (char*)GetMainWindowName());
+		uint16_t width;
+		uint16_t height;
+		GetCurrentResolution(width, height);
+		float x = test[0] / (float)width;
+		float y = test[1] / (float)height;
+
+		x = 10 * x - 5;
+		y = -10 * y + 5;
+		mouseLoc = { x, y, 0 };
 	}
 }
 
@@ -105,11 +121,11 @@ void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCo
 			&entity.GetPosition());
 		break;
 	case eae6320::PresentationState::MoveTo:
-		enemy->MoveTo({ 1, 0, 0 }, i_elapsedSecondCount_sinceLastUpdate, 
+		enemy->MoveTo(mouseLoc, i_elapsedSecondCount_sinceLastUpdate,
 			&entity.GetPosition());
 		break;
 	case eae6320::PresentationState::MoveDirection:
-		enemy->MoveInOneDirection({ 1, 0, 0 }, i_elapsedSecondCount_sinceLastUpdate, 
+		enemy->MoveInOneDirection(mouseLoc, i_elapsedSecondCount_sinceLastUpdate,
 			&entity.GetPosition());
 		break;
 	case eae6320::PresentationState::Idle:
