@@ -57,6 +57,13 @@ namespace eae6320 {
 			bool MoveInOneDirection(Math::sVector vector, float elapsedTime, 
 				Math::sVector* chaseTargetPosition = nullptr);
 
+			/* Moves a specified distance and then stops.
+			* distance is the length
+			* chaseTargetPosition is used if you have a player the entityAI should follow. Default = nullptr.
+			* elapsedTime is the time between frames.
+			*/
+			bool MoveDistance(Math::sVector distance, float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
+
 			/* Moves to a specified location and then stops.
 			* position is the location
 			* chaseTargetPosition is used if you have a player the entityAI should follow. Default = nullptr.

@@ -77,6 +77,7 @@ void eae6320::EntityAI::cEntityAI::MoveRandomly(float elapsedTime, Math::sVector
 		CurTargetLocation = BoundingBox->getRandomPointInBoundingBox();
 	MoveTo(CurTargetLocation, elapsedTime, chaseTargetPosition);
 }
+
 void eae6320::EntityAI::cEntityAI::MoveRandomlyBouncing(float elapsedTime, Math::sVector* chaseTargetPosition) {
 	if (!BoundingBox)
 		return;
@@ -140,6 +141,10 @@ bool eae6320::EntityAI::cEntityAI::MoveInOneDirection(Math::sVector vector, floa
 	}
 	Move(vector);
 	return true;
+}
+bool eae6320::EntityAI::cEntityAI::MoveDistance(Math::sVector distance, float elapsedTime, Math::sVector* chaseTargetPosition)
+{
+	return MoveTo(GetPosition() + distance, elapsedTime, chaseTargetPosition);
 }
 bool eae6320::EntityAI::cEntityAI::MoveTo(Math::sVector position, float elapsedTime, 
 	Math::sVector* chaseTargetPosition) {
