@@ -1,7 +1,7 @@
 // Includes
 //=========
 
-#include "cMyGame.h"
+#include "cAlienBreak.h"
 
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/UserInput/UserInput.h>
@@ -14,7 +14,7 @@
 // Run
 //----
 
-void eae6320::cMyGame::UpdateBasedOnInput()
+void eae6320::cAlienBreak::UpdateBasedOnInput()
 {
 	// Is the user pressing the ESC key?
 	if ( UserInput::IsKeyPressed( UserInput::KeyCodes::Escape ) )
@@ -25,7 +25,7 @@ void eae6320::cMyGame::UpdateBasedOnInput()
 	}
 }
 
-void eae6320::cMyGame::UpdateSimulationBasedOnInput() {
+void eae6320::cAlienBreak::UpdateSimulationBasedOnInput() {
 	hideObjects = UserInput::IsKeyPressed(UserInput::KeyCodes::Space);
 	changeEffects = UserInput::IsKeyPressed(UserInput::KeyCodes::Enter);
 
@@ -102,7 +102,7 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput() {
 	}
 }
 
-void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) {
+void eae6320::cAlienBreak::UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) {
 	entity.Update(i_elapsedSecondCount_sinceLastUpdate);
 	camera.Update(i_elapsedSecondCount_sinceLastUpdate);
 
@@ -142,7 +142,7 @@ void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCo
 	enemy->Update(i_elapsedSecondCount_sinceLastUpdate);
 }
 
-void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime,
+void eae6320::cAlienBreak::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime,
 	const float i_elapsedSecondCount_sinceLastSimulationUpdate) {
 
 	Graphics::SetBackgroundColor(bgColor);
@@ -162,7 +162,7 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 // Initialize / Clean Up
 //----------------------
 
-eae6320::cResult eae6320::cMyGame::Initialize()
+eae6320::cResult eae6320::cAlienBreak::Initialize()
 {
 	// Mesh 1
 	{
@@ -212,7 +212,7 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 	return Results::Success;
 }
 
-eae6320::cResult eae6320::cMyGame::CleanUp()
+eae6320::cResult eae6320::cAlienBreak::CleanUp()
 {
 	entity.CleanUp();
 	for (int i = 0; i < meshCount; i++) {
