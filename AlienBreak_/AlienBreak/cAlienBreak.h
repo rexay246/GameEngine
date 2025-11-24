@@ -15,6 +15,10 @@
 #include <Engine/EntityAI/cEntityAI.h>
 #include <Engine/EntityAI/cBoundingBox.h>
 #include <Engine/GameObject/cCamera.h>
+#include <Engine/Physics/cPhysicsWorld.h>
+#include <Engine/Physics/cPhysicsBody2D.h>
+#include <Engine/Math/sVector2.h>
+
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include "Resource Files/Resource.h"
@@ -114,6 +118,8 @@ namespace eae6320
 
 		bool hideObjects = false;
 		bool changeEffects = false;
+
+		std::unique_ptr<Physics::cPhysicsWorld> m_PhysicsWorld;
 
 		// Initialize / Clean Up
 		//----------------------

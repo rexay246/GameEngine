@@ -2,6 +2,7 @@
 #include <Engine/ScopeGuard/cScopeGuard.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/Platform/Platform.h>
+#include <Engine/Physics/PhysicsUtil.h>
 
 // Helper Definitions
 //===================
@@ -106,6 +107,49 @@ void eae6320::EntityAI::cEntityAI::MoveRandomlyBouncing(float elapsedTime, Math:
 	}
 	MoveInOneDirection(currentVelocity, elapsedTime, chaseTargetPosition);
 }
+void eae6320::EntityAI::cEntityAI::MoveRandomlyBouncing(float elapsedTime, Physics::cPhysicsWorld* world, Math::sVector* chaseTargetPosition)
+{
+	if (!BoundingBox)
+		return;
+	Math::sVector currentPos = GetPosition();
+	Math::sVector currentVelocity = GetVelocity();
+	if (CurrentState == EnemyStates::Idle) {
+		currentVelocity = { RandomFloat(0, 1),
+			RandomFloat(0, 1), 0 };
+		currentVelocity.Normalize();
+	}
+	if (currentPos.x > BoundingBox->getMaxXRange()) {
+		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(-1, 0, 0)) * Math::sVector(-1, 0, 0);
+		currentVelocity.x += RandomFloat(-0.5, 0.5);
+	}
+	if (currentPos.x < BoundingBox->getMinXRange()) {
+		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(1, 0, 0)) * Math::sVector(1, 0, 0);
+		currentVelocity.x += RandomFloat(-0.5, 0.5);
+	}
+	if (currentPos.y > BoundingBox->getMaxYRange()) {
+		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(0, -1, 0)) * Math::sVector(0, -1, 0);
+		currentVelocity.x += RandomFloat(-0.5, 0.5);
+	}
+	if (currentPos.y < BoundingBox->getMinYRange()) {
+		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(0, 1, 0)) * Math::sVector(0, 1, 0);
+		currentVelocity.x += RandomFloat(-0.5, 0.5);
+	}
+	std::vector<Physics::PhysicsBody2D*> result;
+	if (world->OverlapBox(Util::ToVec2(currentPos + currentVelocity.GetNormalized() * 0.5f), body->Width, body->Height, result))
+	{
+		for (auto collide : result) {
+			if (collide == player) {
+				Math::sVector direction = Util::ToVec3(player->position) - currentPos;
+				direction.Normalize();
+				currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, direction) * direction;
+				currentVelocity.x += RandomFloat(-0.5, 0.5);
+				currentVelocity.y += RandomFloat(-0.5, 0.5);
+			}
+		}
+	}
+	MoveInOneDirection(currentVelocity, elapsedTime, chaseTargetPosition);
+}
+
 bool eae6320::EntityAI::cEntityAI::MoveInOneDirection(Math::sVector vector, float elapsedTime, 
 	Math::sVector* chaseTargetPosition)
 {

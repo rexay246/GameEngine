@@ -5,6 +5,7 @@
 
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/UserInput/UserInput.h>
+#include <Engine/Physics/PhysicsUtil.h>
 #include <iostream>
 #include <stdio.h>
 
@@ -29,116 +30,37 @@ void eae6320::cAlienBreak::UpdateSimulationBasedOnInput() {
 	hideObjects = UserInput::IsKeyPressed(UserInput::KeyCodes::Space);
 	changeEffects = UserInput::IsKeyPressed(UserInput::KeyCodes::Enter);
 
-	// Camera
-	Math::sVector input = { 0, 0, 0 };
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Up)) {
-		input.y += camera.GetSpeed();
-	}
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Down)) {
-		input.y -= camera.GetSpeed();
-	}
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Left)) {
-		input.x -= camera.GetSpeed();
-	}
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Right)) {
-		input.x += camera.GetSpeed();
-	}
-	camera.SetVelocity(input);
-
 	// Player
-	input = { 0, 0, 0 };
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::W)) {
-		input.y += entity.GetSpeed();
-	}
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::S)) {
-		input.y -= entity.GetSpeed();
-	}
+	Math::sVector input = { 0, 0, 0 };
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::A)) {
 		input.x -= entity.GetSpeed();
 	}
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::D)) {
 		input.x += entity.GetSpeed();
 	}
-	entity.SetVelocity(input);
-
-
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key1)) {
-		currentState = PresentationState::Idle;
+	Physics::PhysicsBody2D* body = nullptr;
+	m_PhysicsWorld->GetBody(0, body);
+	std::vector<Physics::PhysicsBody2D*> result;
+	if (input != Math::sVector{ 0, 0, 0 }) {
+		m_PhysicsWorld->OverlapBox(Util::ToVec2(entity.GetPosition() + input.GetNormalized() * 0.5f), body->Width, body->Height, result);
+		if (result.empty() || result[0] == body) {
+			entity.SetVelocity(input);
+		}
 	}
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key2)) {
-		currentState = PresentationState::Patrolling;
-	}
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key3)) {
-		currentState = PresentationState::RandomLocation;
-	}
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key4)) {
-		currentState = PresentationState::RandomBouncing;
-	}
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key5)) {
-		currentState = PresentationState::MoveTo;
-	}
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key6)) {
-		currentState = PresentationState::MoveDirection;
-	}	
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key7)) {
-		currentState = PresentationState::Chase;
-	}
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key8)) {
-		Chase = !Chase;
-	}
-
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::MOUSELEFT)) {
-		long* test = new long[2];
-		UserInput::GetMouseLocation(test, (char*)GetMainWindowName());
-		uint16_t width;
-		uint16_t height;
-		GetCurrentResolution(width, height);
-		float x = test[0] / (float)width;
-		float y = test[1] / (float)height;
-
-		x = 10 * x - 5;
-		y = -10 * y + 5;
-		mouseLoc = { x, y, 0 };
+	else {
+		entity.SetVelocity({ 0, 0, 0 });
 	}
 }
 
 void eae6320::cAlienBreak::UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) {
+	Physics::PhysicsBody2D* body = nullptr;
+	m_PhysicsWorld->GetBody(0, body);
 	entity.Update(i_elapsedSecondCount_sinceLastUpdate);
+	body->MoveTo(Util::ToVec2(entity.GetPosition()));
+
 	camera.Update(i_elapsedSecondCount_sinceLastUpdate);
 
-	switch (currentState)
-	{
-	case eae6320::PresentationState::Patrolling:
-		enemy->Patrol(i_elapsedSecondCount_sinceLastUpdate, 
-			&entity.GetPosition());
-		break;
-	case eae6320::PresentationState::RandomLocation:
-		enemy->MoveRandomly(i_elapsedSecondCount_sinceLastUpdate, 
-			&entity.GetPosition());
-		break;
-	case eae6320::PresentationState::RandomBouncing:
-		enemy->MoveRandomlyBouncing(i_elapsedSecondCount_sinceLastUpdate, 
-			&entity.GetPosition());
-		break;
-	case eae6320::PresentationState::MoveTo:
-		enemy->MoveTo(mouseLoc, i_elapsedSecondCount_sinceLastUpdate,
-			&entity.GetPosition());
-		break;
-	case eae6320::PresentationState::MoveDirection:
-		enemy->MoveInOneDirection(mouseLoc, i_elapsedSecondCount_sinceLastUpdate,
-			&entity.GetPosition());
-		break;
-	case eae6320::PresentationState::Idle:
-		enemy->Idle();
-		break;
-	case eae6320::PresentationState::Chase:
-		enemy->Chase(&entity.GetPosition(), i_elapsedSecondCount_sinceLastUpdate);
-		break;
-	default:
-		break;
-	}
-	enemy->SetActiveChase(Chase);
-
+	enemy->MoveRandomlyBouncing(i_elapsedSecondCount_sinceLastUpdate, m_PhysicsWorld.get());
 	enemy->Update(i_elapsedSecondCount_sinceLastUpdate);
 }
 
@@ -166,13 +88,13 @@ eae6320::cResult eae6320::cAlienBreak::Initialize()
 {
 	// Mesh 1
 	{
-		Graphics::cMesh::Load(meshes[0], "data/Meshes/PlayerEntityMesh.mesh");
+		Graphics::cMesh::Load(meshes[0], "data/Meshes/BreakerMesh.mesh");
 		meshCount++;
 	}
 
 	// Mesh 2
 	{
-		Graphics::cMesh::Load(meshes[1], "data/Meshes/EnemyEntityMesh.mesh");
+		Graphics::cMesh::Load(meshes[1], "data/Meshes/BallMesh.mesh");
 		meshCount++;
 	}
 
@@ -197,17 +119,28 @@ eae6320::cResult eae6320::cAlienBreak::Initialize()
 		effectCount++;
 	}
 
-	entity.Initialize({ 4, 0, 0 }, 5.f);
+	entity.Initialize({ 0, -3, 0 }, 5.f);
 	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f, 5.f);
 
-	EntityAI::cEntityAI::Load(enemy, "data/EntityAI/test.eai");
-	enemy->SetStartingPatrolIndex(1);
-	Chase = enemy->GetActiveChase();
+	EntityAI::cEntityAI::Load(enemy, "data/EntityAI/Ball.eai");
 
 	bgColor[0] = 0.5f;
 	bgColor[1] = 0.5f;
 	bgColor[2] = 1.0f;
 	bgColor[3] = 1.0f;
+
+	m_PhysicsWorld = std::make_unique<Physics::cPhysicsWorld>();
+	m_PhysicsWorld->AddBody(Physics::CreateBoxBody(0.8f, 0.5f, 1.f, false, 1.f));
+	m_PhysicsWorld->AddBody(Physics::CreateBoxBody(0.5f, 0.5f, 1.f, false, 1.f));
+
+	Physics::PhysicsBody2D* body = nullptr;
+	Physics::PhysicsBody2D* enemyBody = nullptr;
+	if (m_PhysicsWorld->GetBody(0, body))
+		body->MoveTo(Util::ToVec2(entity.GetPosition()));
+	if (m_PhysicsWorld->GetBody(1, enemyBody))
+		enemyBody->MoveTo(Util::ToVec2(enemy->GetPosition()));
+	enemy->body = enemyBody;
+	enemy->player = body;
 
 	return Results::Success;
 }

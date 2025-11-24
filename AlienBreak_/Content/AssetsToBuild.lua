@@ -22,10 +22,13 @@ return
 		{ path = "Meshes/FloorObject.mesh" },
 		{ path = "Meshes/PlayerEntityMesh.mesh" },
 		{ path = "Meshes/EnemyEntityMesh.mesh" },
+		{ path = "Meshes/BreakerMesh.mesh" },
+		{ path = "Meshes/BallMesh.mesh" },
 	},
 
 	entityAI = 
 	{
 		{ path = "EntityAI/test.eai" },
+		{ path = "EntityAI/Ball.eai" },
 	}
 }

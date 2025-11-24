@@ -10,6 +10,9 @@
 #include "cBoundingBox.h"
 #include <Engine/Assets/ReferenceCountedAssets.h>
 #include <External/Lua/Includes.h>
+#include <Engine/Physics/cPhysicsWorld.h>
+#include <Engine/Physics/cPhysicsBody2D.h>
+#include <Engine/Math/sVector2.h>
 
 namespace eae6320 {
 	namespace EntityAI {
@@ -48,6 +51,12 @@ namespace eae6320 {
 			* elapsedTime is the time between frames.
 			*/
 			void MoveRandomlyBouncing(float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
+
+			/* Moves in a random direction. Follows one direction until it hits the boundary wall and then bounces.
+			* chaseTargetPosition is used if you have a player the entityAI should follow. Default = nullptr.
+			* elapsedTime is the time between frames.
+			*/
+			void MoveRandomlyBouncing(float elapsedTime, Physics::cPhysicsWorld* world, Math::sVector* chaseTargetPosition = nullptr);
 
 			/* Moves in one direction indefinitely.
 			* vector is the direction of the movement
@@ -92,7 +101,6 @@ namespace eae6320 {
 			EAE6320_ASSETS_DECLAREREFERENCECOUNT();
 
 		private:
-
 			Math::sVector CurTargetLocation;
 			cBoundingBox* BoundingBox;
 			float AcceptanceRadius = 1.0f;
@@ -136,6 +144,9 @@ namespace eae6320 {
 			float GetMaxPatrolWaitTime() { return MaxPatrolWaitTime; };
 			float GetDetectionRange() { return DetectionRange; };
 			bool GetActiveChase() { return ChaseActive; };
+
+			Physics::PhysicsBody2D* body;
+			Physics::PhysicsBody2D* player;
 
 		private:
 
