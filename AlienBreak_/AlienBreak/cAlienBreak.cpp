@@ -60,8 +60,8 @@ void eae6320::cAlienBreak::UpdateSimulationBasedOnTime(const float i_elapsedSeco
 
 	camera.Update(i_elapsedSecondCount_sinceLastUpdate);
 
-	enemy->MoveRandomlyBouncing(i_elapsedSecondCount_sinceLastUpdate, m_PhysicsWorld.get());
-	enemy->Update(i_elapsedSecondCount_sinceLastUpdate);
+	ball->MoveRandomlyBouncing(i_elapsedSecondCount_sinceLastUpdate, m_PhysicsWorld.get());
+	ball->Update(i_elapsedSecondCount_sinceLastUpdate);
 }
 
 void eae6320::cAlienBreak::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime,
@@ -71,11 +71,16 @@ void eae6320::cAlienBreak::SubmitDataToBeRendered(const float i_elapsedSecondCou
 
 	entity.setMeshAndEffect(meshes[0], effects[1]);
 	entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
-	entity.CleanUp();
 
-	enemy->setMeshAndEffect(meshes[1], effects[0]);
-	enemy->Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
-	enemy->CleanUp();
+	ball->setMeshAndEffect(meshes[1], effects[0]);
+	ball->Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+
+	alien->setMeshAndEffect(meshes[2], effects[1]);
+	alien->Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+
+	entity.CleanUp();
+	ball->CleanUp();
+	alien->CleanUp();
 
 	camera.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 	
@@ -100,7 +105,7 @@ eae6320::cResult eae6320::cAlienBreak::Initialize()
 
 	// Mesh 3
 	{
-		Graphics::cMesh::Load(meshes[2], "data/Meshes/FloorObject.mesh");
+		Graphics::cMesh::Load(meshes[2], "data/Meshes/EnemyMesh.mesh");
 		meshCount++;
 	}
 
@@ -122,7 +127,8 @@ eae6320::cResult eae6320::cAlienBreak::Initialize()
 	entity.Initialize({ 0, -3, 0 }, 5.f);
 	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f, 5.f);
 
-	EntityAI::cEntityAI::Load(enemy, "data/EntityAI/Ball.eai");
+	EntityAI::cEntityAI::Load(ball, "data/EntityAI/Ball.eai");
+	EntityAI::cEntityAI::Load(alien, "data/EntityAI/Alien.eai");
 
 	bgColor[0] = 0.5f;
 	bgColor[1] = 0.5f;
@@ -132,15 +138,19 @@ eae6320::cResult eae6320::cAlienBreak::Initialize()
 	m_PhysicsWorld = std::make_unique<Physics::cPhysicsWorld>();
 	m_PhysicsWorld->AddBody(Physics::CreateBoxBody(0.8f, 0.5f, 1.f, false, 1.f));
 	m_PhysicsWorld->AddBody(Physics::CreateBoxBody(0.5f, 0.5f, 1.f, false, 1.f));
+	m_PhysicsWorld->AddBody(Physics::CreateBoxBody(0.6f, 0.6f, 1.f, false, 1.f));
 
 	Physics::PhysicsBody2D* body = nullptr;
+	Physics::PhysicsBody2D* ballBody = nullptr;
 	Physics::PhysicsBody2D* enemyBody = nullptr;
 	if (m_PhysicsWorld->GetBody(0, body))
 		body->MoveTo(Util::ToVec2(entity.GetPosition()));
-	if (m_PhysicsWorld->GetBody(1, enemyBody))
-		enemyBody->MoveTo(Util::ToVec2(enemy->GetPosition()));
-	enemy->body = enemyBody;
-	enemy->player = body;
+	if (m_PhysicsWorld->GetBody(1, ballBody))
+		ballBody->MoveTo(Util::ToVec2(ball->GetPosition()));
+	if (m_PhysicsWorld->GetBody(2, enemyBody))
+		enemyBody->MoveTo(Util::ToVec2(alien->GetPosition()));
+	ball->body = ballBody;
+	ball->player = body;
 
 	return Results::Success;
 }

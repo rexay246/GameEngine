@@ -117,20 +117,21 @@ void eae6320::EntityAI::cEntityAI::MoveRandomlyBouncing(float elapsedTime, Physi
 		currentVelocity = { RandomFloat(0, 1),
 			RandomFloat(0, 1), 0 };
 		currentVelocity.Normalize();
+		currentVelocity *= GetSpeed();
 	}
-	if (currentPos.x > BoundingBox->getMaxXRange()) {
+	if (currentPos.x + currentVelocity.GetNormalized().x * 0.3f > BoundingBox->getMaxXRange()) {
 		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(-1, 0, 0)) * Math::sVector(-1, 0, 0);
 		currentVelocity.x += RandomFloat(-0.5, 0.5);
 	}
-	if (currentPos.x < BoundingBox->getMinXRange()) {
+	if (currentPos.x + currentVelocity.GetNormalized().x * 0.3f < BoundingBox->getMinXRange()) {
 		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(1, 0, 0)) * Math::sVector(1, 0, 0);
 		currentVelocity.x += RandomFloat(-0.5, 0.5);
 	}
-	if (currentPos.y > BoundingBox->getMaxYRange()) {
+	if (currentPos.y + currentVelocity.GetNormalized().y * 0.3f > BoundingBox->getMaxYRange()) {
 		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(0, -1, 0)) * Math::sVector(0, -1, 0);
 		currentVelocity.x += RandomFloat(-0.5, 0.5);
 	}
-	if (currentPos.y < BoundingBox->getMinYRange()) {
+	if (currentPos.y + currentVelocity.GetNormalized().y * 0.3f < BoundingBox->getMinYRange()) {
 		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(0, 1, 0)) * Math::sVector(0, 1, 0);
 		currentVelocity.x += RandomFloat(-0.5, 0.5);
 	}
@@ -138,8 +139,8 @@ void eae6320::EntityAI::cEntityAI::MoveRandomlyBouncing(float elapsedTime, Physi
 	if (world->OverlapBox(Util::ToVec2(currentPos + currentVelocity.GetNormalized() * 0.5f), body->Width, body->Height, result))
 	{
 		for (auto collide : result) {
-			if (collide == player) {
-				Math::sVector direction = Util::ToVec3(player->position) - currentPos;
+			if (collide != body) {
+				Math::sVector direction = Util::ToVec3(collide->position) - currentPos;
 				direction.Normalize();
 				currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, direction) * direction;
 				currentVelocity.x += RandomFloat(-0.5, 0.5);

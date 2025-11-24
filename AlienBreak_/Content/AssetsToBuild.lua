@@ -24,11 +24,13 @@ return
 		{ path = "Meshes/EnemyEntityMesh.mesh" },
 		{ path = "Meshes/BreakerMesh.mesh" },
 		{ path = "Meshes/BallMesh.mesh" },
+		{ path = "Meshes/EnemyMesh.mesh" },
 	},
 
 	entityAI = 
 	{
 		{ path = "EntityAI/test.eai" },
 		{ path = "EntityAI/Ball.eai" },
+		{ path = "EntityAI/Alien.eai" },
 	}
 }

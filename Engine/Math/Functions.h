@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <type_traits>
 #include <Engine/Math/sVector2.h>
+#include <cmath>
 
 namespace eae6320
 {

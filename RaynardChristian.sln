@@ -7,7 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MyGame", "MyGame", "{02EA68
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MyGame", "MyGame_\MyGame\MyGame.vcxproj", "{4C676245-4105-491C-82FB-37CCC2AE3082}"
 	ProjectSection(ProjectDependencies) = postProject
-		{527DE39D-EA63-4F4C-AC26-124D8FEEE165} = {527DE39D-EA63-4F4C-AC26-124D8FEEE165}
 		{7E1B3DFF-88C1-43F2-AE97-BE197D80EF2B} = {7E1B3DFF-88C1-43F2-AE97-BE197D80EF2B}
 	EndProjectSection
 EndProject
@@ -103,9 +102,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AlienBreak", "AlienBreak", "{AED6BCBA-C9BE-4A8A-9EE9-C274B763982B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AlienBreak", "AlienBreak_\AlienBreak\AlienBreak.vcxproj", "{0B2E3C5F-FD06-4B1D-8600-01412EE63DBB}"
-	ProjectSection(ProjectDependencies) = postProject
-		{CCAB1920-7FD0-4B7B-860A-5AD5E3F952BA} = {CCAB1920-7FD0-4B7B-860A-5AD5E3F952BA}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BuildAlienBreakAssets", "AlienBreak_\BuildAlienBreakAssets\BuildAlienBreakAssets.vcxproj", "{CCAB1920-7FD0-4B7B-860A-5AD5E3F952BA}"
 	ProjectSection(ProjectDependencies) = postProject

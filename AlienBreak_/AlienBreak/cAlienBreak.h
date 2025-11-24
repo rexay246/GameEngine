@@ -110,7 +110,9 @@ namespace eae6320
 		GameObject::cCamera camera;
 
 		EntityAI::cBoundingBox* BoundingBox;
-		EntityAI::cEntityAI* enemy;
+		EntityAI::cEntityAI* ball;
+
+		EntityAI::cEntityAI* alien;
 
 		bool Chase;
 		PresentationState::EnemyState currentState = PresentationState::Idle;
