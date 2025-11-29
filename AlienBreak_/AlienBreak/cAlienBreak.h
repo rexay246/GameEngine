@@ -14,6 +14,8 @@
 #include <Engine/GameObject/cEntity.h>
 #include <Engine/EntityAI/cEntityAI.h>
 #include <Engine/EntityAI/cBoundingBox.h>
+#include <Engine/EntityAI/BodyEntity.h>
+#include <Engine/EntityAI/BallBodyEntity.h>
 #include <Engine/GameObject/cCamera.h>
 #include <Engine/Physics/cPhysicsWorld.h>
 #include <Engine/Physics/cPhysicsBody2D.h>
@@ -106,12 +108,17 @@ namespace eae6320
 		Graphics::cEffect* effects[100];
 		int effectCount = 0;
 
-		GameObject::cEntity entity;
+		//GameObject::cEntity entity;
 		GameObject::cCamera camera;
 
-		EntityAI::cBoundingBox* BoundingBox;
-		EntityAI::cEntityAI* ball;
+		BodyEntity::cBodyEntity* player;
+		BodyEntity::cBallBodyEntity* ball;
 
+		std::map< Physics::PhysicsBody2D*, BodyEntity::cBodyEntity*> EntityTracker;
+
+		EntityAI::cBoundingBox* BoundingBox;
+
+		//EntityAI::cEntityAI* ball;
 		EntityAI::cEntityAI* alien;
 
 		bool Chase;

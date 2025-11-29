@@ -33,35 +33,46 @@ void eae6320::cAlienBreak::UpdateSimulationBasedOnInput() {
 	// Player
 	Math::sVector input = { 0, 0, 0 };
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::A)) {
-		input.x -= entity.GetSpeed();
+		input.x -= player->entity->GetSpeed();
 	}
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::D)) {
-		input.x += entity.GetSpeed();
+		input.x += player->entity->GetSpeed();
+	}
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::W)) {
+		input.y -= player->entity->GetSpeed();
+	}
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::S)) {
+		input.y += player->entity->GetSpeed();
 	}
 	Physics::PhysicsBody2D* body = nullptr;
 	m_PhysicsWorld->GetBody(0, body);
 	std::vector<Physics::PhysicsBody2D*> result;
 	if (input != Math::sVector{ 0, 0, 0 }) {
-		m_PhysicsWorld->OverlapBox(Util::ToVec2(entity.GetPosition() + input.GetNormalized() * 0.5f), body->Width, body->Height, result);
+		m_PhysicsWorld->OverlapBox(Util::ToVec2(player->entity->GetPosition() + input.GetNormalized() * 0.5f), body->Width, body->Height, result);
 		if (result.empty() || result[0] == body) {
-			entity.SetVelocity(input);
+			player->entity->SetVelocity(input);
 		}
 	}
 	else {
-		entity.SetVelocity({ 0, 0, 0 });
+		player->entity->SetVelocity({ 0, 0, 0 });
 	}
 }
 
 void eae6320::cAlienBreak::UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) {
-	Physics::PhysicsBody2D* body = nullptr;
-	m_PhysicsWorld->GetBody(0, body);
-	entity.Update(i_elapsedSecondCount_sinceLastUpdate);
-	body->MoveTo(Util::ToVec2(entity.GetPosition()));
+	//Physics::PhysicsBody2D* body = nullptr;
+	//m_PhysicsWorld->GetBody(0, body);
+	//entity.Update(i_elapsedSecondCount_sinceLastUpdate);
+	//body->MoveTo(Util::ToVec2(entity.GetPosition()));
+	player->Update(i_elapsedSecondCount_sinceLastUpdate, m_PhysicsWorld.get(), 0, EntityTracker);
+	ball->Update(i_elapsedSecondCount_sinceLastUpdate, m_PhysicsWorld.get(), 1, EntityTracker);
 
 	camera.Update(i_elapsedSecondCount_sinceLastUpdate);
 
-	ball->MoveRandomlyBouncing(i_elapsedSecondCount_sinceLastUpdate, m_PhysicsWorld.get());
-	ball->Update(i_elapsedSecondCount_sinceLastUpdate);
+	//Physics::PhysicsBody2D* ballBody = nullptr;
+	//m_PhysicsWorld->GetBody(1, ballBody);
+	//ball->MoveRandomlyBouncing(i_elapsedSecondCount_sinceLastUpdate, m_PhysicsWorld.get());
+	//ball->Update(i_elapsedSecondCount_sinceLastUpdate);
+	//ballBody->MoveTo(Util::ToVec2(ball->GetPosition()));
 }
 
 void eae6320::cAlienBreak::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime,
@@ -69,17 +80,18 @@ void eae6320::cAlienBreak::SubmitDataToBeRendered(const float i_elapsedSecondCou
 
 	Graphics::SetBackgroundColor(bgColor);
 
-	entity.setMeshAndEffect(meshes[0], effects[1]);
-	entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	//entity.setMeshAndEffect(meshes[0], effects[1]);
+	//entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	player->entity->Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 
-	ball->setMeshAndEffect(meshes[1], effects[0]);
-	ball->Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	//ball->setMeshAndEffect(meshes[1], effects[0]);
+	ball->entity->Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 
 	alien->setMeshAndEffect(meshes[2], effects[1]);
 	alien->Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 
-	entity.CleanUp();
-	ball->CleanUp();
+	//entity.CleanUp();
+	//ball->CleanUp();
 	alien->CleanUp();
 
 	camera.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
@@ -124,10 +136,10 @@ eae6320::cResult eae6320::cAlienBreak::Initialize()
 		effectCount++;
 	}
 
-	entity.Initialize({ 0, -3, 0 }, 5.f);
+	//entity.Initialize({ 0, -3, 0 }, 5.f);
 	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f, 5.f);
 
-	EntityAI::cEntityAI::Load(ball, "data/EntityAI/Ball.eai");
+	//EntityAI::cEntityAI::Load(ball, "data/EntityAI/Ball.eai");
 	EntityAI::cEntityAI::Load(alien, "data/EntityAI/Alien.eai");
 
 	bgColor[0] = 0.5f;
@@ -138,26 +150,33 @@ eae6320::cResult eae6320::cAlienBreak::Initialize()
 	m_PhysicsWorld = std::make_unique<Physics::cPhysicsWorld>();
 	m_PhysicsWorld->AddBody(Physics::CreateBoxBody(0.8f, 0.5f, 1.f, false, 1.f));
 	m_PhysicsWorld->AddBody(Physics::CreateBoxBody(0.5f, 0.5f, 1.f, false, 1.f));
-	m_PhysicsWorld->AddBody(Physics::CreateBoxBody(0.6f, 0.6f, 1.f, false, 1.f));
+	//m_PhysicsWorld->AddBody(Physics::CreateBoxBody(0.6f, 0.6f, 1.f, false, 1.f));
 
 	Physics::PhysicsBody2D* body = nullptr;
 	Physics::PhysicsBody2D* ballBody = nullptr;
 	Physics::PhysicsBody2D* enemyBody = nullptr;
-	if (m_PhysicsWorld->GetBody(0, body))
-		body->MoveTo(Util::ToVec2(entity.GetPosition()));
-	if (m_PhysicsWorld->GetBody(1, ballBody))
-		ballBody->MoveTo(Util::ToVec2(ball->GetPosition()));
-	if (m_PhysicsWorld->GetBody(2, enemyBody))
+	/*if (m_PhysicsWorld->GetBody(0, body))
+		body->MoveTo(Util::ToVec2(entity.GetPosition()));*/
+	if (m_PhysicsWorld->GetBody(0, body)) {
+		player = new BodyEntity::cBodyEntity({ 0, -3, 0 }, 5.f, body, meshes[0], effects[1]);
+		EntityTracker[body] = player;
+	}
+	if (m_PhysicsWorld->GetBody(1, ballBody)) {
+		ball = new BodyEntity::cBallBodyEntity("data/EntityAI/Ball.eai", ballBody, meshes[1], effects[0]);
+		EntityTracker[ballBody] = ball;
+	}
+	if (m_PhysicsWorld->GetBody(2, enemyBody)) {
 		enemyBody->MoveTo(Util::ToVec2(alien->GetPosition()));
-	ball->body = ballBody;
-	ball->player = body;
+	}
+	//alien->body = enemyBody;
 
 	return Results::Success;
 }
 
 eae6320::cResult eae6320::cAlienBreak::CleanUp()
 {
-	entity.CleanUp();
+	player->CleanUp();
+	ball->CleanUp();
 	for (int i = 0; i < meshCount; i++) {
 		if (meshes[i]) {
 			meshes[i]->DecrementReferenceCount();

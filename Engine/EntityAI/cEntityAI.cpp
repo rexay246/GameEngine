@@ -2,15 +2,15 @@
 #include <Engine/ScopeGuard/cScopeGuard.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/Platform/Platform.h>
-#include <Engine/Physics/PhysicsUtil.h>
 
 // Helper Definitions
 //===================
 
 float RandomFloat(float max, float min) {
-	float random = (float)rand() / (float)RAND_MAX;
-	float diff = max - min;
-	return min + random * diff;
+	float random = static_cast<float>(::rand()) / static_cast<float>(RAND_MAX);
+	//std::wstring msg = L"Random float: " + std::to_wstring(random) + L"\r\n";
+	//OutputDebugStringW(msg.c_str());
+	return min + random * (max - min);
 }
 
 bool IsItCloseEnough(eae6320::Math::sVector pos1, eae6320::Math::sVector pos2, float AcceptanceRadius) {
@@ -89,19 +89,19 @@ void eae6320::EntityAI::cEntityAI::MoveRandomlyBouncing(float elapsedTime, Math:
 			RandomFloat(0, 1), 0 };
 		currentVelocity.Normalize();
 	}
-	if (currentPos.x > BoundingBox->getMaxXRange()) {
+	if (currentPos.x + currentVelocity.GetNormalized().x * 0.3f > BoundingBox->getMaxXRange()) {
 		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(-1, 0, 0)) * Math::sVector(-1, 0, 0);
 		currentVelocity.x += RandomFloat(-0.5, 0.5);
 	}
-	if (currentPos.x < BoundingBox->getMinXRange()) {
+	if (currentPos.x + currentVelocity.GetNormalized().x * 0.3f < BoundingBox->getMinXRange()) {
 		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(1, 0, 0)) * Math::sVector(1, 0, 0);
 		currentVelocity.x += RandomFloat(-0.5, 0.5);
 	}
-	if (currentPos.y > BoundingBox->getMaxYRange()) {
+	if (currentPos.y + currentVelocity.GetNormalized().y * 0.3f > BoundingBox->getMaxYRange()) {
 		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(0, -1, 0)) * Math::sVector(0, -1, 0);
 		currentVelocity.x += RandomFloat(-0.5, 0.5);
 	}
-	if (currentPos.y < BoundingBox->getMinYRange()) {
+	if (currentPos.y + currentVelocity.GetNormalized().y * 0.3f < BoundingBox->getMinYRange()) {
 		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(0, 1, 0)) * Math::sVector(0, 1, 0);
 		currentVelocity.x += RandomFloat(-0.5, 0.5);
 	}
@@ -237,6 +237,18 @@ void eae6320::EntityAI::cEntityAI::Idle() {
 	SetVelocity(Math::sVector(0, 0, 0));
 }
 
+void eae6320::EntityAI::cEntityAI::Bounce(Physics::PhysicsBody2D* body)
+{
+	Math::sVector currentPos = GetPosition();
+	Math::sVector currentVelocity = GetVelocity();
+	Math::sVector direction = Util::ToVec3(body->position) - currentPos;
+	direction.Normalize();
+	currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, direction) * direction;
+	currentVelocity.x += RandomFloat(-0.5, 0.5);
+	currentVelocity.y += RandomFloat(-0.5, 0.5);
+	SetVelocity(currentVelocity);
+}
+
 void eae6320::EntityAI::cEntityAI::Move(Math::sVector vector) {
 	CurrentState = EnemyStates::Moving;
 	if (vector.GetLength() > 1 - AcceptanceRadius)
@@ -317,6 +329,7 @@ eae6320::cResult eae6320::EntityAI::cEntityAI::Initialize(cEntityAI*& entityAI, 
 			return result;
 		}
 	}
+
 	return result;
 }
 
@@ -382,6 +395,13 @@ eae6320::cResult eae6320::EntityAI::cEntityAI::Load(cEntityAI*& entityAI, const 
 	cBoundingBox* boundingBox = new cBoundingBox(boundingBoxPosition, boundingBoxLength);
 	result = Initialize(entityAI, startingPos, walkSpeed, runSpeed, boundingBox, acceptanceRadius,
 		patrolPoints, numOfPatrolPoints, detectionRange, activeChase, maxPatrolWaitTime, maxChaseWaitTime);
+	return result;
+}
+
+eae6320::cResult eae6320::EntityAI::cEntityAI::Load(cEntityAI*& entityAI, Math::sVector position, float speed) {
+	auto result = eae6320::Results::Success;
+	result = Initialize(entityAI, position, speed, speed, nullptr, 0.0,
+		nullptr, 0, 0, false, 0, 0);
 	return result;
 }
 

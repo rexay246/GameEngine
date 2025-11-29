@@ -13,6 +13,7 @@
 #include <Engine/Physics/cPhysicsWorld.h>
 #include <Engine/Physics/cPhysicsBody2D.h>
 #include <Engine/Math/sVector2.h>
+#include <Engine/Physics/PhysicsUtil.h>
 
 namespace eae6320 {
 	namespace EntityAI {
@@ -37,6 +38,8 @@ namespace eae6320 {
 
 			// Initialization from file
 			static cResult Load(cEntityAI*& entityAI, const std::string& i_path);
+
+			static cResult Load(cEntityAI*& entityAI, Math::sVector position, float speed);
 
 			// Various Movement
 
@@ -96,6 +99,8 @@ namespace eae6320 {
 			*/
 			void Idle();
 
+			void Bounce(Physics::PhysicsBody2D* body);
+
 			EAE6320_ASSETS_DECLAREREFERENCECOUNTINGFUNCTIONS();
 			EAE6320_ASSETS_DECLAREDELETEDREFERENCECOUNTEDFUNCTIONS(cEntityAI);
 			EAE6320_ASSETS_DECLAREREFERENCECOUNT();
@@ -149,22 +154,23 @@ namespace eae6320 {
 			Physics::PhysicsBody2D* player;
 
 		private:
-
-			static cResult Initialize(cEntityAI*& entityAI, Math::sVector position,
-				float WalkSpeed, float RunSpeed, cBoundingBox* boundingBox = nullptr,
-				float acceptanceRadius = 1.f, Math::sVector* patrolPoints = nullptr, int numOfPoints = 0, 
-				float detectionRange = 0, bool activeChase = false, float maxPatrolWaitTime = 0.f,
-				float maxChaseWaitTime = 0.f);
 			cEntityAI(Math::sVector position, float WalkSpeed, float RunSpeed,
 				cBoundingBox* boundingBox, float acceptanceRadius,
 				Math::sVector* patrolPoints, int numOfPoints,
 				float detectionRange, bool activeChase, float maxPatrolWaitTime,
 				float maxChaseWaitTime);
-			~cEntityAI();
 
 			void Move(Math::sVector vector);
 			void FindClosestPatrolRoute();
 			bool IsNearPosition(Math::sVector position);
+
+		protected:
+			static cResult Initialize(cEntityAI*& entityAI, Math::sVector position,
+				float WalkSpeed, float RunSpeed, cBoundingBox* boundingBox = nullptr,
+				float acceptanceRadius = 1.f, Math::sVector* patrolPoints = nullptr, int numOfPoints = 0,
+				float detectionRange = 0, bool activeChase = false, float maxPatrolWaitTime = 0.f,
+				float maxChaseWaitTime = 0.f);
+			~cEntityAI();
 		};
 	}
 }

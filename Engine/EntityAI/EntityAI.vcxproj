@@ -19,14 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AlienEntityAI.cpp" />
+    <ClCompile Include="BodyEntity.cpp" />
     <ClCompile Include="cBoundingBox.cpp" />
     <ClCompile Include="cEntity.cpp" />
     <ClCompile Include="cEntityAI.cpp" />
     <ClCompile Include="cGameObject.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AlienEntityAI.h" />
+    <ClInclude Include="BallBodyEntity.h" />
+    <ClInclude Include="BodyEntity.h" />
     <ClInclude Include="cBoundingBox.h" />
     <ClInclude Include="cEntity.h" />
     <ClInclude Include="cEntityAI.h" />
