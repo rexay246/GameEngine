@@ -1,0 +1,7 @@
+{
+  "wav_path": "data/Audio/Diesel.wav",
+  "sfx": {
+    "jump": "data/Audio/Jump.wav",
+    "scroll": "data/Audio/Scroll.wav"
+  }
+}
