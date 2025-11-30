@@ -25,6 +25,7 @@
 #include <Engine/EntityAI/WallBodyEntity.h>
 #include <Engine/EntityAI/PlayerBodyEntity.h>
 #include <Engine/EntityAI/DeathBodyEntity.h>
+#include <Engine/EntityAI/CameraBodyEntity.h>
 
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
@@ -119,12 +120,13 @@ namespace eae6320
 		Graphics::cEffect* effects[100];
 		int effectCount = 0;
 
-		GameObject::cCamera camera;
+		//GameObject::cCamera camera;
 
 		BodyEntity::cPlayerBodyEntity* player;
 		BodyEntity::cBallBodyEntity* ball;
 		BodyEntity::cWallBodyEntity* Wall[3];
 		BodyEntity::cDeathBodyEntity* DeathWall;
+		BodyEntity::cCameraBodyEntity* Camera;
 
 		unsigned int NumOfEnemies = 20;
 		BodyEntity::cAlienBodyEntity** aliens;

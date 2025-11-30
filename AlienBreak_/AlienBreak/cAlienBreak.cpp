@@ -46,17 +46,18 @@ void eae6320::cAlienBreak::UpdateSimulationBasedOnInput() {
 
 	Math::sVector CamInput = { 0, 0, 0 };
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Left)) {
-		CamInput.x -= camera.GetSpeed();
+		Camera->ActivateShake();
 	}
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Right)) {
-		CamInput.x += camera.GetSpeed();
-	}
-	camera.SetVelocity(CamInput);
+	//if (UserInput::IsKeyPressed(UserInput::KeyCodes::Right)) {
+	//	CamInput.x += Camera->entity->GetSpeed();
+	//}
+	//Camera->entity->SetVelocity(CamInput);
 }
 
 void eae6320::cAlienBreak::UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) {
 	player->Update(i_elapsedSecondCount_sinceLastUpdate, m_PhysicsWorld.get(), 0, EntityTracker);
 	ball->Update(i_elapsedSecondCount_sinceLastUpdate, m_PhysicsWorld.get(), 1, EntityTracker);
+	Camera->Update(i_elapsedSecondCount_sinceLastUpdate);
 
 	DeathWall->Update(i_elapsedSecondCount_sinceLastUpdate, m_PhysicsWorld.get(), 4, EntityTracker);
 
@@ -67,8 +68,6 @@ void eae6320::cAlienBreak::UpdateSimulationBasedOnTime(const float i_elapsedSeco
 	for (unsigned int i = 0; i < 3; i++) {
 		Wall[i]->Update(i_elapsedSecondCount_sinceLastUpdate, m_PhysicsWorld.get(), 2 + i, EntityTracker);
 	}
-
-	camera.Update(i_elapsedSecondCount_sinceLastUpdate);
 }
 
 void eae6320::cAlienBreak::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime,
@@ -89,7 +88,7 @@ void eae6320::cAlienBreak::SubmitDataToBeRendered(const float i_elapsedSecondCou
 	}
 	DeathWall->Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 
-	camera.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	Camera->Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
 	
 }
 
@@ -151,7 +150,8 @@ eae6320::cResult eae6320::cAlienBreak::Initialize()
 		effectCount++;
 	}
 
-	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f, 5.f);
+	//camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f, 5.f);
+	Camera = new BodyEntity::cCameraBodyEntity({ 0,0,10 }, 15.f, 45.f, 0.1f, 13.f);
 
 	bgColor[0] = 0.0f;
 	bgColor[1] = 0.0f;
@@ -176,6 +176,7 @@ eae6320::cResult eae6320::cAlienBreak::Initialize()
 		ball = new BodyEntity::cBallBodyEntity("data/EntityAI/Ball.eai", ballBody, meshes[1], effects[0]);
 		EntityTracker[ballBody] = ball;
 		ball->player = player;
+		ball->camera = Camera;
 		index++;
 	}
 

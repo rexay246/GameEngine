@@ -3,6 +3,7 @@
 #define EAE6320_ENTITYAI_BALLBODYENTITY_H
 
 #include "BodyEntity.h"
+#include "CameraBodyEntity.h"
 
 namespace eae6320 {
 	namespace BodyEntity {
@@ -13,6 +14,7 @@ namespace eae6320 {
 			float respawnTime = 1.5f;
 			cBodyEntity* player;
 			float maxSpeed = 8.f;
+			BodyEntity::cCameraBodyEntity* camera;
 
 			float ClampFloat(float value, float max) {
 				if (value > max)
@@ -68,10 +70,11 @@ namespace eae6320 {
 				if (isDead)
 					return;
 				switch (collider->GetType()) {
-				//case BodyType::Player:
+				case BodyType::Player:
 				case BodyType::Wall:
 					entity->SetSpeed(ClampFloat(entity->GetSpeed() + 0.2f, maxSpeed));
 					entity->BounceWall(collider->body);
+					camera->ActivateShake();
 					break;
 				case BodyType::Death:
 					Die();
@@ -79,6 +82,7 @@ namespace eae6320 {
 				default:
 					entity->SetSpeed(ClampFloat(entity->GetSpeed() + 0.2f, maxSpeed));
 					entity->Bounce(collider->body);
+					camera->ActivateShake();
 					break;
 				}
 			}

@@ -91,7 +91,7 @@ namespace eae6320 {
 			*/
 			void Patrol(float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
 
-			void Navigate(float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
+			bool Navigate(float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
 
 			void MoveRandomlyInOneDirection(float elapsedTime, Math::sVector direction);
 
@@ -115,7 +115,6 @@ namespace eae6320 {
 		private:
 			Math::sVector CurTargetLocation;
 			cBoundingBox* BoundingBox;
-			float AcceptanceRadius = 1.0f;
 
 			Math::sVector* PatrolPoints = nullptr;
 			unsigned int NumberOfPatrolPoints = 0;
@@ -159,6 +158,9 @@ namespace eae6320 {
 
 			Physics::PhysicsBody2D* body;
 			Physics::PhysicsBody2D* player;
+
+			bool Loop = true;
+			float AcceptanceRadius = 1.0f;
 
 		private:
 			cEntityAI(Math::sVector position, float WalkSpeed, float RunSpeed,

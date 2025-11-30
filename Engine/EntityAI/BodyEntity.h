@@ -18,6 +18,7 @@ namespace eae6320 {
 			Ball,
 			Alien,
 			Death,
+			Camera,
 		};
 	}
 }
@@ -44,9 +45,12 @@ namespace eae6320 {
 			}
 
 			void Initialize(Physics::PhysicsBody2D* _body, Graphics::cMesh* mesh_, Graphics::cEffect* effect_) {
-				body = _body;
-				body->MoveTo(Util::ToVec2(entity->GetPosition()));
-				entity->setMeshAndEffect(mesh_, effect_);
+				if (_body != nullptr) {
+					body = _body;
+					body->MoveTo(Util::ToVec2(entity->GetPosition()));
+				}
+				if (mesh_ != nullptr && effect_ != nullptr)
+					entity->setMeshAndEffect(mesh_, effect_);
 			}
 
 			void Update(float i_elapsedSecondCount_sinceLastUpdate, Physics::cPhysicsWorld* world, int index, std::map<Physics::PhysicsBody2D*, cBodyEntity*> entityTracker) {

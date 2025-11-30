@@ -63,29 +63,42 @@ void eae6320::EntityAI::cEntityAI::Patrol(float elapsedTime, Math::sVector* chas
 		}
 	}
 }
-void eae6320::EntityAI::cEntityAI::Navigate(float elapsedTime, Math::sVector* chaseTargetPosition)
+bool eae6320::EntityAI::cEntityAI::Navigate(float elapsedTime, Math::sVector* chaseTargetPosition)
 {
 	if (NumberOfPatrolPoints <= 0)
-		return;
-	if (CurrentState == EnemyStates::Idle && BoundingBox) {
+		return false;
+	if (CurrentState == EnemyStates::Idle) {
 		if (PatrolWaitTime > 0.f) {
 			Idle();
 			PatrolWaitTime -= elapsedTime;
-			return;
+			return true;
 		}
 		else {
 			SetSpeed(WalkSpeed);
 			PatrolWaitTime = MaxPatrolWaitTime;
 			CurrentPatrolIndex++;
-			if (CurrentPatrolIndex >= NumberOfPatrolPoints)
-				CurrentPatrolIndex = 0;
+			if (CurrentPatrolIndex >= NumberOfPatrolPoints) {
+				CurrentPatrolIndex = -1;
+				if (!Loop) {
+					Idle();
+					return false;
+				}
+			}
 			CurTargetLocation = GetPosition() + PatrolPoints[CurrentPatrolIndex];
 		}
 	}
 	if (PatrolPoints)
 	{
-		MoveTo(CurTargetLocation, elapsedTime, chaseTargetPosition);
+		Math::sVector currentPos = GetPosition();
+		if (IsItCloseEnough(currentPos, CurTargetLocation, AcceptanceRadius)) {
+			Idle();
+			return true;
+		}
+		Math::sVector movementVector = CurTargetLocation - currentPos;
+		Move(movementVector);
+		return true;
 	}
+	return false;
 }
 
 void eae6320::EntityAI::cEntityAI::MoveRandomlyInOneDirection(float elapsedTime, Math::sVector direction)

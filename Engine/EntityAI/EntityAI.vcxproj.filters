@@ -24,5 +24,6 @@
     <ClInclude Include="WallBodyEntity.h" />
     <ClInclude Include="PlayerBodyEntity.h" />
     <ClInclude Include="DeathBodyEntity.h" />
+    <ClInclude Include="CameraBodyEntity.h" />
   </ItemGroup>
 </Project>
