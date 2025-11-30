@@ -14,12 +14,17 @@
 #include <Engine/GameObject/cEntity.h>
 #include <Engine/EntityAI/cEntityAI.h>
 #include <Engine/EntityAI/cBoundingBox.h>
-#include <Engine/EntityAI/BodyEntity.h>
-#include <Engine/EntityAI/BallBodyEntity.h>
 #include <Engine/GameObject/cCamera.h>
 #include <Engine/Physics/cPhysicsWorld.h>
 #include <Engine/Physics/cPhysicsBody2D.h>
 #include <Engine/Math/sVector2.h>
+
+#include <Engine/EntityAI/BodyEntity.h>
+#include <Engine/EntityAI/BallBodyEntity.h>
+#include <Engine/EntityAI/AlienBodyEntity.h>
+#include <Engine/EntityAI/WallBodyEntity.h>
+#include <Engine/EntityAI/PlayerBodyEntity.h>
+#include <Engine/EntityAI/DeathBodyEntity.h>
 
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
@@ -92,6 +97,12 @@ namespace eae6320
 		const WORD* GetSmallIconId() const final { static constexpr WORD iconId_small = IDI_RAYPAW; return &iconId_small; }
 #endif
 
+		void GetDefaultInitialResolution(uint16_t& o_width, uint16_t& o_height) const override
+		{
+			o_width = 768;
+			o_height = 768;
+		}
+
 		// Run
 		//----
 
@@ -108,18 +119,19 @@ namespace eae6320
 		Graphics::cEffect* effects[100];
 		int effectCount = 0;
 
-		//GameObject::cEntity entity;
 		GameObject::cCamera camera;
 
-		BodyEntity::cBodyEntity* player;
+		BodyEntity::cPlayerBodyEntity* player;
 		BodyEntity::cBallBodyEntity* ball;
+		BodyEntity::cWallBodyEntity* Wall[3];
+		BodyEntity::cDeathBodyEntity* DeathWall;
+
+		unsigned int NumOfEnemies = 20;
+		BodyEntity::cAlienBodyEntity** aliens;
 
 		std::map< Physics::PhysicsBody2D*, BodyEntity::cBodyEntity*> EntityTracker;
 
 		EntityAI::cBoundingBox* BoundingBox;
-
-		//EntityAI::cEntityAI* ball;
-		EntityAI::cEntityAI* alien;
 
 		bool Chase;
 		PresentationState::EnemyState currentState = PresentationState::Idle;

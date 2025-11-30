@@ -26,12 +26,16 @@
     <ClCompile Include="cGameObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AlienBodyEntity.h" />
     <ClInclude Include="BallBodyEntity.h" />
     <ClInclude Include="BodyEntity.h" />
     <ClInclude Include="cBoundingBox.h" />
     <ClInclude Include="cEntity.h" />
     <ClInclude Include="cEntityAI.h" />
     <ClInclude Include="cGameObject.h" />
+    <ClInclude Include="DeathBodyEntity.h" />
+    <ClInclude Include="PlayerBodyEntity.h" />
+    <ClInclude Include="WallBodyEntity.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

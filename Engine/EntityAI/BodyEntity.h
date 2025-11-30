@@ -11,12 +11,27 @@
 
 namespace eae6320 {
 	namespace BodyEntity {
+		enum BodyType {
+			Default,
+			Player,
+			Wall,
+			Ball,
+			Alien,
+			Death,
+		};
+	}
+}
+
+namespace eae6320 {
+	namespace BodyEntity {
 		class cBodyEntity {
 		public:
 			Physics::PhysicsBody2D* body;
 			EntityAI::cEntityAI* entity = nullptr;
 			Graphics::cMesh* mesh;
 			Graphics::cEffect* effect;
+			bool isDead = false;
+			BodyEntity::BodyType type = BodyEntity::Default;
 
 			cBodyEntity(Math::sVector position, float speed, Physics::PhysicsBody2D* _body, Graphics::cMesh* mesh_, Graphics::cEffect* effect_) {
 				EntityAI::cEntityAI::Load(entity, position, speed);
@@ -39,30 +54,29 @@ namespace eae6320 {
 					entity->Update(i_elapsedSecondCount_sinceLastUpdate);
 					body->MoveTo(Util::ToVec2(entity->GetPosition()));
 				}
-
-				//std::vector<Physics::PhysicsBody2D*> result;
-				//Math::sVector extra = { 0, 0, 0 };
-				//if (entity->GetVelocity() != Math::sVector{0, 0, 0}) {
-				//	extra = entity->GetVelocity().GetNormalized();
-				//}
-				//if (world->OverlapBox(Util::ToVec2(entity->GetPosition() + extra * 0.5f), body->Width, body->Height, result))
-				//{
-				//	for (auto collide : result) {
-				//		if (collide != body) {
-				//			entityTracker[collide]->Collide(this);
-				//		}
-				//	}
-				//}
 			}
 
 			virtual void Collide(cBodyEntity* collider) {
-				OutputDebugStringW(L"Checking\n");
+				//OutputDebugStringW(L"Colliding\n");
 			};
+
+			virtual void Rendering(float i_elapsedSecondCount_sinceLastUpdate) {
+				entity->Rendering(i_elapsedSecondCount_sinceLastUpdate);
+			}
 
 			void CleanUp() {
 				if (entity != nullptr) {
 					entity->CleanUp();
 				}
+			}
+
+			virtual void MoveTo(Math::sVector position) {
+				entity->SetPosition(position);
+				body->MoveTo(Util::ToVec2(position));
+			}
+
+			virtual BodyType GetType() {
+				return BodyType::Default;
 			}
 		};
 	}

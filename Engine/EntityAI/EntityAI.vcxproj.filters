@@ -20,5 +20,9 @@
     <ClInclude Include="cBoundingBox.h" />
     <ClInclude Include="BodyEntity.h" />
     <ClInclude Include="BallBodyEntity.h" />
+    <ClInclude Include="AlienBodyEntity.h" />
+    <ClInclude Include="WallBodyEntity.h" />
+    <ClInclude Include="PlayerBodyEntity.h" />
+    <ClInclude Include="DeathBodyEntity.h" />
   </ItemGroup>
 </Project>

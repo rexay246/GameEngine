@@ -24,7 +24,10 @@ return
 		{ path = "Meshes/EnemyEntityMesh.mesh" },
 		{ path = "Meshes/BreakerMesh.mesh" },
 		{ path = "Meshes/BallMesh.mesh" },
-		{ path = "Meshes/EnemyMesh.mesh" },
+		{ path = "Meshes/AlienMesh.mesh" },
+		{ path = "Meshes/AlienMesh2.mesh" },
+		{ path = "Meshes/WallVerticalMesh.mesh" },
+		{ path = "Meshes/WallHorizontalMesh.mesh" },
 	},
 
 	entityAI = 
@@ -32,5 +35,6 @@ return
 		{ path = "EntityAI/test.eai" },
 		{ path = "EntityAI/Ball.eai" },
 		{ path = "EntityAI/Alien.eai" },
+		{ path = "EntityAI/Alien2.eai" },
 	}
 }

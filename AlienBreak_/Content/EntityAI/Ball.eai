@@ -6,7 +6,7 @@ return
 	BoundingBox = 
 	{
 		Position = {x = 0.0, y = 0.0, z = 0.0},
-		Length = {x = 4.0, y = 4.0, z = 0.0},
+		Length = {x = 10.0, y = 10.0, z = 0.0},
 	},
 	AcceptanceRadius = 0.05,
 }

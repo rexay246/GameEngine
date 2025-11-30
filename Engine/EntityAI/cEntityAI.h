@@ -61,6 +61,8 @@ namespace eae6320 {
 			*/
 			void MoveRandomlyBouncing(float elapsedTime, Physics::cPhysicsWorld* world, Math::sVector* chaseTargetPosition = nullptr);
 
+			void MoveRandomlyBouncingRandomX(float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
+
 			/* Moves in one direction indefinitely.
 			* vector is the direction of the movement
 			* chaseTargetPosition is used if you have a player the entityAI should follow. Default = nullptr.
@@ -89,6 +91,10 @@ namespace eae6320 {
 			*/
 			void Patrol(float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
 
+			void Navigate(float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
+
+			void MoveRandomlyInOneDirection(float elapsedTime, Math::sVector direction);
+
 			/* Chases the target indefinitely.
 			* chaseTargetPosition is the target you want the entityAI to follow
 			* elapsedTime is the time between frames.
@@ -100,6 +106,7 @@ namespace eae6320 {
 			void Idle();
 
 			void Bounce(Physics::PhysicsBody2D* body);
+			void BounceWall(Physics::PhysicsBody2D* body);
 
 			EAE6320_ASSETS_DECLAREREFERENCECOUNTINGFUNCTIONS();
 			EAE6320_ASSETS_DECLAREDELETEDREFERENCECOUNTEDFUNCTIONS(cEntityAI);
