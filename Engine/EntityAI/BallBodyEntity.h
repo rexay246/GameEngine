@@ -12,6 +12,13 @@ namespace eae6320 {
 			float waitPeriodBeforeMoving = 1.0f;
 			float respawnTime = 1.5f;
 			cBodyEntity* player;
+			float maxSpeed = 8.f;
+
+			float ClampFloat(float value, float max) {
+				if (value > max)
+					return max;
+				return value;
+			}
 
 			cBallBodyEntity(Math::sVector position, float speed, Physics::PhysicsBody2D* _body, Graphics::cMesh* mesh_, Graphics::cEffect* effect_) : 
 			cBodyEntity (position, speed, _body, mesh_, effect_) {
@@ -26,7 +33,6 @@ namespace eae6320 {
 
 			void Update(float i_elapsedSecondCount_sinceLastUpdate, Physics::cPhysicsWorld* world, int index, std::map<Physics::PhysicsBody2D*, cBodyEntity*> entityTracker) {
 				cBodyEntity::Update(i_elapsedSecondCount_sinceLastUpdate, world, index, entityTracker);
-
 				if (waitPeriodBeforeMoving > 0.f) {
 					waitPeriodBeforeMoving -= i_elapsedSecondCount_sinceLastUpdate;
 					if (player)
@@ -52,21 +58,26 @@ namespace eae6320 {
 						}
 					}
 				}
-				if (!isDead)
+				if (!isDead) {
 					entity->MoveRandomlyBouncing(i_elapsedSecondCount_sinceLastUpdate);
+				}
+
 			}
 
 			void Collide(cBodyEntity* collider) override {
 				if (isDead)
 					return;
 				switch (collider->GetType()) {
+				//case BodyType::Player:
 				case BodyType::Wall:
+					entity->SetSpeed(ClampFloat(entity->GetSpeed() + 0.2f, maxSpeed));
 					entity->BounceWall(collider->body);
 					break;
 				case BodyType::Death:
 					Die();
 					break;
 				default:
+					entity->SetSpeed(ClampFloat(entity->GetSpeed() + 0.2f, maxSpeed));
 					entity->Bounce(collider->body);
 					break;
 				}
@@ -76,7 +87,8 @@ namespace eae6320 {
 				isDead = true;
 				waitPeriodBeforeMoving = respawnTime;
 				entity->Idle();
-				MoveTo(Math::sVector(0, -2, 0)); 
+				MoveTo(Math::sVector(0, -2.0, 0)); 
+				entity->SetSpeed(3);
 			}
 
 			BodyType GetType() override {

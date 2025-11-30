@@ -22,7 +22,7 @@ return
 		{ path = "Meshes/FloorObject.mesh" },
 		{ path = "Meshes/PlayerEntityMesh.mesh" },
 		{ path = "Meshes/EnemyEntityMesh.mesh" },
-		{ path = "Meshes/BreakerMesh.mesh" },
+		{ path = "Meshes/BreakerMesh2.mesh" },
 		{ path = "Meshes/BallMesh.mesh" },
 		{ path = "Meshes/AlienMesh.mesh" },
 		{ path = "Meshes/AlienMesh2.mesh" },

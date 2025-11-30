@@ -24,26 +24,28 @@ namespace eae6320 {
 			}
 
 			void MovePlayer(Math::sVector movement, Physics::cPhysicsWorld* world, int index, std::map<Physics::PhysicsBody2D*, cBodyEntity*> entityTracker) {
-				Physics::PhysicsBody2D* body = nullptr;
-				world->GetBody(index, body);
 				std::vector<Physics::PhysicsBody2D*> result;
 				if (movement != Math::sVector{ 0, 0, 0 }) {
 					world->OverlapBox(Util::ToVec2(entity->GetPosition() + movement.GetNormalized() * 0.5f), body->Width, body->Height, result);
+					bool collided = false;
 					for (auto collide : result)
 					{
 						if (collide != body) {
 							switch (entityTracker[collide]->GetType()) {
 							case BodyType::Wall:
 								entity->SetVelocity({ 0, 0, 0 });
+								collided = true;
 								break;
 							case BodyType::Alien:
 								break;
 							case BodyType::Ball:
+								//entityTracker[collide]->Collide(this);
 								break;
 							}
-							return;
 						}
 					}
+					if (collided)
+						return;
 					entity->SetVelocity(movement);
 				}
 				else {

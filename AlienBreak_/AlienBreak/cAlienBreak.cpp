@@ -38,13 +38,11 @@ void eae6320::cAlienBreak::UpdateSimulationBasedOnInput() {
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::D)) {
 		input.x += player->entity->GetSpeed();
 	}
-	//if (UserInput::IsKeyPressed(UserInput::KeyCodes::W)) {
-	//	input.y += player->entity->GetSpeed();
-	//}
-	//if (UserInput::IsKeyPressed(UserInput::KeyCodes::S)) {
-	//	input.y -= player->entity->GetSpeed();
-	//}
 	player->MovePlayer(input, m_PhysicsWorld.get(), 0, EntityTracker);
+
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Space)) {
+		ball->Die();
+	}
 }
 
 void eae6320::cAlienBreak::UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) {
@@ -95,7 +93,7 @@ eae6320::cResult eae6320::cAlienBreak::Initialize()
 
 	// Mesh 1
 	{
-		Graphics::cMesh::Load(meshes[0], "data/Meshes/BreakerMesh.mesh");
+		Graphics::cMesh::Load(meshes[0], "data/Meshes/BreakerMesh2.mesh");
 		meshCount++;
 	}
 
@@ -152,7 +150,7 @@ eae6320::cResult eae6320::cAlienBreak::Initialize()
 	bgColor[3] = 1.0f;
 
 	m_PhysicsWorld = std::make_unique<Physics::cPhysicsWorld>();
-	m_PhysicsWorld->AddBody(Physics::CreateBoxBody(0.8f, 0.8f, 1.f, false, 1.f));
+	m_PhysicsWorld->AddBody(Physics::CreateBoxBody(2.0f, 0.75f, 1.f, false, 1.f));
 	m_PhysicsWorld->AddBody(Physics::CreateBoxBody(0.5f, 0.5f, 1.f, false, 1.f));
 
 	Physics::PhysicsBody2D* body = nullptr;

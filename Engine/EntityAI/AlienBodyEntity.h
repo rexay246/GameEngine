@@ -11,7 +11,7 @@ namespace eae6320 {
 			BodyEntity::BodyType type = BodyEntity::Alien;
 			Math::sVector originalLocation;
 			float respawnTimer = 1.0f;
-			float MaxRespawnTime = 0.5f;
+			float MaxRespawnTime = 2.0f;
 
 			float RandomFloat(float max, float min) {
 				float random = static_cast<float>(::rand()) / static_cast<float>(RAND_MAX);
@@ -64,7 +64,7 @@ namespace eae6320 {
 
 			void Die() {
 				isDead = true;
-				respawnTimer = MaxRespawnTime;
+				respawnTimer = RandomFloat(0.5, MaxRespawnTime);
 				cBodyEntity::MoveTo(Math::sVector(RandomFloat(-2.0f, 2.0f), RandomFloat(5, 7), 0));
 				entity->Idle();
 			}
