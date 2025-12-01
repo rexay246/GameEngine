@@ -6,7 +6,7 @@ return
 	BoundingBox = 
 	{
 		Position = {x = 0.0, y = 0.0, z = 0.0},
-		Length = {x = 3.0, y = 20.0, z = 0.0},
+		Length = {x = 2.8, y = 20.0, z = 0.0},
 	},
 	AcceptanceRadius = 0.05,
 	PatrolPoints =
@@ -16,5 +16,5 @@ return
 		{x = -0.5, y = 0.0, z = 0.0},
 		{x = 0.0, y = -0.5, z = 0.0},
 	},
-	MaxPatrolWaitTime = 2,
+	MaxPatrolWaitTime = 1,
 }

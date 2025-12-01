@@ -34,15 +34,18 @@ namespace eae6320 {
 			Graphics::cEffect* effect;
 			bool isDead = false;
 			BodyEntity::BodyType type = BodyEntity::Default;
+			Math::sVector originalLocation;
 
 			cBodyEntity(Math::sVector position, float speed, Physics::PhysicsBody2D* _body, Graphics::cMesh* mesh_, Graphics::cEffect* effect_) {
 				EntityAI::cEntityAI::Load(entity, position, speed);
 				Initialize(_body, mesh_, effect_);
+				originalLocation = entity->GetPosition();
 			}
 
 			cBodyEntity(std::string path, Physics::PhysicsBody2D* _body, Graphics::cMesh* mesh_, Graphics::cEffect* effect_) {
 				EntityAI::cEntityAI::Load(entity, path);
 				Initialize(_body, mesh_, effect_);
+				originalLocation = entity->GetPosition();
 			}
 
 			void Initialize(Physics::PhysicsBody2D* _body, Graphics::cMesh* mesh_, Graphics::cEffect* effect_) {
@@ -82,6 +85,10 @@ namespace eae6320 {
 
 			virtual BodyType GetType() {
 				return BodyType::Default;
+			}
+
+			void Restart() {
+				MoveTo(originalLocation);
 			}
 		};
 	}

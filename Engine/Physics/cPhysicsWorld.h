@@ -28,7 +28,7 @@ namespace eae6320
 
 			void AddBody(std::unique_ptr<PhysicsBody2D> i_body);
 			void RemoveBody(PhysicsBody2D* i_body);
-			bool GetBody(int i_index, PhysicsBody2D*& o_body);
+			bool GetBody(unsigned int i_index, PhysicsBody2D*& o_body);
 			// 改变iterations来增加运行的精度，代表了在一次step中，进行多少次substeps
 			void Step(float i_deltatime, int i_iterations);
 			void BroadPhase();

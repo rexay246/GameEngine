@@ -23,7 +23,7 @@ eae6320::Physics::PhysicsBody2D::PhysicsBody2D(
 
 	if (ShapeType == EShapeType::Box)
 	{
-		for (int i = 0; i < i_vertices.size(); i++)
+		for (unsigned int i = 0; i < i_vertices.size(); i++)
 		{
 			m_vertices.emplace_back(i_vertices[i]);
 		}
@@ -198,7 +198,7 @@ eae6320::Physics::AABB eae6320::Physics::PhysicsBody2D::GetAABB()
 		if (ShapeType == EShapeType::Box)
 		{
 			auto vertices = GetTransformedVertices2D();
-			for (int i = 0; i < vertices.size(); i++)
+			for (unsigned int i = 0; i < vertices.size(); i++)
 			{
 				const Math::sVector2& v = vertices[i];
 				if (v.x < minX) minX = v.x;
@@ -229,7 +229,7 @@ std::vector<eae6320::Math::sVector> eae6320::Physics::PhysicsBody2D::GetTransfor
 {
 	if (bTransformUpdateRequired)
 	{
-		for (int i = 0; i < m_vertices.size(); i++)
+		for (unsigned int i = 0; i < m_vertices.size(); i++)
 		{
 			Math::sVector2 vec = Util::ToVec2(m_vertices[i]);
 			Util::Transform2D(position, angle, vec);
@@ -248,7 +248,7 @@ std::vector<eae6320::Math::sVector2> eae6320::Physics::PhysicsBody2D::GetTransfo
 {
 	if (bTransformUpdateRequired)
 	{
-		for (int i = 0; i < m_vertices.size(); i++)
+		for (unsigned int i = 0; i < m_vertices.size(); i++)
 		{
 			Math::sVector2 vec = Util::ToVec2(m_vertices[i]);
 			Util::Transform2D(position, angle, vec);
@@ -267,7 +267,7 @@ eae6320::Math::cMatrix_transformation eae6320::Physics::PhysicsBody2D::GetTransf
 {
 	if (bTransformUpdateRequired)
 	{
-		for (int i = 0; i < m_vertices.size(); i++)
+		for (unsigned int i = 0; i < m_vertices.size(); i++)
 		{
 			Math::sVector2 vec = Util::ToVec2(m_vertices[i]);
 			Util::Transform2D(position, angle, vec);

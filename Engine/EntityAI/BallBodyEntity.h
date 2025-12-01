@@ -73,7 +73,7 @@ namespace eae6320 {
 				switch (collider->GetType()) {
 				case BodyType::Player:
 					entity->SetSpeed(ClampFloat(entity->GetSpeed() + 0.2f, maxSpeed));
-					if (std::fabs((collider->entity->GetPosition() - entity->GetPosition()).GetLength()) < 0.5f) {
+					if (std::fabs((collider->entity->GetPosition() - entity->GetPosition()).GetLength()) < 1.f) {
 						entity->BounceWall(collider->body);
 					}
 					else {

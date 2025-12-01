@@ -3,15 +3,16 @@
 #define EAE6320_ENTITYAI_ALIENBODYENTITY_H
 
 #include "BodyEntity.h"
+#include "PlayerBodyEntity.h"
 
 namespace eae6320 {
 	namespace BodyEntity {
 		class cAlienBodyEntity : public cBodyEntity {
 		public:
 			BodyEntity::BodyType type = BodyEntity::Alien;
-			Math::sVector originalLocation;
 			float respawnTimer = 1.0f;
 			float MaxRespawnTime = 2.0f;
+			BodyEntity::cPlayerBodyEntity* breaker;
 
 			float RandomFloat(float max, float min) {
 				float random = static_cast<float>(::rand()) / static_cast<float>(RAND_MAX);
@@ -27,30 +28,38 @@ namespace eae6320 {
 			cAlienBodyEntity(std::string path, Physics::PhysicsBody2D* _body, Graphics::cMesh* mesh_, Graphics::cEffect* effect_) :
 				cBodyEntity(path, _body, mesh_, effect_) {
 				entity->body = body;
-				originalLocation = entity->GetPosition();
 				isDead = false;
+				respawnTimer = RandomFloat(0.5, MaxRespawnTime);
 			}
 
 			void Update(float i_elapsedSecondCount_sinceLastUpdate, Physics::cPhysicsWorld* world, int index, std::map<Physics::PhysicsBody2D*, cBodyEntity*> entityTracker) {
 				if (isDead) {
 					if (respawnTimer > 0.f) {
-						respawnTimer -= i_elapsedSecondCount_sinceLastUpdate;			
+						respawnTimer -= i_elapsedSecondCount_sinceLastUpdate;
+						return;
 					}
 					else {
 						Respawn();
 					}
 				}
 				cBodyEntity::Update(i_elapsedSecondCount_sinceLastUpdate, world, index, entityTracker);
-
-				//entity->Navigate(i_elapsedSecondCount_sinceLastUpdate);
 				entity->MoveRandomlyInOneDirection(i_elapsedSecondCount_sinceLastUpdate, Math::sVector(0, -1, 0));
-				//entity->MoveDistance(Math::sVector(0.3f, 0.f, 0.f), i_elapsedSecondCount_sinceLastUpdate);
+
+				std::vector<Physics::PhysicsBody2D*> result;
+				if (world->OverlapBox(Util::ToVec2(entity->GetPosition()), body->Width + 2.f, body->Height + 2.f, result))
+				{
+					for (auto collide : result) {
+						if (collide != body && !entityTracker[collide]->isDead) {
+							if (entityTracker[collide]->GetType() == BodyType::Death)
+								breaker->GameLost = true;
+						}
+					}
+				}
 			}
 
 			void Collide(cBodyEntity* collider) override {
 				//OutputDebugStringW(L"Bouncing\n");
 				Die();
-				//entity->Bounce(collider->body);
 			}
 
 			void Rendering(float i_elapsedSecondCount_sinceLastUpdate) override {
@@ -59,12 +68,13 @@ namespace eae6320 {
 			}
 
 			void Respawn() {
+				respawnTimer = RandomFloat(0.5, MaxRespawnTime);
 				isDead = false;
+				entity->Idle();
 			}
 
 			void Die() {
 				isDead = true;
-				respawnTimer = RandomFloat(0.5, MaxRespawnTime);
 				cBodyEntity::MoveTo(Math::sVector(RandomFloat(-2.0f, 2.0f), RandomFloat(5, 7), 0));
 				entity->Idle();
 				AudioSystem::PlaySFX("death", 0.3f);

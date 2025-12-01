@@ -3,6 +3,9 @@
   "sfx": {
     "music": "data/Audio/SpaceBreakerBG.wav",
     "jump": "data/Audio/BallJump.wav",
-    "death": "data/Audio/AlienDeath.wav"
+    "death": "data/Audio/AlienDeath.wav",
+    "alien_move": "data/Audio/AlienMove.wav",
+    "breaker_move": "data/Audio/BreakerMove.wav",
+    "lose_sound":  "data/Audio/LoseSound.wav"
   }
 }

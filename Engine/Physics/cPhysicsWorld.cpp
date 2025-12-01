@@ -23,7 +23,7 @@ void eae6320::Physics::cPhysicsWorld::RemoveBody(PhysicsBody2D* i_body)
 	}
 }
 
-bool eae6320::Physics::cPhysicsWorld::GetBody(int i_index, PhysicsBody2D*& o_body)
+bool eae6320::Physics::cPhysicsWorld::GetBody(unsigned int i_index, PhysicsBody2D*& o_body)
 {
 	o_body = nullptr;
 	if (i_index < 0 || i_index >= m_bodyList.size())
@@ -53,12 +53,12 @@ void eae6320::Physics::cPhysicsWorld::Step(float i_deltatime, int i_iterations)
 void eae6320::Physics::cPhysicsWorld::BroadPhase()
 {
 	// Collision Step
-	for (int i = 0; i < m_bodyList.size() - 1; i++)
+	for (unsigned int i = 0; i < m_bodyList.size() - 1; i++)
 	{
 		Physics::PhysicsBody2D* bodyA = m_bodyList[i].get();
 		Physics::AABB bodyA_AABB = bodyA->GetAABB();
 
-		for (int j = i + 1; j < m_bodyList.size(); j++)
+		for (unsigned int j = i + 1; j < m_bodyList.size(); j++)
 		{
 			Physics::PhysicsBody2D* bodyB = m_bodyList[j].get();
 			Physics::AABB bodyB_AABB = bodyB->GetAABB();
@@ -81,7 +81,7 @@ void eae6320::Physics::cPhysicsWorld::BroadPhase()
 
 void eae6320::Physics::cPhysicsWorld::NarrowPhase()
 {
-	for (int i = 0; i < m_contactPairs.size(); i++)
+	for (unsigned int i = 0; i < m_contactPairs.size(); i++)
 	{
 		std::pair<int, int> pair = m_contactPairs[i];
 		PhysicsBody2D* bodyA = m_bodyList[pair.first].get();
@@ -117,7 +117,7 @@ void eae6320::Physics::cPhysicsWorld::NarrowPhase()
 void eae6320::Physics::cPhysicsWorld::StepBodies(float time, int totalIterations)
 {
 	// Movement Step
-	for (int i = 0; i < m_bodyList.size(); i++)
+	for (unsigned int i = 0; i < m_bodyList.size(); i++)
 	{
 		m_bodyList[i]->Step(time, gravity, totalIterations);
 	}
@@ -381,7 +381,7 @@ bool eae6320::Physics::cPhysicsWorld::OverlapBox(const Math::sVector2& i_boxPosi
 	tempBody.get()->MoveTo(i_boxPosition);
 	auto tempAABB = tempBody.get()->GetAABB();
 
-	for (int j = 0; j < m_bodyList.size(); j++)
+	for (unsigned int j = 0; j < m_bodyList.size(); j++)
 	{
 		Physics::PhysicsBody2D* bodyB = m_bodyList[j].get();
 		Physics::AABB bodyB_AABB = bodyB->GetAABB();
@@ -408,7 +408,7 @@ bool eae6320::Physics::cPhysicsWorld::OverlapCircle(const Math::sVector2& i_circ
 	tempBody.get()->MoveTo(i_circlePosition);
 	auto tempAABB = tempBody.get()->GetAABB();
 
-	for (int j = 0; j < m_bodyList.size(); j++)
+	for (unsigned int j = 0; j < m_bodyList.size(); j++)
 	{
 		Physics::PhysicsBody2D* bodyB = m_bodyList[j].get();
 		Physics::AABB bodyB_AABB = bodyB->GetAABB();
@@ -440,7 +440,7 @@ bool eae6320::Physics::cPhysicsWorld::RayCast(const Math::sVector2& i_rayStartPo
 	std::vector<RaycastHit> hits;
 
 	// Broad phase: Check AABB intersections first
-	for (int i = 0; i < m_bodyList.size(); i++)
+	for (unsigned int i = 0; i < m_bodyList.size(); i++)
 	{
 		PhysicsBody2D* body = m_bodyList[i].get();
 		AABB bodyAABB = body->GetAABB();

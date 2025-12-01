@@ -61,7 +61,7 @@ void eae6320::Physics::FindCirclePolygonContactPoint(const Math::sVector2& i_cir
 {
     o_contactPoint = Math::sVector2::Zero();
     float minDistSqr = FLT_MAX;
-    for (int i = 0; i < i_polygonVertices.size(); i++)
+    for (unsigned int i = 0; i < i_polygonVertices.size(); i++)
     {
         Math::sVector2 va = i_polygonVertices[i];
         Math::sVector2 vb = i_polygonVertices[(i + 1) % i_polygonVertices.size()];
@@ -86,10 +86,10 @@ void eae6320::Physics::FindPolygonsContactPoints(const std::vector<Math::sVector
 
     float minDistSqr = FLT_MAX;
 
-    for (int i = 0; i < i_verticesA.size(); i++)
+    for (unsigned int i = 0; i < i_verticesA.size(); i++)
     {
         Math::sVector2 p = i_verticesA[i];
-        for (int j = 0; j < i_verticesB.size(); j++)
+        for (unsigned int j = 0; j < i_verticesB.size(); j++)
         {
             Math::sVector2 va = i_verticesB[j];
             Math::sVector2 vb = i_verticesB[(j + 1) % i_verticesB.size()];
@@ -120,10 +120,10 @@ void eae6320::Physics::FindPolygonsContactPoints(const std::vector<Math::sVector
         }
     }
 
-    for (int i = 0; i < i_verticesB.size(); i++)
+    for (unsigned int i = 0; i < i_verticesB.size(); i++)
     {
         Math::sVector2 p = i_verticesB[i];
-        for (int j = 0; j < i_verticesA.size(); j++)
+        for (unsigned int j = 0; j < i_verticesA.size(); j++)
         {
             Math::sVector2 va = i_verticesA[j];
             Math::sVector2 vb = i_verticesA[(j + 1) % i_verticesA.size()];
@@ -274,7 +274,7 @@ bool eae6320::Physics::IntersectPolygons(const Math::sVector2& i_polygonCenterA,
     o_normal = Math::sVector2::Zero();
     // 记录可以将碰撞盒移出交集区域的最小值
     o_depth = FLT_MAX;
-    for (int i = 0; i < i_verticesA.size(); i++)
+    for (unsigned int i = 0; i < i_verticesA.size(); i++)
     {
         Math::sVector2 va = i_verticesA[i];
         Math::sVector2 vb = i_verticesA[(i + 1) % i_verticesA.size()];
@@ -302,7 +302,7 @@ bool eae6320::Physics::IntersectPolygons(const Math::sVector2& i_polygonCenterA,
         }
     }
 
-    for (int i = 0; i < i_verticesB.size(); i++)
+    for (unsigned int i = 0; i < i_verticesB.size(); i++)
     {
         Math::sVector2 va = i_verticesB[i];
         Math::sVector2 vb = i_verticesB[(i + 1) % i_verticesB.size()];
@@ -348,7 +348,7 @@ bool eae6320::Physics::IntersectCirclePolygon(const Math::sVector2& i_circleCent
     Math::sVector2 axis = Math::sVector2::Zero();
     float axisdepth = 0;
     float minA, maxA, minB, maxB;
-    for (int i = 0; i < i_vertices.size(); i++)
+    for (unsigned int i = 0; i < i_vertices.size(); i++)
     {
         Math::sVector2 va = i_vertices[i];
         Math::sVector2 vb = i_vertices[(i + 1) % i_vertices.size()];
@@ -440,7 +440,7 @@ void ProjectVertices(const std::vector<eae6320::Math::sVector2>& i_vertices, con
     o_min = FLT_MAX;
     o_max = FLT_MIN;
 
-    for (int i = 0; i < i_vertices.size(); i++)
+    for (unsigned int i = 0; i < i_vertices.size(); i++)
     {
         sVector2 v = i_vertices[i];
         float proj = Dot(v, i_axis);
@@ -478,7 +478,7 @@ int FindClosestPointOnPolygon(const eae6320::Math::sVector2& i_circleCenter, con
     using namespace eae6320::Math;
     int result = -1;
     float minDistance = FLT_MAX;
-    for (int i = 0; i < i_vertices.size(); i++)
+    for (unsigned int i = 0; i < i_vertices.size(); i++)
     {
         sVector2 v = i_vertices[i];
         float distance = v.Distance(i_circleCenter);
@@ -601,7 +601,7 @@ bool eae6320::Physics::RayIntersectBox(const Math::sVector2& i_rayOrigin, const 
     bool hasHit = false;
 
     // Test ray against each edge of the polygon
-    for (int i = 0; i < i_vertices.size(); i++)
+    for (unsigned int i = 0; i < i_vertices.size(); i++)
     {
         Math::sVector2 edgeStart = i_vertices[i];
         Math::sVector2 edgeEnd = i_vertices[(i + 1) % i_vertices.size()];

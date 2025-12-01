@@ -111,6 +111,7 @@ namespace eae6320
 
 		void UpdateBasedOnInput() final;
 		void UpdateSimulationBasedOnInput() final;
+		void UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) final;
 		void SubmitDataToBeRendered( const float i_elapsedSecondCount_systemTime, 
 			const float i_elapsedSecondCount_sinceLastSimulationUpdate );
 		void UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate);
@@ -122,7 +123,8 @@ namespace eae6320
 		Graphics::cEffect* effects[100];
 		int effectCount = 0;
 
-		//GameObject::cCamera camera;
+		GameObject::cEntity backdrop;
+		bool GameLost = false;
 
 		BodyEntity::cPlayerBodyEntity* player;
 		BodyEntity::cBallBodyEntity* ball;
@@ -147,6 +149,7 @@ namespace eae6320
 		std::unique_ptr<Physics::cPhysicsWorld> m_PhysicsWorld;
 
 		const char* ConfigFilePath = "data/Audio/config.json";
+		bool isMusicPlaying = false;
 
 		float MaxSecondsPast = 137.f;
 		float CurrentSecondsPast = MaxSecondsPast;

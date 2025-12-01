@@ -9,6 +9,8 @@ namespace eae6320 {
 		class cPlayerBodyEntity : public cBodyEntity {
 		public:
 			BodyEntity::BodyType type = BodyEntity::Player;
+			bool PlayingSound = false;
+			bool GameLost = false;
 
 			cPlayerBodyEntity(Math::sVector position, float speed, Physics::PhysicsBody2D* _body, Graphics::cMesh* mesh_, Graphics::cEffect* effect_) :
 				cBodyEntity(position, speed, _body, mesh_, effect_) {
