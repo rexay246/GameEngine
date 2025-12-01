@@ -38,12 +38,13 @@ namespace eae6320 {
 				if (waitPeriodBeforeMoving > 0.f) {
 					waitPeriodBeforeMoving -= i_elapsedSecondCount_sinceLastUpdate;
 					if (player)
-						entity->MoveTo(Math::sVector(player->entity->GetPosition().x, entity->GetPosition().y, 0), i_elapsedSecondCount_sinceLastUpdate);
+						entity->MoveTo(Math::sVector(player->entity->GetPosition().x, player->entity->GetPosition().y + 1.5f, 0), i_elapsedSecondCount_sinceLastUpdate);
 					return;
 				}
 				if (isDead) {
 					entity->Idle();
 					isDead = false;
+					entity->SetSpeed(3);
 				}
 
 				std::vector<Physics::PhysicsBody2D*> result;
@@ -71,10 +72,21 @@ namespace eae6320 {
 					return;
 				switch (collider->GetType()) {
 				case BodyType::Player:
+					entity->SetSpeed(ClampFloat(entity->GetSpeed() + 0.2f, maxSpeed));
+					if (std::fabs((collider->entity->GetPosition() - entity->GetPosition()).GetLength()) < 0.5f) {
+						entity->BounceWall(collider->body);
+					}
+					else {
+						entity->Bounce(collider->body);
+					}
+					camera->ActivateShake();
+					AudioSystem::PlaySFX("jump", 0.2f);
+					break;
 				case BodyType::Wall:
 					entity->SetSpeed(ClampFloat(entity->GetSpeed() + 0.2f, maxSpeed));
 					entity->BounceWall(collider->body);
 					camera->ActivateShake();
+					AudioSystem::PlaySFX("jump", 0.2f);
 					break;
 				case BodyType::Death:
 					Die();
@@ -83,16 +95,19 @@ namespace eae6320 {
 					entity->SetSpeed(ClampFloat(entity->GetSpeed() + 0.2f, maxSpeed));
 					entity->Bounce(collider->body);
 					camera->ActivateShake();
+					AudioSystem::PlaySFX("jump", 0.2f);
 					break;
 				}
 			}
 
 			void Die() {
+				if (isDead)
+					return;
 				isDead = true;
 				waitPeriodBeforeMoving = respawnTime;
 				entity->Idle();
-				MoveTo(Math::sVector(0, -2.0, 0)); 
-				entity->SetSpeed(3);
+				//MoveTo(Math::sVector(0, -2.0, 0)); 
+				entity->SetSpeed(5);
 			}
 
 			BodyType GetType() override {

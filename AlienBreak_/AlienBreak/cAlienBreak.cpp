@@ -44,14 +44,9 @@ void eae6320::cAlienBreak::UpdateSimulationBasedOnInput() {
 		ball->Die();
 	}
 
-	Math::sVector CamInput = { 0, 0, 0 };
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Left)) {
-		Camera->ActivateShake();
+		AudioSystem::StopLoopingSFX("death");
 	}
-	//if (UserInput::IsKeyPressed(UserInput::KeyCodes::Right)) {
-	//	CamInput.x += Camera->entity->GetSpeed();
-	//}
-	//Camera->entity->SetVelocity(CamInput);
 }
 
 void eae6320::cAlienBreak::UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) {
@@ -67,6 +62,14 @@ void eae6320::cAlienBreak::UpdateSimulationBasedOnTime(const float i_elapsedSeco
 
 	for (unsigned int i = 0; i < 3; i++) {
 		Wall[i]->Update(i_elapsedSecondCount_sinceLastUpdate, m_PhysicsWorld.get(), 2 + i, EntityTracker);
+	}
+
+	if (CurrentSecondsPast < 0.f) {
+		AudioSystem::Play(0.2f);
+		CurrentSecondsPast = MaxSecondsPast;
+	}
+	else {
+		CurrentSecondsPast -= i_elapsedSecondCount_sinceLastUpdate;
 	}
 }
 
@@ -98,6 +101,10 @@ void eae6320::cAlienBreak::SubmitDataToBeRendered(const float i_elapsedSecondCou
 eae6320::cResult eae6320::cAlienBreak::Initialize()
 {
 	aliens = new BodyEntity::cAlienBodyEntity*[NumOfEnemies];
+
+	AudioSystem::Initialize(ConfigFilePath);
+	AudioSystem::Play(0.2f);
+	//AudioSystem::PlayLoopingSFX("death", 0.2f);
 
 	// Mesh 1
 	{
@@ -257,5 +264,6 @@ eae6320::cResult eae6320::cAlienBreak::CleanUp()
 			effects[i] = nullptr;
 		}
 	}
+	AudioSystem::Shutdown();
 	return Results::Success;
 }

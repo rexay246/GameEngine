@@ -67,6 +67,7 @@ namespace eae6320 {
 				respawnTimer = RandomFloat(0.5, MaxRespawnTime);
 				cBodyEntity::MoveTo(Math::sVector(RandomFloat(-2.0f, 2.0f), RandomFloat(5, 7), 0));
 				entity->Idle();
+				AudioSystem::PlaySFX("death", 0.3f);
 			}
 
 			void MoveTo(Math::sVector position) override {

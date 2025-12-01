@@ -8,6 +8,7 @@
 #include <Engine/Graphics/cMesh.h>
 #include <Engine/Graphics/cEffect.h>
 #include <Engine/Physics/PhysicsUtil.h>
+#include "Engine/AudioSystem/Source/AudioSystem.h"
 
 namespace eae6320 {
 	namespace BodyEntity {

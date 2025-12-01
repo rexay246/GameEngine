@@ -36,5 +36,12 @@ return
 		{ path = "EntityAI/Ball.eai" },
 		{ path = "EntityAI/Alien.eai" },
 		{ path = "EntityAI/Alien2.eai" },
+	},
+
+	Audio = {
+		"Audio/config.json",
+		"Audio/SpaceBreakerBG.wav",
+		"Audio/BallJump.wav",
+		"Audio/ALienDeath.wav",
 	}
 }

@@ -27,6 +27,8 @@
 #include <Engine/EntityAI/DeathBodyEntity.h>
 #include <Engine/EntityAI/CameraBodyEntity.h>
 
+#include <Engine/AudioSystem/Source/AudioSystem.h>
+
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include "Resource Files/Resource.h"
@@ -143,6 +145,11 @@ namespace eae6320
 		bool changeEffects = false;
 
 		std::unique_ptr<Physics::cPhysicsWorld> m_PhysicsWorld;
+
+		const char* ConfigFilePath = "data/Audio/config.json";
+
+		float MaxSecondsPast = 137.f;
+		float CurrentSecondsPast = MaxSecondsPast;
 
 		// Initialize / Clean Up
 		//----------------------

@@ -1,7 +1,8 @@
 {
-  "wav_path": "data/Audio/Diesel.wav",
+  "wav_path": "data/Audio/SpaceBreakerBG.wav",
   "sfx": {
-    "jump": "data/Audio/Jump.wav",
-    "scroll": "data/Audio/Scroll.wav"
+    "music": "data/Audio/SpaceBreakerBG.wav",
+    "jump": "data/Audio/BallJump.wav",
+    "death": "data/Audio/AlienDeath.wav"
   }
 }
