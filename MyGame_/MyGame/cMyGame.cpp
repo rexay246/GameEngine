@@ -5,6 +5,8 @@
 
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/UserInput/UserInput.h>
+#include <iostream>
+#include <stdio.h>
 
 // Inherited Implementation
 //=========================
@@ -58,11 +60,86 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput() {
 		input.x += entity.GetSpeed();
 	}
 	entity.SetVelocity(input);
+
+
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key1)) {
+		currentState = PresentationState::Idle;
+	}
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key2)) {
+		currentState = PresentationState::Patrolling;
+	}
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key3)) {
+		currentState = PresentationState::RandomLocation;
+	}
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key4)) {
+		currentState = PresentationState::RandomBouncing;
+	}
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key5)) {
+		currentState = PresentationState::MoveTo;
+	}
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key6)) {
+		currentState = PresentationState::MoveDirection;
+	}	
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key7)) {
+		currentState = PresentationState::Chase;
+	}
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Key8)) {
+		Chase = !Chase;
+	}
+
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::MOUSELEFT)) {
+		long* test = new long[2];
+		UserInput::GetMouseLocation(test, (char*)GetMainWindowName());
+		uint16_t width;
+		uint16_t height;
+		GetCurrentResolution(width, height);
+		float x = test[0] / (float)width;
+		float y = test[1] / (float)height;
+
+		x = 10 * x - 5;
+		y = -10 * y + 5;
+		mouseLoc = { x, y, 0 };
+	}
 }
 
 void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) {
 	entity.Update(i_elapsedSecondCount_sinceLastUpdate);
 	camera.Update(i_elapsedSecondCount_sinceLastUpdate);
+
+	switch (currentState)
+	{
+	case eae6320::PresentationState::Patrolling:
+		enemy->Patrol(i_elapsedSecondCount_sinceLastUpdate, 
+			&entity.GetPosition());
+		break;
+	case eae6320::PresentationState::RandomLocation:
+		enemy->MoveRandomly(i_elapsedSecondCount_sinceLastUpdate, 
+			&entity.GetPosition());
+		break;
+	case eae6320::PresentationState::RandomBouncing:
+		enemy->MoveRandomlyBouncing(i_elapsedSecondCount_sinceLastUpdate, 
+			&entity.GetPosition());
+		break;
+	case eae6320::PresentationState::MoveTo:
+		enemy->MoveTo(mouseLoc, i_elapsedSecondCount_sinceLastUpdate,
+			&entity.GetPosition());
+		break;
+	case eae6320::PresentationState::MoveDirection:
+		enemy->MoveInOneDirection(mouseLoc, i_elapsedSecondCount_sinceLastUpdate,
+			&entity.GetPosition());
+		break;
+	case eae6320::PresentationState::Idle:
+		enemy->Idle();
+		break;
+	case eae6320::PresentationState::Chase:
+		enemy->Chase(&entity.GetPosition(), i_elapsedSecondCount_sinceLastUpdate);
+		break;
+	default:
+		break;
+	}
+	enemy->SetActiveChase(Chase);
+
+	enemy->Update(i_elapsedSecondCount_sinceLastUpdate);
 }
 
 void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime,
@@ -70,22 +147,16 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 
 	Graphics::SetBackgroundColor(bgColor);
 
-	GameObject::cEntity entity2;
-	GameObject::cEntity entity3;
-
-	entity.setMeshAndEffect(meshes[0], effects[0]);
-	entity2.setMeshAndEffect(meshes[1], effects[1]);
-	entity3.setMeshAndEffect(meshes[2], effects[0]);
-
+	entity.setMeshAndEffect(meshes[0], effects[1]);
 	entity.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
-	entity2.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
-	entity3.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	entity.CleanUp();
+
+	enemy->setMeshAndEffect(meshes[1], effects[0]);
+	enemy->Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	enemy->CleanUp();
 
 	camera.Rendering(i_elapsedSecondCount_sinceLastSimulationUpdate);
-
-	entity.CleanUp();
-	entity2.CleanUp();
-	entity3.CleanUp();
+	
 }
 
 // Initialize / Clean Up
@@ -95,13 +166,13 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 {
 	// Mesh 1
 	{
-		Graphics::cMesh::Load(meshes[0], "data/Meshes/PlayerCharacter.mesh");
+		Graphics::cMesh::Load(meshes[0], "data/Meshes/PlayerEntityMesh.mesh");
 		meshCount++;
 	}
 
 	// Mesh 2
 	{
-		Graphics::cMesh::Load(meshes[1], "data/Meshes/SunObject.mesh");
+		Graphics::cMesh::Load(meshes[1], "data/Meshes/EnemyEntityMesh.mesh");
 		meshCount++;
 	}
 
@@ -126,8 +197,12 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		effectCount++;
 	}
 
-	entity.Initialize({ 0, 0, 0 }, 5.f);
+	entity.Initialize({ 4, 0, 0 }, 5.f);
 	camera.Initialize({ 0,0,10 }, 45.f, 0.1f, 13.f, 5.f);
+
+	EntityAI::cEntityAI::Load(enemy, "data/EntityAI/test.eai");
+	enemy->SetStartingPatrolIndex(1);
+	Chase = enemy->GetActiveChase();
 
 	bgColor[0] = 0.5f;
 	bgColor[1] = 0.5f;

@@ -26,6 +26,8 @@ namespace eae6320
 
 		bool IsKeyPressed( const uint_fast8_t i_keyCode );
 
+		void GetMouseLocation(long* location, char* name);
+
 		namespace KeyCodes
 		{
 			// These values are what the Windows-specific function expects, for simplicity
@@ -40,6 +42,15 @@ namespace eae6320
 				A = 0x41,
 				S = 0x53,
 				D = 0x44,
+
+				Key1 = 0x31,
+				Key2 = 0x32,
+				Key3 = 0x33,
+				Key4 = 0x34,
+				Key5 = 0x35,
+				Key6 = 0x36,
+				Key7 = 0x37,
+				Key8 = 0x38,
 
 				Space = 0x20,
 
@@ -73,6 +84,8 @@ namespace eae6320
 				F10 = 0x79,
 				F11 = 0x7a,
 				F12 = 0x7b,
+
+				MOUSELEFT = 0x01,
 			};
 		}
 	}

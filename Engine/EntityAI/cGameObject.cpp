@@ -1,0 +1,22 @@
+#include "cGameObject.h"
+
+eae6320::Physics::sRigidBodyState* eae6320::EntityAI::cGameObject::GetPhysicsState() {
+	return m_physicsState;
+}
+
+void eae6320::EntityAI::cGameObject::SetPosition(Math::sVector position) {
+	m_physicsState->position = position;
+}
+
+void eae6320::EntityAI::cGameObject::SetVelocity(Math::sVector velocity)
+{
+	m_physicsState->velocity = velocity;
+}
+
+eae6320::EntityAI::cGameObject::~cGameObject() {
+	m_physicsState = nullptr;
+}
+
+void eae6320::EntityAI::cGameObject::Update(const float i_elapsedSecondCount_sinceLastSimulationUpdate) {
+	GetPhysicsState()->Update(i_elapsedSecondCount_sinceLastSimulationUpdate);
+}

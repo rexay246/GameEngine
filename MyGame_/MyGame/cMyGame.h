@@ -12,6 +12,8 @@
 #include <Engine/Results/Results.h>
 #include <Engine/Graphics/Graphics.h>
 #include <Engine/GameObject/cEntity.h>
+#include <Engine/EntityAI/cEntityAI.h>
+#include <Engine/EntityAI/cBoundingBox.h>
 #include <Engine/GameObject/cCamera.h>
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
@@ -20,6 +22,20 @@
 
 // Class Declaration
 //==================
+
+namespace eae6320 {
+	namespace PresentationState {
+		enum EnemyState {
+			Patrolling,
+			RandomLocation,
+			RandomBouncing,
+			MoveTo,
+			MoveDirection,
+			Chase,
+			Idle,
+		};
+	}
+}
 
 namespace eae6320
 {
@@ -88,6 +104,13 @@ namespace eae6320
 
 		GameObject::cEntity entity;
 		GameObject::cCamera camera;
+
+		EntityAI::cBoundingBox* BoundingBox;
+		EntityAI::cEntityAI* enemy;
+
+		bool Chase;
+		PresentationState::EnemyState currentState = PresentationState::Idle;
+		Math::sVector mouseLoc;
 
 		bool hideObjects = false;
 		bool changeEffects = false;
