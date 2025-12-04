@@ -1,0 +1,12 @@
+return
+{
+	StartPosition = {x = 0.0, y = -2.0, z = 0.0},
+	WalkSpeed = 3.0,
+	RunSpeed = 6.0,
+	BoundingBox = 
+	{
+		Position = {x = 0.0, y = 0.0, z = 0.0},
+		Length = {x = 10.0, y = 10.0, z = 0.0},
+	},
+	AcceptanceRadius = 0.05,
+}

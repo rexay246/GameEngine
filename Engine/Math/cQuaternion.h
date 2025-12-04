@@ -30,6 +30,11 @@ namespace eae6320
 
 		public:
 
+			// Initialization / Clean Up
+			//--------------------------
+
+			constexpr cQuaternion(const float i_w, const float i_x, const float i_y, const float i_z);
+
 			// Products
 			//---------
 
@@ -69,9 +74,12 @@ namespace eae6320
 
 			// Data
 			//=====
+			float GetX() const { return m_x; }
+			float GetY() const { return m_y; }
+			float GetZ() const { return m_z; }
+			float GetW() const { return m_w; }
 
 		private:
-
 			float m_w = 1.0f;
 			float m_x = 0.0f;
 			float m_y = 0.0f;
@@ -81,12 +89,6 @@ namespace eae6320
 			//===============
 
 		private:
-
-			// Initialization / Clean Up
-			//--------------------------
-
-			constexpr cQuaternion( const float i_w, const float i_x, const float i_y, const float i_z );
-
 			// Friends
 			//========
 

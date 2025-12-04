@@ -10,6 +10,10 @@
 #include "cBoundingBox.h"
 #include <Engine/Assets/ReferenceCountedAssets.h>
 #include <External/Lua/Includes.h>
+#include <Engine/Physics/cPhysicsWorld.h>
+#include <Engine/Physics/cPhysicsBody2D.h>
+#include <Engine/Math/sVector2.h>
+#include <Engine/Physics/PhysicsUtil.h>
 
 namespace eae6320 {
 	namespace EntityAI {
@@ -35,6 +39,8 @@ namespace eae6320 {
 			// Initialization from file
 			static cResult Load(cEntityAI*& entityAI, const std::string& i_path);
 
+			static cResult Load(cEntityAI*& entityAI, Math::sVector position, float speed);
+
 			// Various Movement
 
 			/* Moves to random location within the boundary box.
@@ -48,6 +54,14 @@ namespace eae6320 {
 			* elapsedTime is the time between frames.
 			*/
 			void MoveRandomlyBouncing(float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
+
+			/* Moves in a random direction. Follows one direction until it hits the boundary wall and then bounces.
+			* chaseTargetPosition is used if you have a player the entityAI should follow. Default = nullptr.
+			* elapsedTime is the time between frames.
+			*/
+			void MoveRandomlyBouncing(float elapsedTime, Physics::cPhysicsWorld* world, Math::sVector* chaseTargetPosition = nullptr);
+
+			void MoveRandomlyBouncingRandomX(float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
 
 			/* Moves in one direction indefinitely.
 			* vector is the direction of the movement
@@ -77,6 +91,10 @@ namespace eae6320 {
 			*/
 			void Patrol(float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
 
+			bool Navigate(float elapsedTime, Math::sVector* chaseTargetPosition = nullptr);
+
+			void MoveRandomlyInOneDirection(float elapsedTime, Math::sVector direction);
+
 			/* Chases the target indefinitely.
 			* chaseTargetPosition is the target you want the entityAI to follow
 			* elapsedTime is the time between frames.
@@ -87,15 +105,16 @@ namespace eae6320 {
 			*/
 			void Idle();
 
+			void Bounce(Physics::PhysicsBody2D* body);
+			void BounceWall(Physics::PhysicsBody2D* body);
+
 			EAE6320_ASSETS_DECLAREREFERENCECOUNTINGFUNCTIONS();
 			EAE6320_ASSETS_DECLAREDELETEDREFERENCECOUNTEDFUNCTIONS(cEntityAI);
 			EAE6320_ASSETS_DECLAREREFERENCECOUNT();
 
 		private:
-
 			Math::sVector CurTargetLocation;
 			cBoundingBox* BoundingBox;
-			float AcceptanceRadius = 1.0f;
 
 			Math::sVector* PatrolPoints = nullptr;
 			unsigned int NumberOfPatrolPoints = 0;
@@ -137,23 +156,30 @@ namespace eae6320 {
 			float GetDetectionRange() { return DetectionRange; };
 			bool GetActiveChase() { return ChaseActive; };
 
-		private:
+			Physics::PhysicsBody2D* body;
+			Physics::PhysicsBody2D* player;
 
-			static cResult Initialize(cEntityAI*& entityAI, Math::sVector position,
-				float WalkSpeed, float RunSpeed, cBoundingBox* boundingBox = nullptr,
-				float acceptanceRadius = 1.f, Math::sVector* patrolPoints = nullptr, int numOfPoints = 0, 
-				float detectionRange = 0, bool activeChase = false, float maxPatrolWaitTime = 0.f,
-				float maxChaseWaitTime = 0.f);
+			bool Loop = true;
+			float AcceptanceRadius = 1.0f;
+
+		private:
 			cEntityAI(Math::sVector position, float WalkSpeed, float RunSpeed,
 				cBoundingBox* boundingBox, float acceptanceRadius,
 				Math::sVector* patrolPoints, int numOfPoints,
 				float detectionRange, bool activeChase, float maxPatrolWaitTime,
 				float maxChaseWaitTime);
-			~cEntityAI();
 
 			void Move(Math::sVector vector);
 			void FindClosestPatrolRoute();
 			bool IsNearPosition(Math::sVector position);
+
+		protected:
+			static cResult Initialize(cEntityAI*& entityAI, Math::sVector position,
+				float WalkSpeed, float RunSpeed, cBoundingBox* boundingBox = nullptr,
+				float acceptanceRadius = 1.f, Math::sVector* patrolPoints = nullptr, int numOfPoints = 0,
+				float detectionRange = 0, bool activeChase = false, float maxPatrolWaitTime = 0.f,
+				float maxChaseWaitTime = 0.f);
+			~cEntityAI();
 		};
 	}
 }
