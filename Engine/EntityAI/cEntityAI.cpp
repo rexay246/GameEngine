@@ -7,9 +7,10 @@
 //===================
 
 float RandomFloat(float max, float min) {
-	float random = (float)rand() / (float)RAND_MAX;
-	float diff = max - min;
-	return min + random * diff;
+	float random = static_cast<float>(::rand()) / static_cast<float>(RAND_MAX);
+	//std::wstring msg = L"Random float: " + std::to_wstring(random) + L"\r\n";
+	//OutputDebugStringW(msg.c_str());
+	return min + random * (max - min);
 }
 
 bool IsItCloseEnough(eae6320::Math::sVector pos1, eae6320::Math::sVector pos2, float AcceptanceRadius) {
@@ -62,6 +63,65 @@ void eae6320::EntityAI::cEntityAI::Patrol(float elapsedTime, Math::sVector* chas
 		}
 	}
 }
+bool eae6320::EntityAI::cEntityAI::Navigate(float elapsedTime, Math::sVector* chaseTargetPosition)
+{
+	if (NumberOfPatrolPoints <= 0)
+		return false;
+	if (CurrentState == EnemyStates::Idle) {
+		if (PatrolWaitTime > 0.f) {
+			Idle();
+			PatrolWaitTime -= elapsedTime;
+			return true;
+		}
+		else {
+			SetSpeed(WalkSpeed);
+			PatrolWaitTime = MaxPatrolWaitTime;
+			CurrentPatrolIndex++;
+			if (CurrentPatrolIndex >= NumberOfPatrolPoints) {
+				CurrentPatrolIndex = -1;
+				if (!Loop) {
+					Idle();
+					return false;
+				}
+			}
+			CurTargetLocation = GetPosition() + PatrolPoints[CurrentPatrolIndex];
+		}
+	}
+	if (PatrolPoints)
+	{
+		Math::sVector currentPos = GetPosition();
+		if (IsItCloseEnough(currentPos, CurTargetLocation, AcceptanceRadius)) {
+			Idle();
+			return true;
+		}
+		Math::sVector movementVector = CurTargetLocation - currentPos;
+		Move(movementVector);
+		return true;
+	}
+	return false;
+}
+
+void eae6320::EntityAI::cEntityAI::MoveRandomlyInOneDirection(float elapsedTime, Math::sVector direction)
+{
+	Math::sVector dir = { RandomFloat(0, 1) * direction.x, 
+		RandomFloat(0, 1) * direction.y, 
+		RandomFloat(0, 1) * direction.z };
+	Math::sVector offset = { RandomFloat(-1, 1), RandomFloat(-1, 0), 0};
+	Math::sVector actual = (dir + offset).GetNormalized();
+	if (CurrentState == EnemyStates::Idle) {
+		if (PatrolWaitTime > 0.f) {
+			Idle();
+			PatrolWaitTime -= elapsedTime;
+		}
+		else {
+			SetSpeed(WalkSpeed);
+			PatrolWaitTime = MaxPatrolWaitTime;
+			CurTargetLocation = GetPosition() + actual;
+		}
+	}
+	MoveDistance(actual, elapsedTime);
+}
+
 void eae6320::EntityAI::cEntityAI::Chase(Math::sVector* chaseTargetPosition, float elapsedTime)
 {
 	if (ChaseActive) {
@@ -84,28 +144,104 @@ void eae6320::EntityAI::cEntityAI::MoveRandomlyBouncing(float elapsedTime, Math:
 	Math::sVector currentPos = GetPosition();
 	Math::sVector currentVelocity = GetVelocity();
 	if (CurrentState == EnemyStates::Idle) {
-		currentVelocity = { RandomFloat(0, 1),
-			RandomFloat(0, 1), 0 };
+		//currentVelocity = { RandomFloat(-1, 1),
+		//	RandomFloat(-1, 1), 0 };
+		currentVelocity = { 0, -1, 0 };
 		currentVelocity.Normalize();
 	}
-	if (currentPos.x > BoundingBox->getMaxXRange()) {
+	if (currentPos.x + currentVelocity.GetNormalized().x * 0.3f > BoundingBox->getMaxXRange()) {
 		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(-1, 0, 0)) * Math::sVector(-1, 0, 0);
 		currentVelocity.x += RandomFloat(-0.5, 0.5);
 	}
-	if (currentPos.x < BoundingBox->getMinXRange()) {
+	if (currentPos.x + currentVelocity.GetNormalized().x * 0.3f < BoundingBox->getMinXRange()) {
 		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(1, 0, 0)) * Math::sVector(1, 0, 0);
 		currentVelocity.x += RandomFloat(-0.5, 0.5);
 	}
-	if (currentPos.y > BoundingBox->getMaxYRange()) {
+	if (currentPos.y + currentVelocity.GetNormalized().y * 0.3f > BoundingBox->getMaxYRange()) {
 		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(0, -1, 0)) * Math::sVector(0, -1, 0);
 		currentVelocity.x += RandomFloat(-0.5, 0.5);
 	}
-	if (currentPos.y < BoundingBox->getMinYRange()) {
+	if (currentPos.y + currentVelocity.GetNormalized().y * 0.3f < BoundingBox->getMinYRange()) {
 		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(0, 1, 0)) * Math::sVector(0, 1, 0);
 		currentVelocity.x += RandomFloat(-0.5, 0.5);
 	}
 	MoveInOneDirection(currentVelocity, elapsedTime, chaseTargetPosition);
 }
+
+void eae6320::EntityAI::cEntityAI::MoveRandomlyBouncingRandomX(float elapsedTime, Math::sVector* chaseTargetPosition) {
+	if (!BoundingBox)
+		return;
+	Math::sVector currentPos = GetPosition();
+	Math::sVector currentVelocity = GetVelocity();
+	if (CurrentState == EnemyStates::Idle) {
+		//currentVelocity = { RandomFloat(-1, 1),
+		//	RandomFloat(-1, 1), 0 };
+		currentVelocity = { RandomFloat(-1, 1), -1, 0 };
+		currentVelocity.Normalize();
+	}
+	if (currentPos.x + currentVelocity.GetNormalized().x * 0.3f > BoundingBox->getMaxXRange()) {
+		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(-1, 0, 0)) * Math::sVector(-1, 0, 0);
+		currentVelocity.x += RandomFloat(-0.5, 0.5);
+	}
+	if (currentPos.x + currentVelocity.GetNormalized().x * 0.3f < BoundingBox->getMinXRange()) {
+		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(1, 0, 0)) * Math::sVector(1, 0, 0);
+		currentVelocity.x += RandomFloat(-0.5, 0.5);
+	}
+	if (currentPos.y + currentVelocity.GetNormalized().y * 0.3f > BoundingBox->getMaxYRange()) {
+		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(0, -1, 0)) * Math::sVector(0, -1, 0);
+		currentVelocity.x += RandomFloat(-0.5, 0.5);
+	}
+	if (currentPos.y + currentVelocity.GetNormalized().y * 0.3f < BoundingBox->getMinYRange()) {
+		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(0, 1, 0)) * Math::sVector(0, 1, 0);
+		currentVelocity.x += RandomFloat(-0.5, 0.5);
+	}
+	MoveInOneDirection(currentVelocity, elapsedTime, chaseTargetPosition);
+}
+
+void eae6320::EntityAI::cEntityAI::MoveRandomlyBouncing(float elapsedTime, Physics::cPhysicsWorld* world, Math::sVector* chaseTargetPosition)
+{
+	if (!BoundingBox)
+		return;
+	Math::sVector currentPos = GetPosition();
+	Math::sVector currentVelocity = GetVelocity();
+	if (CurrentState == EnemyStates::Idle) {
+		currentVelocity = { RandomFloat(0, 1),
+			RandomFloat(0, 1), 0 };
+		currentVelocity.Normalize();
+		currentVelocity *= GetSpeed();
+	}
+	if (currentPos.x + currentVelocity.GetNormalized().x * 0.3f > BoundingBox->getMaxXRange()) {
+		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(-1, 0, 0)) * Math::sVector(-1, 0, 0);
+		currentVelocity.x += RandomFloat(-0.5, 0.5);
+	}
+	if (currentPos.x + currentVelocity.GetNormalized().x * 0.3f < BoundingBox->getMinXRange()) {
+		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(1, 0, 0)) * Math::sVector(1, 0, 0);
+		currentVelocity.x += RandomFloat(-0.5, 0.5);
+	}
+	if (currentPos.y + currentVelocity.GetNormalized().y * 0.3f > BoundingBox->getMaxYRange()) {
+		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(0, -1, 0)) * Math::sVector(0, -1, 0);
+		currentVelocity.x += RandomFloat(-0.5, 0.5);
+	}
+	if (currentPos.y + currentVelocity.GetNormalized().y * 0.3f < BoundingBox->getMinYRange()) {
+		currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, Math::sVector(0, 1, 0)) * Math::sVector(0, 1, 0);
+		currentVelocity.x += RandomFloat(-0.5, 0.5);
+	}
+	std::vector<Physics::PhysicsBody2D*> result;
+	if (world->OverlapBox(Util::ToVec2(currentPos + currentVelocity.GetNormalized() * 0.5f), body->Width, body->Height, result))
+	{
+		for (auto collide : result) {
+			if (collide != body) {
+				Math::sVector direction = Util::ToVec3(collide->position) - currentPos;
+				direction.Normalize();
+				currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, direction) * direction;
+				currentVelocity.x += RandomFloat(-0.5, 0.5);
+				currentVelocity.y += RandomFloat(-0.5, 0.5);
+			}
+		}
+	}
+	MoveInOneDirection(currentVelocity, elapsedTime, chaseTargetPosition);
+}
+
 bool eae6320::EntityAI::cEntityAI::MoveInOneDirection(Math::sVector vector, float elapsedTime, 
 	Math::sVector* chaseTargetPosition)
 {
@@ -144,8 +280,16 @@ bool eae6320::EntityAI::cEntityAI::MoveInOneDirection(Math::sVector vector, floa
 }
 bool eae6320::EntityAI::cEntityAI::MoveDistance(Math::sVector distance, float elapsedTime, Math::sVector* chaseTargetPosition)
 {
-	return MoveTo(GetPosition() + distance, elapsedTime, chaseTargetPosition);
+	if (IsItCloseEnough(GetPosition(), CurTargetLocation, AcceptanceRadius)) {
+		Idle();
+		return true;
+	}
+	if (CurrentState == EnemyStates::Idle) {
+		CurTargetLocation = GetPosition() + distance;
+	}
+	return MoveTo(CurTargetLocation, elapsedTime, chaseTargetPosition);
 }
+
 bool eae6320::EntityAI::cEntityAI::MoveTo(Math::sVector position, float elapsedTime, 
 	Math::sVector* chaseTargetPosition) {
 	if (ChaseActive && chaseTargetPosition) {
@@ -190,6 +334,42 @@ bool eae6320::EntityAI::cEntityAI::MoveTo(Math::sVector position, float elapsedT
 void eae6320::EntityAI::cEntityAI::Idle() {
 	CurrentState = EnemyStates::Idle;
 	SetVelocity(Math::sVector(0, 0, 0));
+}
+
+void eae6320::EntityAI::cEntityAI::Bounce(Physics::PhysicsBody2D* body)
+{
+	Math::sVector currentPos = GetPosition();
+	Math::sVector currentVelocity = GetVelocity();
+	if (currentVelocity == Math::sVector{ 0, 0, 0 })
+		return;
+	Math::sVector direction = currentPos - Util::ToVec3(body->position);
+	direction.Normalize();
+	currentVelocity = currentVelocity - 2 * Math::Dot(currentVelocity, direction) * direction;
+	currentVelocity.x += currentVelocity.x * RandomFloat(0.f, 3.f);
+	currentVelocity.y += currentVelocity.y * RandomFloat(0.f, 3.f);
+	currentVelocity = currentVelocity.GetNormalized() * GetSpeed();
+	SetVelocity(currentVelocity);
+}
+
+void eae6320::EntityAI::cEntityAI::BounceWall(Physics::PhysicsBody2D* body)
+{
+	Math::sVector currentPos = GetPosition();
+	Math::sVector currentVelocity = GetVelocity();
+	if (currentVelocity == Math::sVector{ 0, 0, 0 })
+		return;
+	Math::sVector direction = currentPos - Util::ToVec3(body->position);
+	float dx = body->Width / 2 - std::fabs(direction.x);
+	float dy = body->Height / 2 - std::fabs(direction.y);
+	if (dx < dy) {
+		currentVelocity.x = -currentVelocity.x;
+	}
+	else {
+		currentVelocity.y = -currentVelocity.y;
+	}
+	currentVelocity.x += currentVelocity.x * RandomFloat(0.f, 3.f);
+	currentVelocity.y += currentVelocity.y * RandomFloat(0.f, 3.f);
+	currentVelocity = currentVelocity.GetNormalized() * GetSpeed();
+	SetVelocity(currentVelocity);
 }
 
 void eae6320::EntityAI::cEntityAI::Move(Math::sVector vector) {
@@ -272,6 +452,7 @@ eae6320::cResult eae6320::EntityAI::cEntityAI::Initialize(cEntityAI*& entityAI, 
 			return result;
 		}
 	}
+
 	return result;
 }
 
@@ -337,6 +518,13 @@ eae6320::cResult eae6320::EntityAI::cEntityAI::Load(cEntityAI*& entityAI, const 
 	cBoundingBox* boundingBox = new cBoundingBox(boundingBoxPosition, boundingBoxLength);
 	result = Initialize(entityAI, startingPos, walkSpeed, runSpeed, boundingBox, acceptanceRadius,
 		patrolPoints, numOfPatrolPoints, detectionRange, activeChase, maxPatrolWaitTime, maxChaseWaitTime);
+	return result;
+}
+
+eae6320::cResult eae6320::EntityAI::cEntityAI::Load(cEntityAI*& entityAI, Math::sVector position, float speed) {
+	auto result = eae6320::Results::Success;
+	result = Initialize(entityAI, position, speed, speed, nullptr, 0.0,
+		nullptr, 0, 0, false, 0, 0);
 	return result;
 }
 

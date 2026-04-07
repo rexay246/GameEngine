@@ -107,3 +107,5 @@ float eae6320::Math::ConvertHorizontalFieldOfViewToVerticalFieldOfView( const fl
 {
 	return 2.0f * std::atan( std::tan( i_horizontalFieldOfView_inRadians * 0.5f ) / i_aspectRatio );
 }
+
+

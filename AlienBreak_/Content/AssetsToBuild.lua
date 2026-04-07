@@ -22,10 +22,31 @@ return
 		{ path = "Meshes/FloorObject.mesh" },
 		{ path = "Meshes/PlayerEntityMesh.mesh" },
 		{ path = "Meshes/EnemyEntityMesh.mesh" },
+		{ path = "Meshes/BreakerMesh.mesh" },
+		{ path = "Meshes/BallMesh.mesh" },
+		{ path = "Meshes/AlienMesh.mesh" },
+		{ path = "Meshes/AlienMesh2.mesh" },
+		{ path = "Meshes/WallVerticalMesh.mesh" },
+		{ path = "Meshes/WallHorizontalMesh.mesh" },
+		{ path = "Meshes/BackdropMesh.mesh" },
+		{ path = "Meshes/LostBackdropMesh.mesh" },
 	},
 
 	entityAI = 
 	{
 		{ path = "EntityAI/test.eai" },
+		{ path = "EntityAI/Ball.eai" },
+		{ path = "EntityAI/Alien.eai" },
+		{ path = "EntityAI/Alien2.eai" },
+	},
+
+	Audio = {
+		"Audio/config.json",
+		"Audio/SpaceBreakerBG.wav",
+		"Audio/BallJump.wav",
+		"Audio/ALienDeath.wav",
+		"Audio/BreakerMove.wav",
+		"Audio/AlienMove.wav",
+		"Audio/LoseSound.wav",
 	}
 }

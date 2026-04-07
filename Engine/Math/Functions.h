@@ -7,11 +7,14 @@
 
 #include <cstdint>
 #include <type_traits>
+#include <Engine/Math/sVector2.h>
+#include <cmath>
 
 namespace eae6320
 {
 	namespace Math
 	{
+		
 		// Interface
 		//==========
 
@@ -32,6 +35,17 @@ namespace eae6320
 		// If the multiple is known to be a power-of-2 this is cheaper than the previous function
 			template<typename tUnsignedInteger, class EnforceUnsigned = typename std::enable_if_t<std::is_unsigned<tUnsignedInteger>::value>>
 		tUnsignedInteger RoundUpToMultiple_powerOf2( const tUnsignedInteger i_value, const tUnsignedInteger i_multipleWhichIsAPowerOf2 );
+	
+		constexpr float VerySmallFloat = 0.0005f;
+		inline bool NearlyEqual(float i_a, float i_b)
+		{
+			return std::abs(i_a - i_b) < VerySmallFloat;
+		}
+		inline bool NearlyEqual(const sVector2& i_a, const sVector2& i_b)
+		{
+			return i_a.Distance(i_b) < VerySmallFloat;
+		}
+
 	}
 }
 
